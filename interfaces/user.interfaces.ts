@@ -5,4 +5,5 @@ export interface UserInterface {
   timezone: string;
   primaryCurrency: string;
   language: string;
+  napaSocialMediaAccount: string;
 }
