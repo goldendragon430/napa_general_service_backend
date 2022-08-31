@@ -10,7 +10,7 @@ class User {
 
   save() {
     let tableQuery =
-      "CREATE TABLE IF NOT EXISTS users(metamask_wallet_account_number VARCHAR(255) PRIMARY KEY, profile_name VARCHAR(100), Bio VARCHAR(512), Timezone VARCHAR(255), primary_currency VARCHAR(10), language VARCHAR(255), NAPA_social_media_account_email text)";
+      "CREATE TABLE IF NOT EXISTS users(metamask_wallet_account_number VARCHAR(255) PRIMARY KEY, profile_name VARCHAR(100), Bio VARCHAR(512), Timezone VARCHAR(255), primary_currency  ENUM('NAPA','BNB','ETH'), language VARCHAR(255), NAPA_social_media_account_email text)";
 
     db.execute(tableQuery);
     let sql = `INSERT INTO users (metamask_wallet_account_number, profile_name, Bio, Timezone, primary_currency, language, NAPA_social_media_account_email) VALUES ("${this.user.accountNumber}", "${this.user.profileName}", "${this.user.bio}", "${this.user.timezone}", "${this.user.primaryCurrency}", "${this.user.language}", "${this.user.napaSocialMediaAccount}")`;
