@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { pubnub } from "..";
 
 // add listener
@@ -8,8 +9,12 @@ const listener = {
     }
   },
   message: (messageEvent) => {
-    console.log("messageEvent", messageEvent);
-    showMessage(messageEvent.message);
+    // @ts-ignore
+    global.SocketService.handleSendMessage({
+      messageEvent,
+    });
+
+    showMessage(messageEvent.message.text, messageEvent.message.from);
   },
 };
 
@@ -17,9 +22,12 @@ pubnub.addListener(listener);
 
 // subscribe to a channel
 pubnub.subscribe({
-  channels: ["hello_world"],
+  channels: ["NAPA-SOCIETY"],
 });
 
-const showMessage = (msg) => {
-  console.log("message: " + msg);
+export const showMessage = (msg, username) => {
+  return {
+    message: msg,
+    username,
+  };
 };

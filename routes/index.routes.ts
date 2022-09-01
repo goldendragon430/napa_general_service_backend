@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const UserRouter = require("../routes/user.routes");
 const ChatRouter = require("../routes/chat.routes");
 

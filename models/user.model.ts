@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { UserInterface } from "../interfaces/user.interfaces";
 
-const db = require("../config");
+const { db } = require("../config");
 
 class User {
   user: UserInterface;
