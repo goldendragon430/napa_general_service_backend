@@ -21,7 +21,6 @@ const getMessages = async (req, res) => {
     pubnub.fetchMessages(
       {
         channels: ["NAPA-SOCIETY"],
-        // end: "16620307204932926",
         count: 100,
       },
       (status, response) => {
