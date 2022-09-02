@@ -8,6 +8,7 @@
     "@typescript-eslint/parser": "^5.36.0"
   },
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --config nodemon.json index.ts -e ts",
     "lint": "eslint . --ext .ts"

@@ -1,27 +1,13 @@
 version: "3.8"
 
-services:
-  db:
-    image: mysql:latest
-    container_name: napa-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: napa12345
-      MYSQL_DATABSE: napa-development
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: napa12345
-
-  app:
-    depends_on:
-      - db
-    image: napa/napa-general-services
-    links:
-      - db
+services: 
+  NAPA-APP:
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    image: napasociety-staging
     ports:
-      - "80:8080"
-    restart: always
-    environment:
-      MYSQL_HOST: napa-general-services.clfuekgzzk52.ap-southeast-1.rds.amazonaws.com
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: napa12345
-      MYSQL_DB: napa-development
+      - '8000:8000'
+
+  
+
