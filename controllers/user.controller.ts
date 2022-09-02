@@ -1,24 +1,24 @@
 import User from "../models/user.model";
 
-const createUser = async (req, res) => {
+const createUserProfile = async (req, res) => {
   try {
     const { user } = req.body;
 
-    let newUser = new User(user);
+    const newUser = new User(user);
 
-    newUser = await newUser.save();
+    await newUser.save();
 
-    res.status(201).json({ message: newUser });
+    res.status(201).json({ message: "User Created Successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-const getUserByAccountNumber = async (req, res) => {
+const getUserProfileDetails = async (req, res) => {
   try {
-    const accountNumber = req.params.accountNumber;
+    const { profileId } = req.params;
 
-    const [user] = await User.getUserByAccountNumber(accountNumber);
+    const [user] = await User.getUserProfileDetails(profileId);
 
     res.status(200).json({ user: user[0] });
   } catch (error) {
@@ -26,4 +26,24 @@ const getUserByAccountNumber = async (req, res) => {
   }
 };
 
-module.exports = { createUser, getUserByAccountNumber };
+const updateUserProfile = async (req, res) => {
+  try {
+    const { user } = req.body;
+
+    const updateUser = new User(user);
+
+    await updateUser.update();
+
+    res.status(200).json({
+      message: "User Updated Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createUserProfile,
+  getUserProfileDetails,
+  updateUserProfile,
+};

@@ -20,8 +20,15 @@ class User {
     return db.execute(sql);
   }
 
-  static getUserByAccountNumber(accountNumber: string) {
-    const sql = `SELECT * FROM users WHERE metamask_wallet_account_number = "${accountNumber}"`;
+  static getUserProfileDetails(profileId: string) {
+    const sql = `SELECT * FROM users WHERE metamask_wallet_account_number = "${profileId}"`;
+
+    return db.execute(sql);
+  }
+
+  update() {
+    const sql = `UPDATE users SET profile_name = "${this.user.profileName}", Bio = "${this.user.bio}", Timezone = "${this.user.timezone}", primary_currency = "${this.user.primaryCurrency}", language = "${this.user.language}", NAPA_social_media_account_email = "${this.user.napaSocialMediaAccount}" WHERE metamask_wallet_account_number = "${this.user.accountNumber}"`;
+
     return db.execute(sql);
   }
 }

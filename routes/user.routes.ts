@@ -3,7 +3,8 @@ import express from "express";
 const UserController = require("../controllers/user.controller");
 const router = express.Router();
 
-router.post("/create", UserController.createUser);
-router.get("/:accountNumber", UserController.getUserByAccountNumber);
+router.post("/account/new", UserController.createUserProfile);
+router.get("/account/details/:profileId", UserController.getUserProfileDetails);
+router.post("/account/update", UserController.updateUserProfile);
 
 module.exports = { router };
