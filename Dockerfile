@@ -20,7 +20,7 @@ COPY package*.json ./
 USER node
 RUN npm install
 COPY --from=builder /napa/dist ./dist
-# COPY --chown=node:node .env .
+COPY --chown=node:node .env .
 COPY --chown=node:node  /config ./config
 # COPY --chown=node:node  /public ./public
 EXPOSE 8000
