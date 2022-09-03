@@ -4,8 +4,8 @@ services:
   napa-app:
     build:
       context: .
-      dockerfile: Dockerfile 
-    image: napasociety-staging
+      dockerfile: Dockerfile-dev
+    image: napasociety-development
     ports:
       - '8000:8000'
 
