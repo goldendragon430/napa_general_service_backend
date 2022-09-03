@@ -6,4 +6,5 @@ export interface UserInterface {
   primaryCurrency: string;
   language: string;
   napaSocialMediaAccount: string;
+  napaProfileId: string;
 }

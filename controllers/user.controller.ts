@@ -6,9 +6,15 @@ const createUserProfile = async (req, res) => {
 
     const newUser = new User(user);
 
-    await newUser.save();
+    const [user_data] = await newUser.save();
 
-    res.status(201).json({ message: "User Created Successfully" });
+    res.status(201).json({
+      message: "User Created Successfully",
+      napa_profile_id: user_data[0]?.napa_profile_id,
+      profile_name: user_data[0]?.profile_name,
+      created_at: user_data[0].created_at,
+      primary_currency: user_data[0].primary_currency,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -28,11 +34,13 @@ const getUserProfileDetails = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   try {
+    const { profileId } = req.params;
+
     const { user } = req.body;
 
     const updateUser = new User(user);
 
-    await updateUser.update();
+    await updateUser.update(profileId);
 
     res.status(200).json({
       message: "User Updated Successfully",
