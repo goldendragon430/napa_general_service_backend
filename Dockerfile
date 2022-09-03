@@ -3,7 +3,7 @@ FROM node:12-alpine as builder
 RUN mkdir -p /napa/node_modules && chown -R node:node /napa
 WORKDIR /napa
 COPY package*.json ./
-COPY .env ./
+# COPY .env ./
 
 RUN npm config set unsafe-perm true
 RUN npm install -g typescript
