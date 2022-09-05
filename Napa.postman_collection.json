@@ -1,0 +1,142 @@
+{
+	"info": {
+		"_postman_id": "ca18781d-7f99-48d9-91e8-745e5e7c720f",
+		"name": "Napa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18872494"
+	},
+	"item": [
+		{
+			"name": "Create User Profile",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user\": {\n        \"accountNumber\": \"0xB9B1ccef38Eec50f78801ABA7c5d1aa6438e3ff8\",\n        \"profileName\": \"Hammad Younas\",\n        \"bio\": \"Developer\",\n        \"timezone\": \"UTC+05 (Pakistan)\",\n        \"primaryCurrency\": \"NAPA\",\n        \"language\": \"English\",\n        \"napaSocialMediaAccount\": \"hammad@napasociety.io\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/account/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"account",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Profile",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/account/details/0x8b77cA8418287A5f4d898B14d0a816e74F93978c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"account",
+						"details",
+						"0x8b77cA8418287A5f4d898B14d0a816e74F93978c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"hammad\",\n    \"message\": \"data\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/chat/send",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"chat",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Messages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/chat/messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"chat",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Profile",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user\": {\n        \"accountNumber\": \"0xB9B1ccef38Eec50f78801ABA7c5d1aa6438e3ff8\",\n        \"profileName\": \"Hammad Younas\",\n        \"bio\": \"Developer\",\n        \"timezone\": \"UTC+05 (Pakistan)\",\n        \"primaryCurrency\": \"NAPA\",\n        \"language\": \"English\",\n        \"napaSocialMediaAccount\": \"hammad@napasociety.io\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/account/update/0xB9B1ccef38Eec50f78801ABA7c5d1aa6438e3ff8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"account",
+						"update",
+						"0xB9B1ccef38Eec50f78801ABA7c5d1aa6438e3ff8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
