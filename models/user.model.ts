@@ -19,23 +19,23 @@ class User {
 
     await db.execute(insertQuery);
 
-    const sql = `SELECT * FROM users WHERE napa_profile_id = "${this.user.napaProfileId}"`;
+    const sql = `SELECT * FROM users WHERE napa_profile_id = "${this.user.napaProfileId}" OR metamask_wallet_account_number = "${this.user.accountNumber}"`;
 
     return db.execute(sql);
   }
 
-  static getUserProfileDetails(profileId: string) {
-    const sql = `SELECT * FROM users WHERE napa_profile_id = "${profileId}"`;
+  static getUserProfileDetails(id: string) {
+    const sql = `SELECT * FROM users WHERE napa_profile_id = "${id}" OR metamask_wallet_account_number = "${id}"`;
 
     return db.execute(sql);
   }
 
-  async update(profileId: string) {
-    const updateSql = `UPDATE users SET metamask_wallet_account_number = "${this.user.accountNumber}", profile_name = "${this.user.profileName}", Bio = "${this.user.bio}", Timezone = "${this.user.timezone}", primary_currency = "${this.user.primaryCurrency}", language = "${this.user.language}", NAPA_social_media_account_email = "${this.user.napaSocialMediaAccount}" WHERE napa_profile_id = "${profileId}"`;
+  async update(id: string) {
+    const updateSql = `UPDATE users SET metamask_wallet_account_number = "${this.user.accountNumber}", profile_name = "${this.user.profileName}", Bio = "${this.user.bio}", Timezone = "${this.user.timezone}", primary_currency = "${this.user.primaryCurrency}", language = "${this.user.language}", NAPA_social_media_account_email = "${this.user.napaSocialMediaAccount}" WHERE napa_profile_id = "${id}" OR metamask_wallet_account_number = "${id}"`;
 
     await db.execute(updateSql);
 
-    const sql = `SELECT * FROM users WHERE napa_profile_id = "${profileId}"`;
+    const sql = `SELECT * FROM users WHERE napa_profile_id = "${id}" OR metamask_wallet_account_number = "${id}"`;
 
     return db.execute(sql);
   }
