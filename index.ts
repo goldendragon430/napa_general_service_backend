@@ -4,24 +4,33 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import PubNub from "pubnub";
-import { publishKey, subscribeKey } from "./config";
 const app = express();
 import { WebSocketServer } from "ws";
 const wss = new WebSocketServer({ port: 5000 });
 dotenv.config({ path: "./.env" });
 const { SocketService } = require("./services/socket.service");
 const socketService = new SocketService(wss);
+import mysql from "mysql2";
 require("./config");
 
 // @ts-ignore
 global.SocketService = socketService;
 
 const pubnub = new PubNub({
-  publishKey: publishKey,
-  subscribeKey: subscribeKey,
+  publishKey: process.env.PUBLISH_KEY,
+  subscribeKey: process.env.SUBSCRIBE_KEY,
   uuid: "NAPA",
 });
 require("./services/pubnub.services");
+
+const pool = mysql.createPool({
+  host: process.env.RDS_HOSTNAME,
+  user: process.env.RDS_USERNAME,
+  database: process.env.RDS_DB_NAME,
+  password: process.env.RDS_PASSWORD,
+});
+
+const db = pool.promise();
 
 app.use(cors());
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -46,6 +55,6 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-export { pubnub };
+export { pubnub, db };
 
 export default app;

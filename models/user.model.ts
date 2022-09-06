@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { UserInterface } from "../interfaces/user.interfaces";
 import { v4 as uuidv4 } from "uuid";
-const { db } = require("../config");
+const { db } = require("../index");
 
 class User {
   user: UserInterface;
