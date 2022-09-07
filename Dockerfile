@@ -1,4 +1,4 @@
-FROM node:12-alpine as builder
+FROM node:16-alpine as builder
 
 RUN mkdir -p /napa/node_modules && chown -R node:node /napa
 WORKDIR /napa
@@ -15,5 +15,5 @@ COPY --chown=node:node . .
 RUN npm run build
 
 
-EXPOSE 8000
+EXPOSE 8000 5000
 CMD [ "node", "./dist/index.js" ]
