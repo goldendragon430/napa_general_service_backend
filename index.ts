@@ -5,8 +5,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import PubNub from "pubnub";
 const app = express();
-import { WebSocketServer } from "ws";
-const wss = new WebSocketServer({ port: 5000 });
+const httpServer = require("http").createServer(app);
+const WebSocket = require("ws");
+const wss = new WebSocket.Server({ server: httpServer });
 dotenv.config({ path: "./.env" });
 const { SocketService } = require("./services/socket.service");
 const socketService = new SocketService(wss);
@@ -17,17 +18,17 @@ require("./config");
 global.SocketService = socketService;
 
 const pubnub = new PubNub({
-  publishKey: process.env.PUBLISH_KEY,
-  subscribeKey: process.env.SUBSCRIBE_KEY,
+  publishKey: "pub-c-a0c50e24-85ba-488c-a760-fcc9cdc8d42f",
+  subscribeKey: "sub-c-d4377c6d-6c5f-4199-adbc-8885a5a5270a",
   uuid: "NAPA",
 });
 require("./services/pubnub.services");
 
 const pool = mysql.createPool({
-  host: process.env.RDS_HOSTNAME,
-  user: process.env.RDS_USERNAME,
-  database: process.env.RDS_DB_NAME,
-  password: process.env.RDS_PASSWORD,
+  host: "napa-general-services.clfuekgzzk52.ap-southeast-1.rds.amazonaws.com",
+  user: "admin",
+  database: "napa-development",
+  password: "napa12345",
 });
 
 const db = pool.promise();
@@ -51,7 +52,7 @@ const PORT = process.env.PORT || 8000;
 
 require("./routes/index.routes").setUpRoutes(app);
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 

@@ -1,0 +1,81 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\aaron\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add @types/http
+
+PATH: 
+  C:\Python39\Scripts\;C:\Python39\;C:\Windows\System32;C:\Windows;C:\Windows\System32\wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\GnuPG\bin;C:\Program Files\dotnet\;C:\Program Files (x86)\WinSCP\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Docker Toolbox;C:\Users\aaron\AppData\Local\Microsoft\WindowsApps;C:\Users\aaron\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\aaron\AppData\Local\GitHubDesktop\bin;C:\Users\aaron\AppData\Roaming\npm;C:\Program Files\nodejs\node_modules\npm\bin;
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.16.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@types%2fhttp: Not found
+      at Request.params.callback [as _callback] (C:\Users\aaron\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66988:18)
+      at Request.self.callback (C:\Users\aaron\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140662:22)
+      at Request.emit (events.js:315:20)
+      at Request.<anonymous> (C:\Users\aaron\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141634:10)
+      at Request.emit (events.js:315:20)
+      at IncomingMessage.<anonymous> (C:\Users\aaron\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141556:12)
+      at Object.onceWrapper (events.js:421:28)
+      at IncomingMessage.emit (events.js:327:22)
+      at endReadableNT (internal/streams/readable.js:1327:12)
+      at processTicksAndRejections (internal/process/task_queues.js:80:21)
+
+npm manifest: 
+  {
+    "name": "napa-general-services-backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.ts",
+    "devDependencies": {
+      "@typescript-eslint/eslint-plugin": "^5.36.0",
+      "@typescript-eslint/parser": "^5.36.0"
+    },
+    "scripts": {
+      "build": "tsc -p .",
+      "start": "NODE_PATH=./dist node ./dist/index.js",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "dev": "nodemon --config nodemon.json index.ts -e ts",
+      "lint": "eslint . --ext .ts"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/NAPA-Society/napa-general-services-backend.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/NAPA-Society/napa-general-services-backend/issues"
+    },
+    "homepage": "https://github.com/NAPA-Society/napa-general-services-backend#readme",
+    "dependencies": {
+      "@types/express": "^4.17.13",
+      "@types/mysql": "^2.15.21",
+      "@types/node": "^18.7.14",
+      "@types/pubnub": "^7.2.0",
+      "cors": "^2.8.5",
+      "dotenv": "^16.0.1",
+      "eslint": "^8.23.0",
+      "express": "^4.18.1",
+      "http": "^0.0.1-security",
+      "mysql2": "^2.3.3",
+      "nodemon": "^2.0.19",
+      "pubnub": "^7.2.0",
+      "ts-node": "^10.9.1",
+      "typescript": "^4.8.2",
+      "uuid": "^8.3.2",
+      "ws": "^8.8.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

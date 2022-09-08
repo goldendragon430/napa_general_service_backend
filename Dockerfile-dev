@@ -4,6 +4,7 @@ RUN mkdir -p /napa/node_modules && chown -R node:node /napa
 WORKDIR /napa
 COPY package*.json ./
 COPY .env ./
+# COPY tscongig.json ./
 
 RUN npm config set unsafe-perm true
 RUN npm install -g typescript
@@ -18,7 +19,7 @@ FROM node:12-alpine
 RUN mkdir -p /napa/node_modules && chown -R node:node /napa
 WORKDIR /napa
 COPY package*.json ./
-COPY tscongig.json ./
+
 USER node
 RUN npm install
 COPY --from=builder /napa/dist ./dist

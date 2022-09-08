@@ -1,10 +1,10 @@
 version: "2.2"
 
 services: 
-  napa-app:
+  napa-app-backend:
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
     image: napasociety-development
     ports:
       - '8000:8000'
