@@ -6,15 +6,15 @@ const createUserProfile = async (req, res) => {
 
     const newUser = new User(user);
 
-    const [userData] = await newUser.save();
+    const [userData] = await newUser.create();
 
     res.status(201).json({
       message: "User Created Successfully",
-      napa_profile_id: userData[0]?.napa_profile_id,
-      profile_name: userData[0]?.profile_name,
-      created_at: userData[0].created_at,
-      primary_currency: userData[0].primary_currency,
-      Timezone: userData[0].Timezone,
+      profileId: userData[0]?.profileId,
+      profileName: userData[0]?.profileName,
+      createdAt: userData[0].createdAt,
+      primaryCurrency: userData[0].primaryCurrency,
+      timezone: userData[0].timezone,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -59,11 +59,11 @@ const updateUserProfile = async (req, res) => {
 
     res.status(201).json({
       message: "User Updated Successfully",
-      napa_profile_id: userData[0]?.napa_profile_id,
-      profile_name: userData[0]?.profile_name,
-      updated_at: userData[0].updated_at,
-      primary_currency: userData[0].primary_currency,
-      Timezone: userData[0].Timezone,
+      profileId: userData[0]?.profileId,
+      profileName: userData[0]?.profileName,
+      createdAt: userData[0].createdAt,
+      primaryCurrency: userData[0].primaryCurrency,
+      timezone: userData[0].timezone,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

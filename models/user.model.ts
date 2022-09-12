@@ -9,42 +9,49 @@ class User {
     this.user = user;
   }
 
-  async save() {
-    const tableQuery =
-      "CREATE TABLE IF NOT EXISTS users(napa_profile_id VARCHAR(45) NOT NULL PRIMARY KEY, metamask_wallet_account_number VARCHAR(255) NOT NULL, profile_name VARCHAR(100) NOT NULL, Bio VARCHAR(512) NULL, Timezone VARCHAR(255) NULL, primary_currency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', NAPA_social_media_account_email text NULL,  created_at TIMESTAMP NOT NULL DEFAULT NOW(), updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), UNIQUE(metamask_wallet_account_number))";
+  async create() {
+    try {
+      const tableQuery =
+        "CREATE TABLE IF NOT EXISTS users (profileId VARCHAR(45) NOT NULL PRIMARY KEY, accountNumber VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', napaSocialMediaAccount text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar TEXT NOT NULL, UNIQUE(accountNumber))";
 
-    await db.execute(tableQuery);
+      await db.execute(tableQuery);
 
-    const insertQuery = `INSERT INTO users (napa_profile_id, metamask_wallet_account_number, profile_name, Bio, Timezone, primary_currency, language, NAPA_social_media_account_email) VALUES ("${uuidv4()}", "${
-      this.user.accountNumber
-    }", "${this.user.profileName}", "${this.user.bio}", "${
-      this.user.timezone
-    }", "${this.user.primaryCurrency}", "${this.user.language}", "${
-      this.user.napaSocialMediaAccount
-    }")`;
+      const uuid = uuidv4();
 
-    await db.execute(insertQuery);
+      const insertQuery = `INSERT INTO users (profileId, accountNumber, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar) VALUES ("${uuid}", "${this.user.accountNumber}", "${this.user.profileName}", "${this.user.bio}", "${this.user.timezone}", "${this.user.primaryCurrency}", "${this.user.language}", "${this.user.napaSocialMediaAccount}", "${this.user.avatar}")`;
 
-    const sql = `SELECT * FROM users WHERE napa_profile_id = "${this.user.napaProfileId}" OR metamask_wallet_account_number = "${this.user.accountNumber}"`;
+      await db.execute(insertQuery);
 
-    return db.execute(sql);
+      const sql = `SELECT * FROM users WHERE profileId = "${uuid}" OR accountNumber = "${this.user.accountNumber}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   static getUserProfileDetails(id: string) {
-    console.log(id);
-    const sql = `SELECT * FROM users WHERE napa_profile_id = "${id}" OR metamask_wallet_account_number = "${id}"`;
+    try {
+      const sql = `SELECT * FROM users WHERE profileId = "${id}" OR accountNumber = "${id}"`;
 
-    return db.execute(sql);
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async update(id: string) {
-    const updateSql = `UPDATE users SET metamask_wallet_account_number = "${this.user.accountNumber}", profile_name = "${this.user.profileName}", Bio = "${this.user.bio}", Timezone = "${this.user.timezone}", primary_currency = "${this.user.primaryCurrency}", language = "${this.user.language}", NAPA_social_media_account_email = "${this.user.napaSocialMediaAccount}" WHERE napa_profile_id = "${id}" OR metamask_wallet_account_number = "${id}"`;
+    try {
+      const updateSql = `UPDATE users SET accountNumber = "${this.user.accountNumber}", profileName = "${this.user.profileName}", bio = "${this.user.bio}", timezone = "${this.user.timezone}", primaryCurrency = "${this.user.primaryCurrency}", language = "${this.user.language}", napaSocialMediaAccount = "${this.user.napaSocialMediaAccount}", avatar = "${this.user.avatar}" WHERE profileId = "${id}" OR accountNumber = "${id}"`;
 
-    await db.execute(updateSql);
+      await db.execute(updateSql);
 
-    const sql = `SELECT * FROM users WHERE napa_profile_id = "${id}" OR metamask_wallet_account_number = "${id}"`;
+      const sql = `SELECT * FROM users WHERE profileId = "${id}" OR accountNumber = "${id}"`;
 
-    return db.execute(sql);
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 
