@@ -11,7 +11,7 @@ class Whitelist {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS whitelist (whitelistId VARCHAR(45) NOT NULL PRIMARY KEY, name VARCHAR(100) NOT NULL, address VARCHAR(100) NOT NULL, status ENUM('0','1','2') DEFAULT '1', currency ENUM('NAPA','USDT','ETH') DEFAULT 'NAPA', createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), profileId VARCHAR(45) NOT NULL, FOREIGN KEY (profileId) REFERENCES users (profileId))";
+        "CREATE TABLE IF NOT EXISTS whitelist (whitelistId VARCHAR(45) NOT NULL PRIMARY KEY, name VARCHAR(100) NOT NULL, address VARCHAR(100) NOT NULL, status ENUM('0','1','2') DEFAULT '1', currency ENUM('NAPA','USDT','ETH') DEFAULT 'NAPA', createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), profileId VARCHAR(45) NOT NULL, UNIQUE(address), FOREIGN KEY (profileId) REFERENCES users (profileId))";
 
       await db.execute(tableQuery);
 

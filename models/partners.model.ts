@@ -11,7 +11,7 @@ class Partners {
   async save() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS partners (partnerUUID VARCHAR(45) NOT NULL PRIMARY KEY, accountNumber VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, email VARCHAR(100) NULL, website VARCHAR(100) NULL, contactPerson VARCHAR(100) NULL, newsFeedSubscriber VARCHAR(206) NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar TEXT NOT NULL, UNIQUE(accountNumber))";
+        "CREATE TABLE IF NOT EXISTS partners (partnerUUID VARCHAR(45) NOT NULL PRIMARY KEY, accountNumber VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, email VARCHAR(100) NOT NULL, website VARCHAR(100) NULL, contactPerson VARCHAR(100) NULL, newsFeedSubscriber VARCHAR(206) NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar TEXT NOT NULL, UNIQUE(accountNumber), UNIQUE(email))";
 
       await db.execute(tableQuery);
 
