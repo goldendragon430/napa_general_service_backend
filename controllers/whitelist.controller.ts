@@ -17,7 +17,7 @@ const createWhitelist = async (req, res) => {
       currency: whitelistData[0].currency,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -40,8 +40,22 @@ const updateWhitelist = async (req, res) => {
       currency: whitelistData[0].currency,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
-module.exports = { createWhitelist, updateWhitelist };
+const getAllWhitelist = async (req, res) => {
+  try {
+    const { status } = req.params;
+
+    const [whitelist] = await Whitelist.findAll(status);
+
+    return res.status(200).json({
+      whitelist,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports = { createWhitelist, updateWhitelist, getAllWhitelist };

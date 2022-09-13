@@ -12,7 +12,7 @@ router.post(
   },
   WhitelistController.createWhitelist
 );
-router.get("/whitelist/list", WhitelistController.getAllWhitelist);
+router.get("/whitelist/list/:status", WhitelistController.getAllWhitelist);
 router.patch(
   "/whitelist/update/:whitelistId",
   (req, res, next) => {

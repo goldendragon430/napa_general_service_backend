@@ -41,7 +41,7 @@ class Partners {
 
   async update(partnerUUID: string) {
     try {
-      const updateSql = `UPDATE partners SET accountNumber = "${this.partners.accountNumber}", profileName = "${this.partners.profileName}", email = "${this.partners.email}", contactPerson = "${this.partners.contactPerson}", newsFeedSubscriber = "${this.partners.newsFeedSubscriber}", bio = "${this.partners.bio}", timezone = "${this.partners.timezone}", primaryCurrency = "${this.partners.primaryCurrency}", language = "${this.partners.language}", avatar = "${this.partners.avatar}" WHERE partnerUUID = "${partnerUUID}"`;
+      const updateSql = `UPDATE partners SET accountNumber = "${this.partners.accountNumber}", profileName = "${this.partners.profileName}", email = "${this.partners.email}", contactPerson = "${this.partners.contactPerson}", newsFeedSubscriber = "${this.partners.newsFeedSubscriber}", bio = "${this.partners.bio}", timezone = "${this.partners.timezone}", primaryCurrency = "${this.partners.primaryCurrency}", language = "${this.partners.language}", avatar = "${this.partners.avatar}", updatedAt = CURRENT_TIMESTAMP WHERE partnerUUID = "${partnerUUID}"`;
 
       await db.execute(updateSql);
 

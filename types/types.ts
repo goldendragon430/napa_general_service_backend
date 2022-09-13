@@ -4,11 +4,12 @@ export enum PRIMARYCURRENCYENUM {
   ETH = "ETH",
 }
 
-export enum PUBLISHED {
-  NEW = "NEW",
-  PUBLISHED = "PUBLISHED",
-  FLAGGED = "FLAGGED",
-  EXPIRED = "EXPIRED",
+export enum ArticleStatus {
+  NEW = "0",
+  PUBLISHED = "1",
+  FLAGGED = "2",
+  EXPIRED = "3",
+  DELETED = "4",
 }
 
 export enum WHITELISTEDSTATUS {

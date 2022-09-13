@@ -42,6 +42,16 @@ class Whitelist {
       throw new Error(error);
     }
   }
+
+  static findAll(status: string) {
+    try {
+      const sql = `SELECT * FROM whitelist WHERE status = "${status}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 export default Whitelist;
