@@ -17,7 +17,15 @@ class Partners {
 
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO partners (partnerUUID, accountNumber, profileName, email, website, contactPerson, newsFeedSubscriber, bio, timezone, primaryCurrency, language, avatar) VALUES ("${uuid}", "${this.partners.accountNumber}", "${this.partners.profileName}", "${this.partners.email}", "${this.partners.website}", "${this.partners.contactPerson}", "${this.partners.newsFeedSubscriber}", "${this.partners.bio}", "${this.partners.timezone}", "${this.partners.primaryCurrency}", "${this.partners.language}", "${this.partners.avatar}")`;
+      const insertQuery = `INSERT INTO partners (partnerUUID, accountNumber, profileName, email, website, contactPerson, newsFeedSubscriber, bio, timezone, primaryCurrency, language, avatar) VALUES ("${uuid}", "${
+        this.partners.accountNumber
+      }", "${this.partners.profileName}", "${this.partners.email}", "${
+        this.partners.website
+      }", "${this.partners.contactPerson}", "${
+        this.partners.newsFeedSubscriber
+      }", "${this.partners.bio}", "${this.partners.timezone}", "${
+        this.partners.primaryCurrency || "NAPA"
+      }", "${this.partners.language}", "${this.partners.avatar}")`;
 
       await db.execute(insertQuery);
 

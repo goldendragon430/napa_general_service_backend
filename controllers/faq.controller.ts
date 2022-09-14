@@ -1,25 +1,34 @@
 import Faq from "../models/faq.model";
+const ApiResponse = require("../utils/api-response");
 
 const createFaqQuestion = async (req, res) => {
   try {
+    console.log("Create Faq Question Pending");
+
     const { faq } = req.body;
 
     const newFaq = new Faq(faq);
 
     const [faqData] = await newFaq.create();
 
-    return res.status(201).json({
-      message: "FAQ Question Created Successfully",
-      question: faqData[0]?.question,
-      response: faqData[0]?.response,
-    });
+    console.log("Create Faq Question Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "FAQ Question Created Successfully",
+      faqData[0]
+    );
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    console.log("Create Faq Question Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to create faq question");
   }
 };
 
 const updateFaqQuestion = async (req, res) => {
   try {
+    console.log("Update Faq Question Pending");
+
     const { faq } = req.body;
 
     const { questionId } = req.params;
@@ -28,25 +37,35 @@ const updateFaqQuestion = async (req, res) => {
 
     const [faqData] = await newFaq.update(questionId);
 
-    return res.status(200).json({
-      message: "FAQ Question Updated Successfully",
-      question: faqData[0].question,
-      response: faqData[0].response,
-    });
+    console.log("Update Faq Question Fullfilled");
+
+    return ApiResponse.successResponseWithData(res, faqData[0]);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    console.error(error);
+    console.log("Update Faq Question Rejected");
+    return ApiResponse.ErrorResponse(res, "Unable to update faq question");
   }
 };
 
 const getFaqQuestion = async (req, res) => {
   try {
+    console.log("Get Faq Question Pending");
+
     const { questionId } = req.params;
 
     const [faq] = await Faq.findOne(questionId);
 
-    return res.status(200).json({ faq: faq[0] });
+    console.log("Get Faq Question Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get Faq Question Successfully",
+      faq[0]
+    );
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    console.error(error);
+    console.log("Get Faq Question Rejected");
+    return ApiResponse.ErrorResponse(res, "Unable to get faq question");
   }
 };
 

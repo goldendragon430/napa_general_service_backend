@@ -1,85 +1,111 @@
 import Trending from "../models/trending.model";
+const ApiResponse = require("../utils/api-response");
 
 const createTrendingFeed = async (req, res) => {
   try {
+    console.log("Create Trending Feeds Pending");
+
     const { trending } = req.body;
 
     const newTrending = new Trending(trending);
 
     if (!trending.articleEndDate) {
-      return res.status(400).json({
-        message: "Article End Date filed is required",
-      });
+      console.error("Article End Date field is required");
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Article End Date field is required"
+      );
     }
 
     if (!trending.articleStartDate) {
-      return res.status(400).json({
-        message: "Article Start Date filed is required",
-      });
+      console.error("Article Start Date field is required");
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Article Start Date field is required"
+      );
     }
 
     const [trendingData] = await newTrending.create();
 
-    return res.status(201).json({
-      message: "Trending Feed Created Successfully",
-      articleId: trendingData[0].articleId,
-      articleTitle: trendingData[0].articleTitle,
-      articleBody: trendingData[0].articleBody,
-      articleHeadline: trendingData[0].articleHeadline,
-      articleStartDate: trendingData[0].articleStartDate,
-      articleEndDate: trendingData[0].articleEndDate,
-      totalRunDays: trendingData[0].totalRunDays,
-    });
+    console.log("Create Trending Feeds Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Trending Feed Created Successfully",
+      trendingData[0]
+    );
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    console.error(error);
+    console.log("Create Trending Feeds Rejected");
+    return ApiResponse.ErrorResponse(res, "Unable to create trending feeds");
   }
 };
 
 const getAllTrendingFeeds = async (req, res) => {
   try {
-    const { status } = req.params;
+    console.log("Get Trending Feeds Pending");
 
-    const [trending] = await Trending.getAllTendingFeeds(status);
+    const { status, articleId } = req.query;
 
-    return res.status(201).json({
-      trending: trending,
-    });
+    let articleIds = [];
+    if (articleId) {
+      articleIds = articleId
+        .replace(/['"]+/g, "")
+        .split(";")
+        .map((item) => {
+          return item.trim();
+        });
+    }
+
+    let statusValue;
+    if (status) {
+      statusValue = status.replace(/['"]+/g, "");
+    }
+
+    const [trending] = await Trending.getAllTendingFeeds(
+      statusValue || articleIds
+    );
+
+    console.log("Get Trending Feeds Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get Trendings Feed Successfully",
+      trending
+    );
   } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-};
-
-const getTrendingFeed = async (req, res) => {
-  try {
-    const { articleId } = req.params;
-
-    const [trending] = await Trending.getTrendingFeed(articleId);
-
-    return res.status(201).json({
-      trending: trending[0],
-    });
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
+    console.log(error);
+    console.log("Get Trending Feeds Rejected");
+    return ApiResponse.ErrorResponse(res, "Unable to fetch trending feeds");
   }
 };
 
 const deleteTrendingFeed = async (req, res) => {
   try {
+    console.log("Delete Trending Feed Pending");
+
     const { articleId } = req.params;
 
     await Trending.delete(articleId);
 
-    return res.status(201).json({
+    console.log("Delete Trending Feed Fullfilled");
+
+    return res.status(200).json({
+      code: 200,
+      responseTimeStamp: Date.now(),
       message: "Trending Feed Deleted Successfully",
     });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    console.log(error);
+
+    console.log("Delete Trending Feed Rejected");
+
+    return ApiResponse.ErrorResponse(res, "Unable to delete trending feed");
   }
 };
 
 module.exports = {
   createTrendingFeed,
   getAllTrendingFeeds,
-  getTrendingFeed,
   deleteTrendingFeed,
 };

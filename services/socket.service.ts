@@ -38,7 +38,7 @@ class SocketService {
     this.wss.clients.forEach((socket) => {
       socket.send(
         this.stringify({
-          message: payload.messageEvent,
+          message: payload.message,
         })
       );
     });

@@ -13,6 +13,7 @@ const { SocketService } = require("./services/socket.service");
 const socketService = new SocketService(wss);
 import mysql from "mysql2";
 require("./config");
+require("./utils/trending-cron-job");
 
 // @ts-ignore
 global.SocketService = socketService;
