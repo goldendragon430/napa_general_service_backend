@@ -1,7 +1,9 @@
 import { pubnub } from "..";
+const ApiResponse = require("../utils/api-response");
 
 const sendMessage = async (req, res) => {
   try {
+    console.log("Send Message Pending");
     const { message, from } = req.body;
     await pubnub.publish({
       channel: "NAPA-SOCIETY",
@@ -10,25 +12,42 @@ const sendMessage = async (req, res) => {
         from,
       },
     });
-    res.status(201).json({ message: "Send Message" });
+
+    console.log("Send Message Fullfilled");
+    
+    return ApiResponse.successResponseWithData(res, "Send Message", {});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    console.log("Send Message Rejected");
+    return ApiResponse.ErrorResponse(res, "Unable to send messages");
   }
 };
 
 const getMessages = async (req, res) => {
   try {
+    console.log("Get Messages Pending");
     pubnub.fetchMessages(
       {
         channels: ["NAPA-SOCIETY"],
         count: 100,
       },
       (status, response) => {
-        res.status(200).json({ messages: response.channels["NAPA-SOCIETY"] });
+
+        console.log("Get Messages Fullfilled");
+        
+        return ApiResponse.successResponseWithData(
+          res,
+          "Get Messages Successfully",
+          {
+            messages: response.channels["NAPA-SOCIETY"],
+          }
+        );
       }
     );
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log("Get Messages Rejected");
+    console.log(error);
+    return ApiResponse.ErrorResponse(res, "Unable to fetch messages");
   }
 };
 

@@ -78,6 +78,8 @@ const updateUserProfile = async (req, res) => {
       userData[0]
     );
   } catch (error) {
+    console.log("Get Update User Profile Rejected");
+    console.log(error);
     return ApiResponse.ErrorResponse(res, "Unable to user update");
   }
 };
