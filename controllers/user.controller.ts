@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import User from "../models/user.model";
 const ApiResponse = require("../utils/api-response");
 
 const createUserProfile = async (req, res) => {
   try {
-    console.log("Create User Profile Pending");
+    console.log("Create User Profile Api Pending");
 
     const { user } = req.body;
 
@@ -11,7 +12,7 @@ const createUserProfile = async (req, res) => {
 
     const [userData] = await newUser.create();
 
-    console.log("Create User Profile Fullfilled");
+    console.log("Create User Profile Api Fullfilled");
 
     return ApiResponse.successResponseWithData(
       res,
@@ -19,7 +20,7 @@ const createUserProfile = async (req, res) => {
       userData[0]
     );
   } catch (error) {
-    console.log("Create User Profile Rejected");
+    console.log("Create User Profile Api Rejected");
     console.error(error);
     return ApiResponse.ErrorResponse(res, "Unable to create user profile");
   }
@@ -27,7 +28,7 @@ const createUserProfile = async (req, res) => {
 
 const getUserProfileDetails = async (req, res) => {
   try {
-    console.log("Get User Profile Pending");
+    console.log("Get User Profile Api Pending");
 
     const { id } = req.params;
 
@@ -37,7 +38,7 @@ const getUserProfileDetails = async (req, res) => {
       return ApiResponse.notFoundResponse(res, "User Not Found");
     }
 
-    console.log("Get User Profile Fullfilled");
+    console.log("Get User Profile Api Fullfilled");
 
     return ApiResponse.successResponseWithData(
       res,
@@ -45,7 +46,7 @@ const getUserProfileDetails = async (req, res) => {
       user[0]
     );
   } catch (error) {
-    console.log("Get User Profile Rejected");
+    console.log("Get User Profile Api Rejected");
     console.error(error);
     return ApiResponse.ErrorResponse(res, "Unable to fetch user profile");
   }
@@ -53,7 +54,7 @@ const getUserProfileDetails = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   try {
-    console.log("Get Update User Profile Pending");
+    console.log("Get Update User Profile Api Pending");
 
     const { id } = req.params;
 
@@ -70,7 +71,7 @@ const updateUserProfile = async (req, res) => {
       return;
     }
 
-    console.log("Get Update User Profile Fullfilled");
+    console.log("Get Update User Profile Api Fullfilled");
 
     return ApiResponse.successResponseWithData(
       res,
@@ -78,7 +79,7 @@ const updateUserProfile = async (req, res) => {
       userData[0]
     );
   } catch (error) {
-    console.log("Get Update User Profile Rejected");
+    console.log("Get Update User Profile Api Rejected");
     console.log(error);
     return ApiResponse.ErrorResponse(res, "Unable to user update");
   }

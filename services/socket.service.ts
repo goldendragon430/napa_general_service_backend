@@ -43,6 +43,30 @@ class SocketService {
       );
     });
   }
+
+  handleGetTrendings(payload) {
+    console.log("payload", payload.trending);
+    this.wss.clients.forEach((socket) => {
+      console.log("Trending feeds send with websocket");
+      socket.send(
+        this.stringify({
+          trending: payload.trending,
+        })
+      );
+    });
+  }
+
+  handleGetEvents(payload) {
+    console.log("payload", payload.events);
+    this.wss.clients.forEach((socket) => {
+      console.log("Events send with websocket");
+      socket.send(
+        this.stringify({
+          events: payload.events,
+        })
+      );
+    });
+  }
 }
 
 module.exports.SocketService = SocketService;

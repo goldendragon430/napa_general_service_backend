@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import Trending from "../models/trending.model";
 const ApiResponse = require("../utils/api-response");
 
@@ -28,6 +29,13 @@ const createTrendingFeed = async (req, res) => {
     const [trendingData] = await newTrending.create();
 
     console.log("Create Trending Feeds Fullfilled");
+
+    if (trending.articleStatus === "1") {
+      // @ts-ignore
+      global.SocketService.handleGetTrendings({
+        trending: trendingData[0],
+      });
+    }
 
     return ApiResponse.successResponseWithData(
       res,

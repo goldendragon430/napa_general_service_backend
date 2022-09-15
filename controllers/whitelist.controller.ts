@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import Whitelist from "../models/whitelist.model";
 const ApiResponse = require("../utils/api-response");
 

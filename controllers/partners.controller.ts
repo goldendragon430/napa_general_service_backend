@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { validateEmail } from "../utils/validation-email";
 import Partners from "../models/partners.model";
 const ApiResponse = require("../utils/api-response");

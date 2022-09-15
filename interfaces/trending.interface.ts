@@ -7,7 +7,7 @@ export interface TrendingFeed {
   articleHeadline: string;
   nftProject: string;
   socialMediaCompaign: string;
-  articleTags: any[];
+  articleTags: string[];
   articleType: string;
   partnerUUID: string;
   author: string;

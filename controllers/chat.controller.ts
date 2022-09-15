@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { pubnub } from "..";
 const ApiResponse = require("../utils/api-response");
 
@@ -14,7 +15,7 @@ const sendMessage = async (req, res) => {
     });
 
     console.log("Send Message Fullfilled");
-    
+
     return ApiResponse.successResponseWithData(res, "Send Message", {});
   } catch (error) {
     console.log(error);
@@ -32,9 +33,8 @@ const getMessages = async (req, res) => {
         count: 100,
       },
       (status, response) => {
-
         console.log("Get Messages Fullfilled");
-        
+
         return ApiResponse.successResponseWithData(
           res,
           "Get Messages Successfully",

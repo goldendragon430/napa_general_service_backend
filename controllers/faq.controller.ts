@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import Faq from "../models/faq.model";
 const ApiResponse = require("../utils/api-response");
 

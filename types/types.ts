@@ -23,3 +23,12 @@ export enum WHITELISTEDCURRENCY {
   USDT = "USDT",
   ETH = "ETH",
 }
+
+export enum EventStatus {
+  SAVED = "0",
+  PUBLISHED = "1",
+  UPCOMING = "2",
+  EXPIRED = "3",
+  DELETED = "4",
+  UPDATED = "5",
+}
