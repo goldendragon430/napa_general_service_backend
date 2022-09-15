@@ -18,7 +18,13 @@ class User {
 
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO users (profileId, accountNumber, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar) VALUES ("${uuid}", "${this.user.accountNumber}", "${this.user.profileName}", "${this.user.bio}", "${this.user.timezone}", "${this.user.primaryCurrency}", "${this.user.language}", "${this.user.napaSocialMediaAccount}", "${this.user.avatar}")`;
+      const insertQuery = `INSERT INTO users (profileId, accountNumber, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar) VALUES ("${uuid}", "${
+        this.user.accountNumber
+      }", "${this.user.profileName}", "${this.user.bio || ""}", "${
+        this.user.timezone || ""
+      }", "${this.user.primaryCurrency || "NAPA"}", "${
+        this.user.language || "English"
+      }", "${this.user.napaSocialMediaAccount}", "${this.user.avatar || ""}")`;
 
       await db.execute(insertQuery);
 

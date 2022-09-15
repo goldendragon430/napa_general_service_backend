@@ -1,47 +1,60 @@
 import User from "../models/user.model";
+const ApiResponse = require("../utils/api-response");
 
 const createUserProfile = async (req, res) => {
   try {
+    console.log("Create User Profile Pending");
+
     const { user } = req.body;
 
     const newUser = new User(user);
 
     const [userData] = await newUser.create();
 
-    res.status(201).json({
-      message: "User Created Successfully",
-      profileId: userData[0]?.profileId,
-      profileName: userData[0]?.profileName,
-      createdAt: userData[0].createdAt,
-      primaryCurrency: userData[0].primaryCurrency,
-      timezone: userData[0].timezone,
-    });
+    console.log("Create User Profile Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "User Created Successfully",
+      userData[0]
+    );
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log("Create User Profile Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to create user profile");
   }
 };
 
 const getUserProfileDetails = async (req, res) => {
   try {
+    console.log("Get User Profile Pending");
+
     const { id } = req.params;
 
     const [user] = await User.getUserProfileDetails(id);
 
     if (!user.length) {
-      res.status(404).json({
-        message: "User Not Found",
-      });
-      return;
+      return ApiResponse.notFoundResponse(res, "User Not Found");
     }
 
-    res.status(200).json({ user: user[0] });
+    console.log("Get User Profile Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get User Profile Successfully",
+      user[0]
+    );
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log("Get User Profile Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to fetch user profile");
   }
 };
 
 const updateUserProfile = async (req, res) => {
   try {
+    console.log("Get Update User Profile Pending");
+
     const { id } = req.params;
 
     const { user } = req.body;
@@ -57,16 +70,15 @@ const updateUserProfile = async (req, res) => {
       return;
     }
 
-    res.status(201).json({
-      message: "User Updated Successfully",
-      profileId: userData[0]?.profileId,
-      profileName: userData[0]?.profileName,
-      createdAt: userData[0].createdAt,
-      primaryCurrency: userData[0].primaryCurrency,
-      timezone: userData[0].timezone,
-    });
+    console.log("Get Update User Profile Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "User Updated Successfully",
+      userData[0]
+    );
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return ApiResponse.ErrorResponse(res, "Unable to user update");
   }
 };
 
