@@ -32,11 +32,23 @@ const updateFaqQuestion = async (req, res) => {
 
     const { faq } = req.body;
 
-    const { questionId } = req.params;
+    const { id } = req.params;
+
+    if (!id) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Question id is required in params"
+      );
+    }
 
     const newFaq = new Faq(faq);
 
-    const [faqData] = await newFaq.update(questionId);
+    const [faqData] = await newFaq.update(id);
+
+    // @ts-ignore
+    if (!faqData.length) {
+      return ApiResponse.notFoundResponse(res, "Faq Data Not Found");
+    }
 
     console.log("Update Faq Question Fullfilled");
 
@@ -52,9 +64,14 @@ const getFaqQuestion = async (req, res) => {
   try {
     console.log("Get Faq Question Pending");
 
-    const { questionId } = req.params;
+    const { id } = req.params;
 
-    const [faq] = await Faq.findOne(questionId);
+    const [faq] = await Faq.findOne(id);
+
+    // @ts-ignore
+    if (!faq.length) {
+      return ApiResponse.notFoundResponse(res, "Faq Data Not Found");
+    }
 
     console.log("Get Faq Question Fullfilled");
 

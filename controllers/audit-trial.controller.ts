@@ -35,8 +35,6 @@ const getAuditTrial = async (req: Request, res: Response) => {
 
     const { type } = req.query;
 
-    console.log("type", type);
-
     // @ts-ignore
     const [trials] = await AuditTrail.getAllAuditTrials(type);
 

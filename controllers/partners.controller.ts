@@ -9,8 +9,26 @@ const createPartnerAccount = async (req, res) => {
 
     const { partner } = req.body;
 
+    if (
+      partner.accountNumber.length < 36 ||
+      partner.accountNumber.length > 42 ||
+      (partner.accountNumber.length > 36 && partner.accountNumber.length < 42)
+    ) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Wallet address or UUID is invalid"
+      );
+    }
+
     if (!validateEmail(partner.email)) {
       return ApiResponse.validationErrorWithData(res, "Email is not valid", {});
+    }
+
+    if (!["NAPA", "BNB", "ETH"].includes(partner.primaryCurrency)) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Primary currency is invalid"
+      );
     }
 
     const newPartner = new Partners(partner);
@@ -35,9 +53,27 @@ const getPartnerAccountDetails = async (req, res) => {
   try {
     console.log("Get Partner Account Details Pending");
 
-    const { partnerUUID } = req.params;
+    const { id } = req.params;
 
-    const [partner] = await Partners.getPartnerAccountDetails(partnerUUID);
+    if (!id) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "id is required in params"
+      );
+    }
+
+    if (
+      id.length < 36 ||
+      id.length > 42 ||
+      (id.length > 36 && id.length < 42)
+    ) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Wallet address or UUID is invalid"
+      );
+    }
+
+    const [partner] = await Partners.getPartnerAccountDetails(id);
 
     // @ts-ignore
     if (!partner.length) {
@@ -49,7 +85,7 @@ const getPartnerAccountDetails = async (req, res) => {
     return ApiResponse.successResponseWithData(
       res,
       "Partner account get successfully",
-      { partner: partner[0] }
+      partner[0]
     );
   } catch (error) {
     console.log("Get Partner Account Details Rejected");
@@ -62,13 +98,31 @@ const updatePartnerAccount = async (req, res) => {
   try {
     console.log("Update Partner Account Details Pending");
 
-    const { partnerUUID } = req.params;
+    const { id } = req.params;
+
+    if (!id) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "id is required in params"
+      );
+    }
+
+    if (
+      id.length < 36 ||
+      id.length > 42 ||
+      (id.length > 36 && id.length < 42)
+    ) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Wallet address or UUID is invalid"
+      );
+    }
 
     const { partner } = req.body;
 
     const updatePartner = new Partners(partner);
 
-    const [partnerData] = await updatePartner.update(partnerUUID);
+    const [partnerData] = await updatePartner.update(id);
 
     //@ts-ignore
     if (!partnerData.length) {

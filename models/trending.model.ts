@@ -11,7 +11,7 @@ class Trending {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS trending (articleId VARCHAR(45) NOT NULL PRIMARY KEY, articleTitle TEXT NOT NULL, articleBody TEXT NOT NULL, articleHeadline VARCHAR(206) NOT NULL, nftProject VARCHAR(100) NOT NULL, socialMediaCompaign VARCHAR(100) NULL, articleTags TEXT NOT NULL, articleType ENUM('SOCIAL', 'NFT') NOT NULL DEFAULT 'SOCIAL', partnerUUID VARCHAR(45) NOT NULL, author VARCHAR(100) NOT NULL, articleStartDate TIMESTAMP NOT NULL DEFAULT NOW(), totalRunDays VARCHAR(200) NOT NULL, articleEndDate TIMESTAMP NOT NULL DEFAULT NOW(), articleStatus ENUM('0', '1', '2', '3', '4') NOT NULL DEFAULT '0', postAdInNapaApp VARCHAR(20) DEFAULT 'false', Paid VARCHAR(20) DEFAULT 'false', Amount VARCHAR(150) NOT NULL, Txid VARCHAR(150) NOT NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), FOREIGN KEY (partnerUUID) REFERENCES partners (partnerUUID))";
+        "CREATE TABLE IF NOT EXISTS trending (articleId VARCHAR(45) NOT NULL PRIMARY KEY, articleTitle TEXT NOT NULL, articleBody TEXT NOT NULL, articleHeadline VARCHAR(206) NOT NULL, nftProject VARCHAR(100) NOT NULL, socialMediaCompaign VARCHAR(100) NULL, articleTags TEXT NOT NULL, articleType ENUM('SOCIAL', 'NFT') NOT NULL DEFAULT 'SOCIAL', partnerUUID VARCHAR(45) NOT NULL, author VARCHAR(100) NOT NULL, articleStartDate TIMESTAMP NOT NULL DEFAULT NOW(), totalRunDays VARCHAR(200) NOT NULL, articleEndDate TIMESTAMP NOT NULL DEFAULT NOW(), articleStatus ENUM('0', '1', '2', '3', '4') NOT NULL DEFAULT '0', postAdInNapaApp VARCHAR(20) DEFAULT 'false', Paid VARCHAR(20) DEFAULT 'false', Amount DECIMAL(19,2) NOT NULL, Txid VARCHAR(150) NOT NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), FOREIGN KEY (partnerUUID) REFERENCES partners (partnerUUID))";
 
       await db.execute(tableQuery);
 
@@ -37,7 +37,7 @@ class Trending {
         this.trending.articleStatus || 0
       }", "${this.trending.postAdInNapaApp || "false"}", "${
         this.trending.paid || "false"
-      }", "${this.trending.amount || "0"}", "${this.trending.txid || "0"}")`;
+      }", "${this.trending.amount || 0}", "${this.trending.txid || "0"}")`;
 
       await db.execute(insertQuery);
 
@@ -55,8 +55,9 @@ class Trending {
 
       const [data] = await db.execute(getsql);
 
-      if (!data[0]) {
-        throw new Error("Article Not Found");
+      // @ts-ignore
+      if (!data.length) {
+        throw "Article Data Not Found";
       }
 
       const sql = `UPDATE trending SET articleStatus = 5 WHERE articleId = "${articleId}"`;
@@ -74,11 +75,11 @@ class Trending {
           .replace("[", "(")
           .replace("]", ")");
 
-        const sql = `SELECT * FROM trending WHERE articleId IN ${modifiedArticleIds}`;
+        const sql = `SELECT * FROM trending WHERE articleId IN ${modifiedArticleIds} ORDER BY createdAt DESC`;
 
         return db.execute(sql);
       }
-      const sql = `SELECT * FROM trending WHERE articleStatus = "${status}" OR articleId = "${status}"`;
+      const sql = `SELECT * FROM trending WHERE articleStatus = "${status}" OR articleId = "${status}" ORDER BY createdAt DESC`;
 
       return db.execute(sql);
     } catch (error) {

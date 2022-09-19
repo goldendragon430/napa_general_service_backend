@@ -11,7 +11,7 @@ class Events {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS events (eventId VARCHAR(45) NOT NULL PRIMARY KEY, eventTitle TEXT NOT NULL, eventDate TEXT NOT NULL, status ENUM('0', '1', '2', '3', '4', '5') NOT NULL DEFAULT '0', eventImageBanner TEXT NOT NULL, eventImagePlaque TEXT NOT NULL, eventImageOne TEXT NOT NULL, eventImageTwo TEXT NOT NULL, eventImageThree TEXT NOT NULL, eventDetailsShortDescription TEXT NOT NULL, eventDetailsLongDescription TEXT NOT NULL, partnerUUID VARCHAR(45) NOT NULL, likes TEXT NOT NULL, location TEXT NOT NULL, tags TEXT NOT NULL, napaPerks TEXT NOT NULL, eventRules TEXT NOT NULL, entryFees TEXT NOT NULL, sponsors TEXT NOT NULL, paid TEXT NOT NULL, amount DECIMAL(19,2) NOT NULL, txid TEXT NOT NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), FOREIGN KEY (partnerUUID) REFERENCES partners (partnerUUID))";
+        "CREATE TABLE IF NOT EXISTS events (eventId VARCHAR(45) NOT NULL PRIMARY KEY, eventTitle TEXT NOT NULL, eventDate TEXT NOT NULL, status ENUM('0', '1', '2', '3', '4', '5') NOT NULL DEFAULT '0', eventImageBanner TEXT NOT NULL, eventImagePlaque TEXT NOT NULL, eventImageOne TEXT NOT NULL, eventImageTwo TEXT NOT NULL, eventImageThree TEXT NOT NULL, eventDetailsShortDescription TEXT NOT NULL, eventDetailsLongDescription TEXT NOT NULL, partnerUUID VARCHAR(45) NOT NULL, likes INT NOT NULL, location TEXT NOT NULL, tags TEXT NOT NULL, napaPerks TEXT NOT NULL, eventRules TEXT NOT NULL, entryFees TEXT NOT NULL, sponsors TEXT NOT NULL, paid TEXT NOT NULL, amount DECIMAL(19,2) NOT NULL, txid TEXT NOT NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), FOREIGN KEY (partnerUUID) REFERENCES partners (partnerUUID))";
 
       await db.execute(tableQuery);
 
@@ -27,7 +27,7 @@ class Events {
         this.events.eventImageThree || ""
       }", "${this.events.eventDetailsShortDescription || ""}", "${
         this.events.eventDetailsLongDescription || ""
-      }", "${this.events.partnerUUID || ""}", "${this.events.likes || ""}", "${
+      }", "${this.events.partnerUUID || ""}", "${this.events.likes || 0}", "${
         this.events.location || ""
       }", "${this.events.tags || ""}", "${this.events.napaPerks || ""}", "${
         this.events.eventRules || ""

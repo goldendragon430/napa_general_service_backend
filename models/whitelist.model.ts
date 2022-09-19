@@ -19,7 +19,7 @@ class Whitelist {
 
       const insertQuery = `INSERT INTO whitelist (whitelistId, name, address, status, currency, profileId) VALUES ("${uuid}", "${
         this.whitelist.name
-      }", "${this.whitelist.address}", "${this.whitelist.status}", "${
+      }", "${this.whitelist.address}", "${this.whitelist.status || "0"}", "${
         this.whitelist.currency || "NAPA"
       }", "${this.whitelist.profileId}")`;
 

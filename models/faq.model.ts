@@ -17,7 +17,9 @@ class Faq {
 
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO faq (questionId, question, response) VALUES ("${uuid}", "${this.faq.question}", "${this.faq.response}")`;
+      const insertQuery = `INSERT INTO faq (questionId, question, response) VALUES ("${uuid}", "${
+        this.faq.question || ""
+      }", "${this.faq.response || ""}")`;
 
       await db.execute(insertQuery);
 
@@ -31,7 +33,11 @@ class Faq {
 
   async update(questionId: string) {
     try {
-      const updateSql = `UPDATE faq SET question = "${this.faq.question}", response = "${this.faq.response}", updatedAt = CURRENT_TIMESTAMP WHERE questionId = "${questionId}"`;
+      const updateSql = `UPDATE faq SET question = "${
+        this.faq.question || ""
+      }", response = "${
+        this.faq.response || ""
+      }", updatedAt = CURRENT_TIMESTAMP WHERE questionId = "${questionId}"`;
 
       await db.execute(updateSql);
 

@@ -55,6 +55,16 @@ const unauthorizedResponse = (res, msg) => {
   return res.status(401).json(data);
 };
 
+const validationRuleResponse = (res, msg, data) => {
+  const resData = {
+    code: 412,
+    responseTimeStamp: moment(new Date()).format("DD-MM-YYYY hh:mm:ss:ms"),
+    message: msg,
+    data,
+  };
+  return res.status(412).send(resData);
+};
+
 module.exports = {
   successResponse,
   successResponseWithData,
@@ -62,4 +72,5 @@ module.exports = {
   notFoundResponse,
   validationErrorWithData,
   unauthorizedResponse,
+  validationRuleResponse,
 };

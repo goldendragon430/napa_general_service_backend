@@ -1,27 +1,29 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import express from "express";
+import { partnerValidationRule } from "../utils/validation-rules";
 const PartnerController = require("../controllers/partners.controller");
 const router = express.Router();
-const { walletValidator } = require("../middleware/wallet-validator");
+const { walletValidator } = require("../middleware/wallet.middleware");
+const { typeValidation } = require("../middleware/validation.middleware");
+const { uuidValidator } = require("../middleware/uuid.middleware");
 
 router.post(
   "/account/new",
-  (req, res, next) => {
-    const { partner } = req.body;
-    walletValidator(partner?.accountNumber, res, next);
-  },
+  typeValidation(partnerValidationRule),
+  walletValidator,
   PartnerController.createPartnerAccount
 );
 router.get(
-  "/account/details/:partnerUUID",
+  "/account/details/:id",
+  uuidValidator,
+  walletValidator,
   PartnerController.getPartnerAccountDetails
 );
 router.patch(
-  "/account/update/:partnerUUID",
-  (req, res, next) => {
-    const { partner } = req.body;
-    walletValidator(partner?.accountNumber, res, next);
-  },
+  "/account/update/:id",
+  uuidValidator,
+  walletValidator,
+  typeValidation(partnerValidationRule),
   PartnerController.updatePartnerAccount
 );
 

@@ -11,22 +11,21 @@ const createEvents = async (req: Request, res: Response) => {
 
     const newEvents = new Events(events);
 
-    if (!events.eventDate) {
-      console.error("Event Date field is required");
+    const [eventsData] = await newEvents.create();
+
+    if (!["0", "1", "2", "3", "4", "5"].includes(events.status)) {
       return ApiResponse.validationErrorWithData(
         res,
-        "Event Date field is required"
+        "Please enter valid event status"
       );
     }
 
-    const [eventsData] = await newEvents.create();
-
-    if (events.status === "1") {
-      // @ts-ignore
-      global.SocketService.handleGetEvents({
-        events: eventsData[0],
-      });
-    }
+    // if (["0", "1", "2", "3", "4", "5"].includes(events.status)) {
+    //   // @ts-ignore
+    //   global.SocketService.handleGetEvents({
+    //     events: eventsData[0],
+    //   });
+    // }
 
     console.log("Create Events Api Fullfilled");
 
@@ -54,7 +53,12 @@ const updateEvents = async (req: Request, res: Response) => {
 
     const [eventsData] = await newEvents.update(status, eventId);
 
-    if (status === "1") {
+    // @ts-ignore
+    if (!eventsData.length) {
+      return ApiResponse.validationErrorWithData(res, "Events Data Not Found");
+    }
+
+    if (["0", "1", "2", "3", "4", "5"].includes(status)) {
       // @ts-ignore
       global.SocketService.handleGetEvents({
         events: eventsData[0],
@@ -96,16 +100,28 @@ const getAllEvents = async (req: Request, res: Response) => {
     if (status) {
       // @ts-ignore
       statusValue = status.replace(/['"]+/g, "");
+      if (!["0", "1", "2", "3", "4", "5"].includes(statusValue)) {
+        return ApiResponse.validationErrorWithData(
+          res,
+          "Please enter valid event status"
+        );
+      }
     }
 
     const [events] = await Events.getAllEvents(statusValue || eventIds);
+
+    // @ts-ignore
+    if (eventIds.length && !events.length) {
+      return ApiResponse.validationErrorWithData(res, "Events Data Not Found");
+    }
 
     console.log("Get Events Api Fullfilled");
 
     return ApiResponse.successResponseWithData(
       res,
       "Get Events Successfully",
-      events
+      // @ts-ignore
+      events.length ? events : null
     );
   } catch (error) {
     console.log(error);

@@ -38,6 +38,7 @@ class SocketService {
     this.wss.clients.forEach((socket) => {
       socket.send(
         this.stringify({
+          event: "message",
           message: payload.messageEvent,
         })
       );
@@ -45,11 +46,11 @@ class SocketService {
   }
 
   handleGetTrendings(payload) {
-    console.log("payload", payload.trending);
     this.wss.clients.forEach((socket) => {
       console.log("Trending feeds send with websocket");
       socket.send(
         this.stringify({
+          event: "trending",
           trending: payload.trending,
         })
       );
@@ -57,11 +58,11 @@ class SocketService {
   }
 
   handleGetEvents(payload) {
-    console.log("payload", payload.events);
     this.wss.clients.forEach((socket) => {
       console.log("Events send with websocket");
       socket.send(
         this.stringify({
+          event: "events",
           events: payload.events,
         })
       );

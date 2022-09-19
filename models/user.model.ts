@@ -48,7 +48,19 @@ class User {
 
   async update(id: string) {
     try {
-      const updateSql = `UPDATE users SET accountNumber = "${this.user.accountNumber}", profileName = "${this.user.profileName}", bio = "${this.user.bio}", timezone = "${this.user.timezone}", primaryCurrency = "${this.user.primaryCurrency}", language = "${this.user.language}", napaSocialMediaAccount = "${this.user.napaSocialMediaAccount}", avatar = "${this.user.avatar}", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${id}" OR accountNumber = "${id}"`;
+      const updateSql = `UPDATE users SET accountNumber = "${
+        this.user.accountNumber
+      }", profileName = "${this.user.profileName}", bio = "${
+        this.user.bio || ""
+      }", timezone = "${this.user.timezone || ""}", primaryCurrency = "${
+        this.user.primaryCurrency || "NAPA"
+      }", language = "${
+        this.user.language || "English"
+      }", napaSocialMediaAccount = "${
+        this.user.napaSocialMediaAccount || ""
+      }", avatar = "${
+        this.user.avatar || ""
+      }", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${id}" OR accountNumber = "${id}"`;
 
       await db.execute(updateSql);
 

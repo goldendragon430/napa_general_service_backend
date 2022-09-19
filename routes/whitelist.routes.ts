@@ -1,24 +1,25 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import express from "express";
+import { whitelistValidationRule } from "../utils/validation-rules";
 const WhitelistController = require("../controllers/whitelist.controller");
 const router = express.Router();
-const { walletValidator } = require("../middleware/wallet-validator");
+const { uuidValidator } = require("../middleware/uuid.middleware");
+const { walletValidator } = require("../middleware/wallet.middleware");
+const { typeValidation } = require("../middleware/validation.middleware");
 
 router.post(
   "/whitelist/new",
-  (req, res, next) => {
-    const { whitelist } = req.body;
-    walletValidator(whitelist?.address, res, next);
-  },
+  uuidValidator,
+  walletValidator,
+  typeValidation(whitelistValidationRule),
   WhitelistController.createWhitelist
 );
 router.get("/whitelist/list/:status", WhitelistController.getAllWhitelist);
 router.patch(
   "/whitelist/update/:whitelistId",
-  (req, res, next) => {
-    const { whitelist } = req.body;
-    walletValidator(whitelist?.address, res, next);
-  },
+  uuidValidator,
+  walletValidator,
+  typeValidation(whitelistValidationRule),
   WhitelistController.updateWhitelist
 );
 
