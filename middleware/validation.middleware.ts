@@ -3,9 +3,17 @@ const response = require("../utils/api-response");
 
 const typeValidation = (validationRule) => {
   return async (req, res, next) => {
-    const { user, partner, whitelist, faq, events, trending, audit } = req.body;
+    const { user, partner, whitelist, faq, events, trending, audit, leaders } =
+      req.body;
     await validate(
-      user || partner || whitelist || faq || events || trending || audit,
+      user ||
+        partner ||
+        whitelist ||
+        faq ||
+        events ||
+        trending ||
+        audit ||
+        leaders,
       validationRule,
       {},
       (err, status) => {

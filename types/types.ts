@@ -32,3 +32,10 @@ export enum EventStatus {
   DELETED = "4",
   UPDATED = "5",
 }
+
+export enum LeadersType {
+  MOST_VIEWEDPOST = "1",
+  MOST_TOKENS_AWARDED = "2",
+  MOST_DISCUSSED = "3",
+  HOST_SPRINTS = "4",
+}

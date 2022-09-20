@@ -1,4 +1,4 @@
-import { ArticleStatus } from "types/types";
+import { ArticleStatus } from "../types/types";
 
 export interface TrendingFeed {
   articleId: string;

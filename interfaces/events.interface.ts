@@ -1,4 +1,4 @@
-import { EventStatus } from "types/types";
+import { EventStatus } from "../types/types";
 
 export interface EventsInterface {
   eventId: string;

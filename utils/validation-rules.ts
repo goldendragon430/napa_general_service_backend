@@ -88,6 +88,14 @@ const auditTrialValidationRules = {
   fieldsUpdated: "string",
 };
 
+const leadersValidationRule = {
+  napaSocialMediaAccountId: "required|string|email",
+  profileName: "required|string",
+  leaderType: "required|string",
+  number: "required|numeric",
+  rank: "required|numeric|between:1,25",
+};
+
 export {
   userValidationRule,
   partnerValidationRule,
@@ -96,4 +104,5 @@ export {
   eventsValidationRule,
   trendingValidationRules,
   auditTrialValidationRules,
+  leadersValidationRule,
 };

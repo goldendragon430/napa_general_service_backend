@@ -8,6 +8,7 @@ const TrendingRouter = require("../routes/trending.routes");
 const FaqRouter = require("../routes/faq.routes");
 const EventsRouter = require("../routes/events.routes");
 const AuditTrialsRouter = require("../routes/audit-trial.routes");
+const LeadersRouter = require("../routes/leaders.routes");
 
 const setUpRoutes = (app) => {
   app.use("/user", UserRouter.router);
@@ -19,6 +20,7 @@ const setUpRoutes = (app) => {
   app.use("/faq", FaqRouter.router);
   app.use("/social", EventsRouter.router);
   app.use("/audit", AuditTrialsRouter.router);
+  app.use("/social", LeadersRouter.router);
 };
 
 module.exports = { setUpRoutes };

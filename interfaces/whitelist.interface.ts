@@ -1,4 +1,4 @@
-import { WHITELISTEDCURRENCY, WHITELISTEDSTATUS } from "types/types";
+import { WHITELISTEDCURRENCY, WHITELISTEDSTATUS } from "../types/types";
 
 export interface WhitelistInterface {
   profileId: string;
