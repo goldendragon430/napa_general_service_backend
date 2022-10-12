@@ -14,13 +14,7 @@ const partnerValidationRule = {
   profileName: "required|string",
   email: "required|string|email",
   contactPerson: "required|string",
-  newsFeedSubscriber: "required|string",
   website: "required|string",
-  bio: "string",
-  timezone: "string",
-  primaryCurrency: "required|string",
-  language: "required|string",
-  napaSocialMediaAccount: "string",
   avatar: "string",
 };
 
@@ -64,7 +58,7 @@ const trendingValidationRules = {
   articleTitle: "required|string",
   articleBody: "required|string",
   articleHeadline: "required|string",
-  nftProject: "required|string",
+  nftProject: "string",
   socialMediaCompaign: "string",
   articleTags: "required|string",
   articleType: "required|string",
@@ -73,10 +67,11 @@ const trendingValidationRules = {
   articleStartDate: "required|string",
   articleEndDate: "required|string",
   postAdInNapaApp: "required|string",
+  totalRunDays: "required|string",
   paid: "required|string",
   articleStatus: "required|string",
-  amount: "required|numeric",
-  txid: "required|string",
+  amount: "numeric",
+  txid: "string",
 };
 
 const auditTrialValidationRules = {

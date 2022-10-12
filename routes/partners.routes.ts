@@ -27,4 +27,8 @@ router.patch(
   PartnerController.updatePartnerAccount
 );
 
+router.post("/account/login", PartnerController.loginPartnerAccount);
+
+router.get("/account/verify", PartnerController.verifyUserEmail);
+
 module.exports = { router };
