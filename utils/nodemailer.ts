@@ -4,12 +4,12 @@ const sendEmail = (email, file) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "hammadyounas813@gmail.com",
-      pass: "eazcbydlfjeycjyh",
+      user: "no-reply@napasociety.io",
+      pass: "VJTB%*H<<HaY3jR%222",
     },
   });
   const mailOptions = {
-    from: "Napa Society <verify@napasociety.io>",
+    from: "NAPA Society <verify@napasociety.io>",
     to: email,
     subject: "Confirm Email",
     html: file,
