@@ -12,6 +12,7 @@ dotenv.config({ path: "./.env" });
 const { SocketService } = require("./services/socket.service");
 const socketService = new SocketService(wss);
 import mysql from "mysql2";
+import path from "path";
 require("./config");
 require("./utils/trending-cron-job");
 
@@ -35,6 +36,7 @@ const pool = mysql.createPool({
 const db = pool.promise();
 
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "..", "views"));
 
 app.use(cors());
 app.use((req: Request, res: Response, next: NextFunction) => {

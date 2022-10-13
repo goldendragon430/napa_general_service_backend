@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const jwt = require("jsonwebtoken");
 
 const generateTokenWithPayload = (payload, expiry) => {

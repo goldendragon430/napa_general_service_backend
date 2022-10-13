@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const nodemailer = require("nodemailer");
 
 const sendEmail = (email, file) => {
