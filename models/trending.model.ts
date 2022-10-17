@@ -48,6 +48,43 @@ class Trending {
       throw new Error(error);
     }
   }
+  async update(articleId: string) {
+    try {
+      const totalRunDays =
+        new Date(this.trending.articleEndDate).getDate() -
+        new Date(this.trending.articleStartDate).getDate();
+
+      const updateSql = `UPDATE trending SET articleTitle = "${
+        this.trending.articleTitle
+      }", articleBody = "${this.trending.articleBody}", articleHeadline = "${
+        this.trending.articleHeadline
+      }", nftProject = "${this.trending.nftProject}", socialMediaCompaign = "${
+        this.trending.socialMediaCompaign || ""
+      }", articleTags = "${this.trending.articleTags}", articleType = "${
+        this.trending.articleType
+      }", partnerUUID = "${this.trending.partnerUUID}", author = "${
+        this.trending.author
+      }", articleStartDate = "${
+        this.trending.articleStartDate
+      }", totalRunDays = "${totalRunDays}", articleEndDate = "${
+        this.trending.articleEndDate
+      }", articleStatus = "${
+        this.trending.articleStatus
+      }", postAdInNapaApp = "${this.trending.postAdInNapaApp}", Paid = "${
+        this.trending.paid
+      }", Amount = "${this.trending.amount}", Txid = "${
+        this.trending.txid
+      }", updatedAt = CURRENT_TIMESTAMP WHERE articleId = "${articleId}"`;
+
+      await db.execute(updateSql);
+
+      const sql = `SELECT * FROM trending WHERE articleId = "${articleId}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 
   static async delete(articleId: string) {
     try {

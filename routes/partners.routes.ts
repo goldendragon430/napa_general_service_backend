@@ -31,4 +31,6 @@ router.post("/account/login", PartnerController.loginPartnerAccount);
 
 router.get("/account/verify", PartnerController.verifyUserEmail);
 
+router.get("/account/current", PartnerController.getCurrentPartnerUser);
+
 module.exports = { router };

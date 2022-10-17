@@ -51,7 +51,7 @@ const eventsValidationRule = {
   sponsors: "required|string",
   paid: "required|string",
   amount: "required|numeric",
-  txid: "required|string",
+  txid: "string",
 };
 
 const trendingValidationRules = {

@@ -14,7 +14,7 @@
     "build": "npm-run-all clean lint tsc copy-assets",
     "start": "NODE_PATH=./dist node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src -e ts,ejs --exec",
+    "dev": "nodemon --config nodemon.json index.ts -e ts,ejs --exec",
     "lint": "eslint . --ext .ts"
   },
   "repository": {

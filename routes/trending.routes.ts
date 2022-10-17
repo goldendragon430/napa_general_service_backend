@@ -12,5 +12,6 @@ router.post(
 );
 router.get("/feed/list", TrendingController.getAllTrendingFeeds);
 router.delete("/feed/delete/:articleId", TrendingController.deleteTrendingFeed);
+router.patch("/feed/update/:articleId", TrendingController.updateTrending);
 
 module.exports = { router };

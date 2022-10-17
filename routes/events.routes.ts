@@ -12,5 +12,6 @@ router.post(
 );
 router.get("/events/list", EventsController.getAllEvents);
 router.patch("/events/update/:eventId", EventsController.updateEvents);
+router.patch("/events/updateEvent/:eventId", EventsController.updateEvent);
 
 module.exports = { router };

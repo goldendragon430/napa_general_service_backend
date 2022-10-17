@@ -100,6 +100,44 @@ const getAllTrendingFeeds = async (req, res) => {
   }
 };
 
+const updateTrending = async (req, res) => {
+  try {
+    console.log("Update Trending Feed Pending");
+
+    const { articleId } = req.params;
+
+    const { trending } = req.body;
+
+    if (!articleId) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Please enter a article id"
+      );
+    }
+
+    const updatedTrending = new Trending(trending);
+
+    const [trendingData] = await updatedTrending.update(articleId);
+
+    //@ts-ignore
+    if (!trendingData.length) {
+      return ApiResponse.notFoundResponse(res, "Trending Not Found");
+    }
+
+    console.log("Update Trending Feed Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Trending Feed Updated Successfully",
+      trendingData[0]
+    );
+  } catch (error) {
+    console.log(error);
+    console.log("Update Trending Feed Rejected");
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
 const deleteTrendingFeed = async (req, res) => {
   try {
     console.log("Delete Trending Feed Pending");
@@ -134,4 +172,5 @@ module.exports = {
   createTrendingFeed,
   getAllTrendingFeeds,
   deleteTrendingFeed,
+  updateTrending,
 };

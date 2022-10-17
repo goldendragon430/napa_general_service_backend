@@ -130,4 +130,42 @@ const getAllEvents = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { createEvents, updateEvents, getAllEvents };
+const updateEvent = async (req, res) => {
+  try {
+    console.log("Update Events Api Pending");
+
+    const { eventId } = req.params;
+
+    const { events } = req.body;
+
+    if (!eventId) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Please enter a event id"
+      );
+    }
+
+    const updatedEvent = new Events(events);
+
+    const [eventData] = await updatedEvent.udpateEvent(eventId);
+
+    //@ts-ignore
+    if (!eventData.length) {
+      return ApiResponse.notFoundResponse(res, "Events Not Found");
+    }
+
+    console.log("Update Events Api Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Trending Feed Updated Successfully",
+      eventData[0]
+    );
+  } catch (error) {
+    console.log(error);
+    console.log("Update Events Api Rejected");
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
+module.exports = { createEvents, updateEvents, getAllEvents, updateEvent };

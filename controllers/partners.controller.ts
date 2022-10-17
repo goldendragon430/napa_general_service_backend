@@ -153,7 +153,7 @@ const loginPartnerAccount = async (req, res) => {
 
     // @ts-ignore
     if (!partnerDetails.length) {
-      return ApiResponse.notFoundResponse(res, "User Not Found");
+      return ApiResponse.notFoundResponse(res, "Please Sign Up for Account");
     }
     console.log("Login Partner Account Fullfilled");
 
@@ -168,7 +168,7 @@ const loginPartnerAccount = async (req, res) => {
       path.join(__dirname, "..", "views/verifyemail.ejs"),
       {
         user_name: partnerDetails[0]?.profileName,
-        confirm_link: `https://partners-demo.napasociety.io/home?token=${token}`,
+        confirm_link: `http://localhost:3000/home?token=${token}`,
       }
     );
 
@@ -193,16 +193,41 @@ const verifyUserEmail = async (req, res) => {
     const tokenValidated = verifyToken(token);
 
     const [user] = await Partners.findOne(tokenValidated?.email);
-    console.log("Login Verify Account Fullfilled");
 
     // @ts-ignore
     if (!user.length) {
       return ApiResponse.notFoundResponse(res, "User Not Found");
     }
+    console.log("Login Verify Account Fullfilled");
 
     return ApiResponse.successResponseWithData(res, "Verified Email", user[0]);
   } catch (error) {
     console.log("Login Verify Account Rejected");
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
+const getCurrentPartnerUser = async (req, res) => {
+  try {
+    console.log("Get Current Partner User Pending");
+
+    const { id } = req.query || {};
+
+    const [user] = await Partners.findById(id);
+
+    // @ts-ignore
+    if (!user.length) {
+      return ApiResponse.notFoundResponse(res, "User Not Found");
+    }
+    console.log("LGet Current Partner User Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get Current User SuccessFully",
+      user[0]
+    );
+  } catch (error) {
+    console.log("Get Current Partner User Rejected");
     return ApiResponse.ErrorResponse(res, error.message);
   }
 };
@@ -213,4 +238,5 @@ module.exports = {
   updatePartnerAccount,
   loginPartnerAccount,
   verifyUserEmail,
+  getCurrentPartnerUser,
 };

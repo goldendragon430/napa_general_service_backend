@@ -54,6 +54,16 @@ class Partners {
     }
   }
 
+  static findById(id: string) {
+    try {
+      const sql = `SELECT * FROM partners WHERE partnerUUID = "${id}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async update(partnerUUID: string) {
     try {
       const updateSql = `UPDATE partners SET accountNumber = "${

@@ -59,6 +59,46 @@ class Events {
     }
   }
 
+  async udpateEvent(eventId: string) {
+    try {
+      const updateSql = `UPDATE events SET eventTitle = "${
+        this.events.eventTitle
+      }", eventDate = "${this.events.eventDate}", status = "${
+        this.events.status
+      }", eventImageBanner = "${
+        this.events.eventImageBanner
+      }", eventImagePlaque = "${
+        this.events.eventImagePlaque || ""
+      }", eventImageOne = "${this.events.eventImageOne}", eventImageTwo = "${
+        this.events.eventImageTwo
+      }", eventImageThree = "${
+        this.events.eventImageThree
+      }", eventDetailsShortDescription = "${
+        this.events.eventDetailsShortDescription
+      }", eventDetailsLongDescription = "${
+        this.events.eventDetailsLongDescription
+      }", partnerUUID = "${this.events.partnerUUID}", likes = "${
+        this.events.likes
+      }", location = "${this.events.location}", tags = "${
+        this.events.tags
+      }", napaPerks = "${this.events.napaPerks}", eventRules = "${
+        this.events.eventRules
+      }", entryFees = "${this.events.entryFees}", paid = "${
+        this.events.paid
+      }", amount = "${this.events.amount}", txid = "${
+        this.events.txid
+      }", updatedAt = CURRENT_TIMESTAMP WHERE eventId = "${eventId}"`;
+
+      await db.execute(updateSql);
+
+      const sql = `SELECT * FROM events WHERE eventId = "${eventId}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   static getAllEvents(status) {
     try {
       if (Array.isArray(status)) {
