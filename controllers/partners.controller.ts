@@ -168,7 +168,7 @@ const loginPartnerAccount = async (req, res) => {
       path.join(__dirname, "..", "views/verifyemail.ejs"),
       {
         user_name: partnerDetails[0]?.profileName,
-        confirm_link: `https://partners-demo.napasociety.io/home?token=${token}`,
+        confirm_link: `http://localhost:3000/home?token=${token}`,
       }
     );
 
