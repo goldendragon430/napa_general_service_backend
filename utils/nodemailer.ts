@@ -12,7 +12,7 @@ const sendEmail = (email, file) => {
   const mailOptions = {
     from: "NAPA Society <verify@napasociety.io>",
     to: email,
-    subject: "Confirm Email",
+    subject: "NAPA Partners Portal Access Token",
     html: file,
   };
   transporter.sendMail(mailOptions, (err, info) => {
