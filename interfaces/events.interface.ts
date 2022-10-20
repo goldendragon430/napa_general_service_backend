@@ -14,7 +14,12 @@ export interface EventsInterface {
   eventDetailsLongDescription: string;
   partnerUUID: string;
   likes: string;
-  location: string;
+  address: string;
+  address1: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
   tags: string[];
   napaPerks: string;
   eventRules: string;

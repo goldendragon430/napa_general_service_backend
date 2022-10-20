@@ -31,6 +31,30 @@ const createPartnerAccount = async (req, res) => {
       return ApiResponse.validationErrorWithData(res, "Email is not valid", {});
     }
 
+    const [isWalletAddressExist] = await Partners.findByWalletAddress(
+      partner.accountNumber
+    );
+
+    // @ts-ignore
+    if (isWalletAddressExist?.length > 0) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Unable to create account with this wallet address",
+        {}
+      );
+    }
+
+    const [isEmailExist] = await Partners.findOne(partner.email);
+
+    // @ts-ignore
+    if (isEmailExist?.length > 0) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Email is Already Exist",
+        {}
+      );
+    }
+
     const newPartner = new Partners(partner);
 
     const [partnerData] = await newPartner.save();
@@ -168,7 +192,7 @@ const loginPartnerAccount = async (req, res) => {
       path.join(__dirname, "..", "views/verifyemail.ejs"),
       {
         user_name: partnerDetails[0]?.profileName,
-        confirm_link: `https://partners-demo.napasociety.io/home?token=${token}`,
+        confirm_link: `http://localhost:3000/home?token=${token}`,
       }
     );
 
@@ -219,7 +243,7 @@ const getCurrentPartnerUser = async (req, res) => {
     if (!user.length) {
       return ApiResponse.notFoundResponse(res, "User Not Found");
     }
-    console.log("LGet Current Partner User Fullfilled");
+    console.log("Get Current Partner User Fullfilled");
 
     return ApiResponse.successResponseWithData(
       res,

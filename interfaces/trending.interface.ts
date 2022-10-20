@@ -19,4 +19,5 @@ export interface TrendingFeed {
   paid: boolean;
   amount: string;
   txid: string;
+  articleInitialDate: string;
 }

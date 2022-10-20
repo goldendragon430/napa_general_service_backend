@@ -64,6 +64,16 @@ class Partners {
     }
   }
 
+  static findByWalletAddress(address: string) {
+    try {
+      const sql = `SELECT * FROM partners WHERE accountNumber = "${address}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async update(partnerUUID: string) {
     try {
       const updateSql = `UPDATE partners SET accountNumber = "${

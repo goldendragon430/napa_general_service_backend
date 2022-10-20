@@ -11,17 +11,13 @@ class Trending {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS trending (articleId VARCHAR(45) NOT NULL PRIMARY KEY, articleTitle TEXT NOT NULL, articleBody TEXT NOT NULL, nftProject VARCHAR(100) NOT NULL, socialMediaCompaign VARCHAR(100) NULL, articleTags TEXT NOT NULL, articleType ENUM('SOCIAL', 'NFT') NOT NULL DEFAULT 'SOCIAL', partnerUUID VARCHAR(45) NOT NULL, author VARCHAR(100) NOT NULL, articleStartDate TIMESTAMP NOT NULL DEFAULT NOW(), totalRunDays VARCHAR(200) NOT NULL, articleEndDate TIMESTAMP NOT NULL DEFAULT NOW(), articleStatus ENUM('0', '1', '2', '3', '4') NOT NULL DEFAULT '0', postAdInNapaApp VARCHAR(20) DEFAULT 'false', Paid VARCHAR(20) DEFAULT 'false', Amount DECIMAL(19,2) NOT NULL, articleHeadline TEXT NOT NULL, Txid VARCHAR(150) NOT NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), FOREIGN KEY (partnerUUID) REFERENCES partners (partnerUUID))";
+        "CREATE TABLE IF NOT EXISTS trending (articleId VARCHAR(45) NOT NULL PRIMARY KEY, articleTitle TEXT NOT NULL, articleBody TEXT NOT NULL, nftProject VARCHAR(100) NOT NULL, socialMediaCompaign VARCHAR(100) NULL, articleTags TEXT NOT NULL, articleType ENUM('SOCIAL', 'NFT') NOT NULL DEFAULT 'SOCIAL', partnerUUID VARCHAR(45) NOT NULL, author VARCHAR(100) NOT NULL, articleStartDate TIMESTAMP NOT NULL DEFAULT NOW(), articleInitialDate TIMESTAMP NOT NULL DEFAULT NOW(), totalRunDays VARCHAR(200) NOT NULL, articleEndDate TIMESTAMP NOT NULL DEFAULT NOW(), articleStatus ENUM('0', '1', '2', '3', '4') NOT NULL DEFAULT '0', postAdInNapaApp VARCHAR(20) DEFAULT 'false', Paid VARCHAR(20) DEFAULT 'false', Amount DECIMAL(19,2) NOT NULL, articleHeadline TEXT NOT NULL, Txid VARCHAR(150) NOT NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), FOREIGN KEY (partnerUUID) REFERENCES partners (partnerUUID))";
 
       await db.execute(tableQuery);
 
       const uuid = uuidv4();
 
-      const totalRunDays =
-        new Date(this.trending.articleEndDate).getDate() -
-        new Date(this.trending.articleStartDate).getDate();
-
-      const insertQuery = `INSERT INTO trending (articleId, articleTitle, articleBody, articleHeadline, nftProject, socialMediaCompaign, articleTags, articleType, partnerUUID, author, articleStartDate, totalRunDays, articleEndDate, articleStatus, postAdInNapaApp, Paid, Amount, Txid) VALUES ("${uuid}", "${
+      const insertQuery = `INSERT INTO trending (articleId, articleTitle, articleBody, articleHeadline, nftProject, socialMediaCompaign, articleTags, articleType, partnerUUID, author, articleStartDate, articleInitialDate, totalRunDays, articleEndDate, articleStatus, postAdInNapaApp, Paid, Amount, Txid) VALUES ("${uuid}", "${
         this.trending.articleTitle || ""
       }", "${this.trending.articleBody || ""}", "${
         this.trending.articleHeadline || ""
@@ -33,7 +29,9 @@ class Trending {
         this.trending.partnerUUID || ""
       }", "${this.trending.author || ""}", "${
         this.trending.articleStartDate
-      }", "${totalRunDays}", "${this.trending.articleEndDate}", "${
+      }", "${this.trending.articleInitialDate}", "${
+        this.trending.totalRunDays
+      }", "${this.trending.articleEndDate}", "${
         this.trending.articleStatus || 0
       }", "${this.trending.postAdInNapaApp || "false"}", "${
         this.trending.paid || "false"
@@ -50,10 +48,6 @@ class Trending {
   }
   async update(articleId: string) {
     try {
-      const totalRunDays =
-        new Date(this.trending.articleEndDate).getDate() -
-        new Date(this.trending.articleStartDate).getDate();
-
       const updateSql = `UPDATE trending SET articleTitle = "${
         this.trending.articleTitle
       }", articleBody = "${this.trending.articleBody}", articleHeadline = "${
@@ -66,7 +60,7 @@ class Trending {
         this.trending.author
       }", articleStartDate = "${
         this.trending.articleStartDate
-      }", totalRunDays = "${totalRunDays}", articleEndDate = "${
+      }", totalRunDays = "${this.trending.totalRunDays}", articleEndDate = "${
         this.trending.articleEndDate
       }", articleStatus = "${
         this.trending.articleStatus
