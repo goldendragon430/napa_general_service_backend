@@ -52,7 +52,7 @@ const eventsValidationRule = {
   tags: "string",
   napaPerks: "string",
   eventRules: "string",
-  entryFees: "required|string",
+  entryFees: "string",
   sponsors: "string",
   paid: "string",
   amount: "numeric",
