@@ -9,6 +9,11 @@ const {
 } = require("../utils/generate-token");
 const { sendEmail } = require("../utils/nodemailer");
 const ejs = require("ejs");
+import IPData from "ipdata";
+
+const ipdata = new IPData(
+  "8e3559a72789ba4c8f2f11d422287fd3440dfff5942a731757cfad4a"
+);
 
 const createPartnerAccount = async (req, res) => {
   try {
@@ -187,12 +192,14 @@ const loginPartnerAccount = async (req, res) => {
       },
       "7d"
     );
+    const ipAddress = await ipdata.lookup();
 
     const file = await ejs.renderFile(
       path.join(__dirname, "..", "views/verifyemail.ejs"),
       {
         user_name: partnerDetails[0]?.profileName,
         confirm_link: `https://partners-demo.napasociety.io/home?token=${token}`,
+        ip_address: ipAddress.ip,
       }
     );
 
