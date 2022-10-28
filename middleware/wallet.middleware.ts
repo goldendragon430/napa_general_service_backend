@@ -7,6 +7,7 @@ const walletValidator = (req, res, next) => {
     req?.params?.id ||
     req?.body?.user?.accountNumber ||
     req?.body?.partner?.accountNumber ||
+    req?.body?.accountNumber ||
     req?.body?.whitelist?.address;
 
   if (id.length != 42) {

@@ -276,7 +276,7 @@ const getGenerateToken = async (req, res) => {
   try {
     console.log("Get Generate Token Pending");
 
-    const { email, account } = req.body;
+    const { email, accountNumber } = req.body;
     const [partnerDetails] = await Partners.findOne(email);
 
     // @ts-ignore
@@ -284,7 +284,10 @@ const getGenerateToken = async (req, res) => {
       return ApiResponse.notFoundResponse(res, "Please Sign Up for Account");
     }
 
-    const [partnersData] = await Partners.findByAccountNumber(email, account);
+    const [partnersData] = await Partners.findByAccountNumber(
+      email,
+      accountNumber
+    );
 
     // @ts-ignore
     if (!partnersData.length) {
@@ -293,13 +296,25 @@ const getGenerateToken = async (req, res) => {
         "Please connect the account associated with e-mail address"
       );
     }
+
+    const token = generateTokenWithPayload(
+      {
+        email: email,
+      },
+      "7d"
+    );
+
     const ipAddress = await ipdata.lookup();
+
+    console.log("Get Generate Token Fullfilled");
 
     return ApiResponse.successResponseWithData(
       res,
       "Token Generated Successfully",
       {
-        ipAddress,
+        ip: ipAddress?.ip,
+        token: `http://localhost:3000/home?token=${token}`,
+        partnerUUID: partnerDetails[0]?.partnerUUID,
       }
     );
   } catch (error) {

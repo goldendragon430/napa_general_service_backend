@@ -20,4 +20,5 @@ export interface TrendingFeed {
   amount: string;
   txid: string;
   articleInitialDate: string;
+  userProfilePic: string;
 }
