@@ -11,9 +11,7 @@ const { sendEmail } = require("../utils/nodemailer");
 const ejs = require("ejs");
 import IPData from "ipdata";
 
-const ipdata = new IPData(
-  "8e3559a72789ba4c8f2f11d422287fd3440dfff5942a731757cfad4a"
-);
+const ipdata = new IPData(process.env.IPDATA_KEY);
 
 const createPartnerAccount = async (req, res) => {
   try {
@@ -176,7 +174,7 @@ const loginPartnerAccount = async (req, res) => {
   try {
     console.log("Login Partner Account Pending");
 
-    const { email } = req.body;
+    const { email, account } = req.body;
 
     const [partnerDetails] = await Partners.findOne(email);
 
@@ -184,7 +182,16 @@ const loginPartnerAccount = async (req, res) => {
     if (!partnerDetails.length) {
       return ApiResponse.notFoundResponse(res, "Please Sign Up for Account");
     }
-    console.log("Login Partner Account Fullfilled");
+
+    const [partnersData] = await Partners.findByAccountNumber(email, account);
+
+    // @ts-ignore
+    if (!partnersData.length) {
+      return ApiResponse.notFoundResponse(
+        res,
+        "Please connect the account associated with e-mail address"
+      );
+    }
 
     const token = generateTokenWithPayload(
       {
@@ -198,12 +205,14 @@ const loginPartnerAccount = async (req, res) => {
       path.join(__dirname, "..", "views/verifyemail.ejs"),
       {
         user_name: partnerDetails[0]?.profileName,
-        confirm_link: `https://partners-demo.napasociety.io/home?token=${token}`,
+        confirm_link: `http://localhost:3000/home?token=${token}`,
         ip_address: ipAddress.ip,
       }
     );
 
     sendEmail(email, file);
+
+    console.log("Login Partner Account Fullfilled");
 
     return ApiResponse.successResponseWithData(
       res,
@@ -263,6 +272,42 @@ const getCurrentPartnerUser = async (req, res) => {
   }
 };
 
+const getGenerateToken = async (req, res) => {
+  try {
+    console.log("Get Generate Token Pending");
+
+    const { email, account } = req.body;
+    const [partnerDetails] = await Partners.findOne(email);
+
+    // @ts-ignore
+    if (!partnerDetails.length) {
+      return ApiResponse.notFoundResponse(res, "Please Sign Up for Account");
+    }
+
+    const [partnersData] = await Partners.findByAccountNumber(email, account);
+
+    // @ts-ignore
+    if (!partnersData.length) {
+      return ApiResponse.notFoundResponse(
+        res,
+        "Please connect the account associated with e-mail address"
+      );
+    }
+    const ipAddress = await ipdata.lookup();
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Token Generated Successfully",
+      {
+        ipAddress,
+      }
+    );
+  } catch (error) {
+    console.log("Get Generate Token Rejected");
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
 module.exports = {
   createPartnerAccount,
   getPartnerAccountDetails,
@@ -270,4 +315,5 @@ module.exports = {
   loginPartnerAccount,
   verifyUserEmail,
   getCurrentPartnerUser,
+  getGenerateToken,
 };
