@@ -12,7 +12,7 @@ class User {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS users (profileId VARCHAR(45) NOT NULL PRIMARY KEY, accountNumber VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', napaSocialMediaAccount text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar TEXT NOT NULL, UNIQUE(accountNumber))";
+        "CREATE TABLE IF NOT EXISTS users (profileId VARCHAR(45) NOT NULL PRIMARY KEY, accountNumber VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', napaSocialMediaAccount text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, UNIQUE(accountNumber))";
 
       await db.execute(tableQuery);
 

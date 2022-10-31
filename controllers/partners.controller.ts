@@ -205,7 +205,7 @@ const loginPartnerAccount = async (req, res) => {
       path.join(__dirname, "..", "views/verifyemail.ejs"),
       {
         user_name: partnerDetails[0]?.profileName,
-        confirm_link: `http://localhost:3000/home?token=${token}`,
+        confirm_link: `${process.env.APP_URL}=${token}`,
         ip_address: ipAddress.ip,
       }
     );
