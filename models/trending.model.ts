@@ -52,7 +52,7 @@ class Trending {
         this.trending.userProfilePic || ""
       }", articleTitle = "${this.trending.articleTitle}", articleBody = "${
         this.trending.articleBody
-      }", articleHeadline = "${this.trending.articleHeadline}", nftProject = "${
+      }", articleHeadline = "${this.trending.articleHeadline || ""}", nftProject = "${
         this.trending.nftProject
       }", socialMediaCompaign = "${
         this.trending.socialMediaCompaign || ""
