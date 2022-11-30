@@ -19,9 +19,9 @@ class Trending {
 
       const insertQuery = `INSERT INTO trending (articleId, userProfilePic, articleTitle, articleBody, articleHeadline, nftProject, socialMediaCompaign, articleTags, articleType, partnerUUID, author, articleStartDate, articleInitialDate, totalRunDays, articleEndDate, articleStatus, postAdInNapaApp, Paid, Amount, Txid) VALUES ( "${uuid}", "${
         this.trending.userProfilePic || ""
-      }", "${this.trending.articleTitle || ""}", '${
+      }", "${this.trending.articleTitle || ""}", ${
         this.trending.articleBody || ""
-      }', "${this.trending.articleHeadline || ""}", "${
+      }, "${this.trending.articleHeadline || ""}", "${
         this.trending.nftProject || ""
       }", "${this.trending.socialMediaCompaign || ""}", 
       "${this.trending.articleTags || ""}",
@@ -50,9 +50,9 @@ class Trending {
     try {
       const updateSql = `UPDATE trending SET  userProfilePic = "${
         this.trending.userProfilePic || ""
-      }", articleTitle = "${this.trending.articleTitle}", articleBody = '${
+      }", articleTitle = "${this.trending.articleTitle}", articleBody = ${
         this.trending.articleBody
-      }', articleHeadline = "${
+      }, articleHeadline = "${
         this.trending.articleHeadline || ""
       }", nftProject = "${this.trending.nftProject}", socialMediaCompaign = "${
         this.trending.socialMediaCompaign || ""
