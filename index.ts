@@ -27,10 +27,10 @@ const pubnub = new PubNub({
 require("./services/pubnub.services");
 
 const pool = mysql.createPool({
-  host: process.env.RDS_HOSTNAME,
-  user: process.env.RDS_USERNAME,
-  database: process.env.RDS_DB_NAME,
-  password: process.env.RDS_PASSWORD,
+  host: process.env.RDS_NAPA_HOSTNAME,
+  user: process.env.RDS_NAPA_USERNAME,
+  database: process.env.RDS_NAPA_NAME,
+  password: process.env.RDS_NAPA_PASSWORD,
 });
 
 const db = pool.promise();
