@@ -36,7 +36,7 @@ const napaPool = mysql.createPool({
 const socialArtPool = mysql.createPool({
   host: process.env.RDS_NAPA_HOSTNAME,
   user: process.env.RDS_NAPA_USERNAME,
-  database: process.env.RDS_NAPA_SOCIAL_ART_DB_NAME,
+  database: process.env.RDS_SOCIAL_ART_DB_NAME,
   password: process.env.RDS_NAPA_PASSWORD,
 });
 
