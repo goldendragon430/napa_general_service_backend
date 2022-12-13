@@ -26,14 +26,22 @@ const pubnub = new PubNub({
 });
 require("./services/pubnub.services");
 
-const pool = mysql.createPool({
+const napaPool = mysql.createPool({
   host: process.env.RDS_NAPA_HOSTNAME,
   user: process.env.RDS_NAPA_USERNAME,
   database: process.env.RDS_NAPA_NAME,
   password: process.env.RDS_NAPA_PASSWORD,
 });
 
-const db = pool.promise();
+const socialArtPool = mysql.createPool({
+  host: process.env.RDS_SOCIAL_ART_HOSTNAME,
+  user: process.env.RDS_SOCIAL_ART_USERNAME,
+  database: process.env.RDS_SOCIAL_ART_DB_NAME,
+  password: process.env.RDS_SOCIAL_ART_PASSWORD,
+});
+
+const db = napaPool.promise();
+const socialArtDb = socialArtPool.promise();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "..", "views"));
@@ -61,6 +69,6 @@ httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-export { pubnub, db };
+export { pubnub, db, socialArtDb };
 
 export default app;
