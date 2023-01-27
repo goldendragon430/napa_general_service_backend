@@ -73,6 +73,15 @@ class User {
       throw new Error(error);
     }
   }
+
+  static getAllUsers() {
+    try {
+      const sql = `SELECT profileId FROM users ORDER BY createdAt DESC`;
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 export default User;

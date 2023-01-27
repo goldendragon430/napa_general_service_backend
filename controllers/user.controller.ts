@@ -29,6 +29,12 @@ const createUserProfile = async (req, res) => {
     const newUser = new User(user);
 
     const [userData] = await newUser.create();
+    const [allUsers] = await User.getAllUsers();
+
+    // @ts-ignore
+    global.SocketService.handleGetTotalUsers({
+      totalUsers: String(allUsers?.length) ?? "0",
+    });
 
     console.log("Create User Profile Api Fullfilled");
 

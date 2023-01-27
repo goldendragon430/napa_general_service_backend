@@ -68,6 +68,18 @@ class SocketService {
       );
     });
   }
+
+  handleGetTotalUsers(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Total users send with websocket");
+      socket.send(
+        this.stringify({
+          event: "total-users",
+          totalUsers: payload.totalUsers,
+        })
+      );
+    });
+  }
 }
 
 module.exports.SocketService = SocketService;
