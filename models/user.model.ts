@@ -18,13 +18,13 @@ class User {
       await socialArtDb.execute(tableQuery);
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO users (profileId, accountNumber, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar) VALUES ("${uuid}", "${
+      const insertQuery = `INSERT INTO users (profileId, accountNumber, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
         this.user.accountNumber
       }", "${this.user.profileName}", "${this.user.bio || ""}", "${
         this.user.timezone || ""
       }", "${this.user.primaryCurrency || "NAPA"}", "${
         this.user.language || "English"
-      }", "${this.user.napaSocialMediaAccount}", "${this.user.avatar || ""}")`;
+      }", "${this.user.napaSocialMediaAccount}", "${this.user.avatar || ""}", "false", "false")`;
 
       await db.execute(insertQuery);
       await socialArtDb.execute(insertQuery);
