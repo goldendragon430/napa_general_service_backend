@@ -8,4 +8,5 @@ export interface UserInterface {
   napaSocialMediaAccount: string;
   profileId: string;
   avatar: string;
+  tokenPrice: string;
 }
