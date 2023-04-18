@@ -6,6 +6,7 @@ const walletValidator = (req, res, next) => {
   const id =
     req?.params?.id ||
     req?.body?.user?.accountNumber ||
+    req?.body?.user?.napaWalletAccount ||
     req?.body?.partner?.accountNumber ||
     req?.body?.accountNumber ||
     req?.body?.whitelist?.address;

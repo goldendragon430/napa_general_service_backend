@@ -9,4 +9,7 @@ export interface UserInterface {
   profileId: string;
   avatar: string;
   tokenPrice: string;
+  napaWalletAccount: string;
+  binanceWalletAccount: string;
+  emailAddress: string;
 }

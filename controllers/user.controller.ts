@@ -8,15 +8,31 @@ const createUserProfile = async (req, res) => {
 
     const { user } = req.body;
 
-    if (
-      user.accountNumber.length < 36 ||
-      user.accountNumber.length > 42 ||
-      (user.accountNumber.length > 36 && user.accountNumber.length < 42)
-    ) {
-      return ApiResponse.validationErrorWithData(
-        res,
-        "Wallet address or UUID is invalid"
-      );
+    if (user.napaWalletAccount) {
+      if (
+        user.napaWalletAccount.length < 36 ||
+        user.napaWalletAccount.length > 42 ||
+        (user.napaWalletAccount.length > 36 &&
+          user.napaWalletAccount.length < 42)
+      ) {
+        return ApiResponse.validationErrorWithData(
+          res,
+          "NAPA Wallet address or UUID is invalid"
+        );
+      }
+    }
+
+    if (user.accountNumber) {
+      if (
+        user.accountNumber.length < 36 ||
+        user.accountNumber.length > 42 ||
+        (user.accountNumber.length > 36 && user.accountNumber.length < 42)
+      ) {
+        return ApiResponse.validationErrorWithData(
+          res,
+          "Wallet address or UUID is invalid"
+        );
+      }
     }
 
     if (!["NAPA", "BNB", "ETH"].includes(user.primaryCurrency)) {

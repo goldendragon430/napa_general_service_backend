@@ -1,5 +1,5 @@
 const userValidationRule = {
-  accountNumber: "required|string",
+  // accountNumber: "required|string",
   profileName: "required|string",
   bio: "string",
   timezone: "string",
