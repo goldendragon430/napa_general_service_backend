@@ -11,7 +11,7 @@ const walletValidator = (req, res, next) => {
     req?.body?.accountNumber ||
     req?.body?.whitelist?.address;
 
-  if (id.length != 42) {
+  if (id?.length != 42) {
     return next();
   }
   const validate = WAValidator.validate(id, "ZRX");

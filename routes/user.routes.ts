@@ -10,6 +10,7 @@ const { typeValidation } = require("../middleware/validation.middleware");
 import multer from "multer";
 
 const avatarUpload = multer({
+  limits: { fileSize: 25 * 1024 * 1024 },
   fileFilter(req, file, cb) {
     if (
       !file.originalname.endsWith(".png") &&

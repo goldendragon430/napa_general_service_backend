@@ -28,7 +28,7 @@ class User {
       }", "${this.user.timezone || ""}", "${
         this.user.primaryCurrency || "NAPA"
       }", "${this.user.language || "English"}", "${
-        this.user.napaSocialMediaAccount
+        this.user.napaSocialMediaAccount || ""
       }", "${this.user.avatar || ""}", "false", "false")`;
 
       await db.execute(insertQuery);
