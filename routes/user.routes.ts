@@ -7,8 +7,24 @@ const { walletValidator } = require("../middleware/wallet.middleware");
 const { uuidValidator } = require("../middleware/uuid.middleware");
 const { typeValidation } = require("../middleware/validation.middleware");
 
+import multer from "multer";
+
+const avatarUpload = multer({
+  fileFilter(req, file, cb) {
+    if (
+      !file.originalname.endsWith(".png") &&
+      !file.originalname.endsWith(".jpg") &&
+      !file.originalname.endsWith(".jpeg")
+    ) {
+      cb(new Error("Please select a jpg or png file"));
+    }
+    cb(undefined, true);
+  },
+});
+
 router.post(
   "/account/new",
+  avatarUpload.single("avatar"),
   typeValidation(userValidationRule),
   walletValidator,
   UserController.createUserProfile
@@ -21,6 +37,7 @@ router.get(
 );
 router.patch(
   "/account/update/:id",
+  avatarUpload.single("avatar"),
   uuidValidator,
   walletValidator,
   typeValidation(userValidationRule),

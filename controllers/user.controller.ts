@@ -1,12 +1,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import User from "../models/user.model";
 const ApiResponse = require("../utils/api-response");
+import { v4 as uuidv4 } from "uuid";
+import { uploadS3 } from "../utils/upload-s3";
 
 const createUserProfile = async (req, res) => {
   try {
     console.log("Create User Profile Api Pending");
+    const avatarUuid = uuidv4();
+    console.log("req.file-update", req.file);
+    console.log("req.body", JSON.parse(req.body.user));
 
-    const { user } = req.body;
+    const user = JSON.parse(req.body.user);
+
+    if (req.file) {
+      const result = await uploadS3(avatarUuid, req.file.mimetype, req.file);
+      user.avatar = result.Location;
+    }
 
     if (user.napaWalletAccount) {
       if (
@@ -113,10 +123,18 @@ const getUserProfileDetails = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     console.log("Get Update User Profile Api Pending");
+    const avatarUuid = uuidv4();
+    console.log("req.file-update", req.file);
+    console.log("req.body", JSON.parse(req.body.user));
 
     const { id } = req.params;
 
-    const { user } = req.body;
+    const user = JSON.parse(req.body.user);
+
+    if (req.file) {
+      const result = await uploadS3(avatarUuid, req.file.mimetype, req.file);
+      user.avatar = result.Location;
+    }
 
     if (
       id.length < 36 ||

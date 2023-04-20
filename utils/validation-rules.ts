@@ -1,12 +1,12 @@
 const userValidationRule = {
   // accountNumber: "required|string",
-  profileName: "required|string",
-  bio: "string",
-  timezone: "string",
-  primaryCurrency: "required|string",
-  language: "required|string",
-  napaSocialMediaAccount: "string",
-  avatar: "string",
+  // profileName: "required|string",
+  // bio: "string",
+  // timezone: "string",
+  // primaryCurrency: "required|string",
+  // language: "required|string",
+  // napaSocialMediaAccount: "string",
+  // avatar: "string",
 };
 
 const partnerValidationRule = {
