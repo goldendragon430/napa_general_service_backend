@@ -2,7 +2,7 @@
 import { UserInterface } from "../interfaces/user.interfaces";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
-const { db, socialArtDb } = require("../index");
+const { db, socialArtDb, stakingDB } = require("../index");
 
 class User {
   user: UserInterface;
@@ -17,6 +17,7 @@ class User {
 
       await db.execute(tableQuery);
       await socialArtDb.execute(tableQuery);
+      await stakingDB.execute(tableQuery);
       const uuid = uuidv4();
 
       const insertQuery = `INSERT INTO users (profileId, accountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
@@ -33,6 +34,7 @@ class User {
 
       await db.execute(insertQuery);
       await socialArtDb.execute(insertQuery);
+      await stakingDB.execute(insertQuery)
 
       const DAUsql = `SELECT profileId FROM users WHERE dailyActive = "true"`;
       const [DAU] = await socialArtDb.query(DAUsql);
@@ -121,6 +123,7 @@ class User {
 
       await db.execute(updateSql);
       await socialArtDb.execute(updateSql);
+      await stakingDB.execute(updateSql);
 
       const sql = `SELECT * FROM users WHERE profileId = "${id}" OR accountNumber = "${id}" OR napaWalletAccount = "${id}"`;
 
