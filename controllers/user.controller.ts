@@ -17,7 +17,7 @@ const createUserProfile = async (req, res) => {
     const [isExit] = await User.getUserProfileDetails(user.emailAddress);
 
     if (isExit.length) {
-      return ApiResponse.notFoundResponse(res, "Email Already Exit");
+      return ApiResponse.notFoundResponse(res, "This Email Already Exists on NAPA");
     }
 
     const options = {
