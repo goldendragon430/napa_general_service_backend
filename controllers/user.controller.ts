@@ -105,16 +105,16 @@ const getUserProfileDetails = async (req, res) => {
       );
     }
 
-    if (
-      id.length < 36 ||
-      id.length > 42 ||
-      (id.length > 36 && id.length < 42)
-    ) {
-      return ApiResponse.validationErrorWithData(
-        res,
-        "Wallet address or UUID is invalid"
-      );
-    }
+    // if (
+    //   id.length < 36 ||
+    //   id.length > 42 ||
+    //   (id.length > 36 && id.length < 42)
+    // ) {
+    //   return ApiResponse.validationErrorWithData(
+    //     res,
+    //     "Wallet address or UUID is invalid"
+    //   );
+    // }
 
     const [user] = await User.getUserProfileDetails(id);
 
