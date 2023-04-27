@@ -5,7 +5,7 @@ export interface UserInterface {
   timezone: string;
   primaryCurrency: string;
   language: string;
-  napaSocialMediaAccount: string;
+  accountType: string;
   profileId: string;
   avatar: string;
   tokenPrice: string;

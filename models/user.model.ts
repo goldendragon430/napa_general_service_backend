@@ -13,14 +13,14 @@ class User {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS users (rowId INTEGER AUTO_INCREMENT NOT NULL UNIQUE KEY, profileId VARCHAR(45) NOT NULL PRIMARY KEY, biometricPublickey VARCHAR(255), metamaskAccountNumber VARCHAR(255), napaWalletAccount VARCHAR(255), binanceWalletAccount VARCHAR(255), emailAddress VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', napaSocialMediaAccount text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, awardsEarned INT, awardsGiven INT, netAwardsAvailable INT, dailyActive VARCHAR(45) NOT NULL, monthlyActive VARCHAR(45) NOT NULL, UNIQUE(emailAddress))";
+        "CREATE TABLE IF NOT EXISTS users (rowId INTEGER AUTO_INCREMENT NOT NULL UNIQUE KEY, profileId VARCHAR(45) NOT NULL PRIMARY KEY, biometricPublickey VARCHAR(255), metamaskAccountNumber VARCHAR(255), napaWalletAccount VARCHAR(255), binanceWalletAccount VARCHAR(255), emailAddress VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', accountType text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, awardsEarned INT, awardsGiven INT, netAwardsAvailable INT, dailyActive VARCHAR(45) NOT NULL, monthlyActive VARCHAR(45) NOT NULL, UNIQUE(emailAddress))";
 
       await db.execute(tableQuery);
       await socialArtDb.execute(tableQuery);
       await stakingDB.execute(tableQuery);
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
+      const insertQuery = `INSERT INTO users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, profileName, bio, timezone, primaryCurrency, language, accountType, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
         this.user.biometricPublickey || ""
       }", "${this.user.metamaskAccountNumber || ""}", "${
         this.user.napaWalletAccount || ""
@@ -30,7 +30,7 @@ class User {
         this.user.timezone || ""
       }", "${this.user.primaryCurrency || "NAPA"}", "${
         this.user.language || "English"
-      }", "${this.user.napaSocialMediaAccount || ""}", "${
+      }", "${this.user.accountType || ""}", "${
         this.user.avatar || ""
       }", "false", "false")`;
 
@@ -115,8 +115,8 @@ class User {
         this.user.primaryCurrency || "NAPA"
       }", language = "${
         this.user.language || "English"
-      }", napaSocialMediaAccount = "${
-        this.user.napaSocialMediaAccount || ""
+      }", accountType = "${
+        this.user.accountType || ""
       }", avatar = "${
         this.user.avatar || ""
       }", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${id}" OR metamaskAccountNumber = "${id}" OR napaWalletAccount = "${id}" OR emailAddress = "${id}"`;
