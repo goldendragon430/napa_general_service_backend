@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import express from "express";
-import { userValidationRule } from "../utils/validation-rules";
+// import { userValidationRule } from "../utils/validation-rules";
 const UserController = require("../controllers/user.controller");
 const router = express.Router();
 const { walletValidator } = require("../middleware/wallet.middleware");
 const { uuidValidator } = require("../middleware/uuid.middleware");
-const { typeValidation } = require("../middleware/validation.middleware");
+// const { typeValidation } = require("../middleware/validation.middleware");
 
 import multer from "multer";
 
@@ -26,8 +26,8 @@ const avatarUpload = multer({
 router.post(
   "/account/new",
   avatarUpload.single("avatar"),
-  typeValidation(userValidationRule),
-  walletValidator,
+  // typeValidation(userValidationRule),
+  // walletValidator,
   UserController.createUserProfile
 );
 router.get(
@@ -39,9 +39,9 @@ router.get(
 router.patch(
   "/account/update/:id",
   avatarUpload.single("avatar"),
-  uuidValidator,
-  walletValidator,
-  typeValidation(userValidationRule),
+  // uuidValidator,
+  // walletValidator,
+  // typeValidation(userValidationRule),
   UserController.updateUserProfile
 );
 

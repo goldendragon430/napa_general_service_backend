@@ -13,28 +13,30 @@ class User {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS users (profileId VARCHAR(45) NOT NULL PRIMARY KEY, accountNumber VARCHAR(255), napaWalletAccount VARCHAR(255), binanceWalletAccount VARCHAR(255), emailAddress VARCHAR(255), profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', napaSocialMediaAccount text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, UNIQUE(accountNumber), awardsEarned INT, awardsGiven INT, netAwardsAvailable INT, dailyActive VARCHAR(45) NOT NULL, monthlyActive VARCHAR(45) NOT NULL)";
+        "CREATE TABLE IF NOT EXISTS users (rowId INTEGER AUTO_INCREMENT NOT NULL UNIQUE KEY, profileId VARCHAR(45) NOT NULL PRIMARY KEY, biometricPublickey VARCHAR(255), metamaskAccountNumber VARCHAR(255), napaWalletAccount VARCHAR(255), binanceWalletAccount VARCHAR(255), emailAddress VARCHAR(255) NOT NULL, profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', napaSocialMediaAccount text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, awardsEarned INT, awardsGiven INT, netAwardsAvailable INT, dailyActive VARCHAR(45) NOT NULL, monthlyActive VARCHAR(45) NOT NULL, UNIQUE(emailAddress))";
 
       await db.execute(tableQuery);
       await socialArtDb.execute(tableQuery);
       await stakingDB.execute(tableQuery);
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO users (profileId, accountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
-        this.user.accountNumber || ""
-      }", "${this.user.napaWalletAccount || ""}", "${
-        this.user.binanceWalletAccount || ""
-      }", "${this.user.emailAddress || ""}", "${this.user.profileName}", "${
-        this.user.bio || ""
-      }", "${this.user.timezone || ""}", "${
-        this.user.primaryCurrency || "NAPA"
-      }", "${this.user.language || "English"}", "${
-        this.user.napaSocialMediaAccount || ""
-      }", "${this.user.avatar || ""}", "false", "false")`;
+      const insertQuery = `INSERT INTO users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, profileName, bio, timezone, primaryCurrency, language, napaSocialMediaAccount, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
+        this.user.biometricPublickey || ""
+      }", "${this.user.metamaskAccountNumber || ""}", "${
+        this.user.napaWalletAccount || ""
+      }", "${this.user.binanceWalletAccount || ""}", "${
+        this.user.emailAddress || ""
+      }", "${this.user.profileName}", "${this.user.bio || ""}", "${
+        this.user.timezone || ""
+      }", "${this.user.primaryCurrency || "NAPA"}", "${
+        this.user.language || "English"
+      }", "${this.user.napaSocialMediaAccount || ""}", "${
+        this.user.avatar || ""
+      }", "false", "false")`;
 
       await db.execute(insertQuery);
       await socialArtDb.execute(insertQuery);
-      await stakingDB.execute(insertQuery)
+      await stakingDB.execute(insertQuery);
 
       const DAUsql = `SELECT profileId FROM users WHERE dailyActive = "true"`;
       const [DAU] = await socialArtDb.query(DAUsql);
@@ -81,7 +83,7 @@ class User {
         )`;
       await socialArtDb.execute(insertPayoutsTrackingQuery);
 
-      const sql = `SELECT * FROM users WHERE profileId = "${uuid}" OR accountNumber = "${this.user.accountNumber}" OR napaWalletAccount = "${this.user.napaWalletAccount}"`;
+      const sql = `SELECT * FROM users WHERE profileId = "${uuid}" OR metamaskAccountNumber = "${this.user.metamaskAccountNumber}" OR napaWalletAccount = "${this.user.napaWalletAccount}"`;
 
       return db.execute(sql);
     } catch (error) {
@@ -91,7 +93,7 @@ class User {
 
   static getUserProfileDetails(id: string) {
     try {
-      const sql = `SELECT * FROM users WHERE profileId = "${id}" OR accountNumber = "${id}" OR napaWalletAccount = "${id}"`;
+      const sql = `SELECT * FROM users WHERE profileId = "${id}" OR metamaskAccountNumber = "${id}" OR napaWalletAccount = "${id}" OR emailAddress = "${id}"`;
 
       return db.execute(sql);
     } catch (error) {
@@ -101,17 +103,17 @@ class User {
 
   async update(id: string) {
     try {
-      const updateSql = `UPDATE users SET accountNumber = "${
-        this.user.accountNumber || ""
+      const updateSql = `UPDATE users SET metamaskAccountNumber = "${
+        this.user.metamaskAccountNumber || ""
+      }", biometricPublickey = "${
+        this.user.biometricPublickey || ""
       }", napaWalletAccount = "${
         this.user.napaWalletAccount || ""
       }", binanceWalletAccount = "${
         this.user.binanceWalletAccount || ""
-      }", emailAddress = "${this.user.emailAddress || ""}", profileName = "${
-        this.user.profileName
-      }", bio = "${this.user.bio || ""}", timezone = "${
-        this.user.timezone || ""
-      }", primaryCurrency = "${
+      }", profileName = "${this.user.profileName}", bio = "${
+        this.user.bio || ""
+      }", timezone = "${this.user.timezone || ""}", primaryCurrency = "${
         this.user.primaryCurrency || "NAPA"
       }", language = "${
         this.user.language || "English"
@@ -119,13 +121,13 @@ class User {
         this.user.napaSocialMediaAccount || ""
       }", avatar = "${
         this.user.avatar || ""
-      }", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${id}" OR accountNumber = "${id}" OR napaWalletAccount = "${id}"`;
+      }", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${id}" OR metamaskAccountNumber = "${id}" OR napaWalletAccount = "${id}" OR emailAddress = "${id}"`;
 
       await db.execute(updateSql);
       await socialArtDb.execute(updateSql);
       await stakingDB.execute(updateSql);
 
-      const sql = `SELECT * FROM users WHERE profileId = "${id}" OR accountNumber = "${id}" OR napaWalletAccount = "${id}"`;
+      const sql = `SELECT * FROM users WHERE profileId = "${id}" OR metamaskAccountNumber = "${id}" OR napaWalletAccount = "${id}" OR emailAddress = "${id}"`;
 
       return db.execute(sql);
     } catch (error) {

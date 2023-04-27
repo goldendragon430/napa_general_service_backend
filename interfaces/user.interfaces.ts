@@ -1,5 +1,5 @@
 export interface UserInterface {
-  accountNumber: string;
+  metamaskAccountNumber: string;
   profileName: string;
   bio: string;
   timezone: string;
@@ -12,4 +12,5 @@ export interface UserInterface {
   napaWalletAccount: string;
   binanceWalletAccount: string;
   emailAddress: string;
+  biometricPublickey: string;
 }
