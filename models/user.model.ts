@@ -107,8 +107,6 @@ class User {
         this.user.metamaskAccountNumber || ""
       }", biometricPublickey = "${
         this.user.biometricPublickey || ""
-      }", napaWalletAccount = "${
-        this.user.napaWalletAccount || ""
       }", binanceWalletAccount = "${
         this.user.binanceWalletAccount || ""
       }", profileName = "${this.user.profileName}", bio = "${
