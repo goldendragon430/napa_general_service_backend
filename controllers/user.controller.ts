@@ -4,6 +4,7 @@ const ApiResponse = require("../utils/api-response");
 import { v4 as uuidv4 } from "uuid";
 import { uploadS3 } from "../utils/upload-s3";
 import axios from "axios";
+import crypto from "crypto";
 
 const createUserProfile = async (req, res) => {
   try {
@@ -17,7 +18,10 @@ const createUserProfile = async (req, res) => {
     const [isExit] = await User.getUserProfileDetails(user.emailAddress);
 
     if (isExit.length) {
-      return ApiResponse.notFoundResponse(res, "This Email Already Exists on NAPA");
+      return ApiResponse.notFoundResponse(
+        res,
+        "This Email Already Exists on NAPA"
+      );
     }
 
     const options = {
@@ -207,8 +211,89 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+const generateQR = async (req, res) => {
+  try {
+    console.log("Generate QR Code Api Pending");
+
+    const token = crypto.randomBytes(64).toString("hex");
+    const channel_data =
+      new Date().getDate() +
+      "-" +
+      new Date().getMonth() +
+      "-" +
+      new Date().getMinutes();
+    const channel_data_hash = crypto
+      .createHash("md5")
+      .update(channel_data + "||" + token)
+      .digest("hex");
+
+    const { data } = await axios("https://geolocation-db.com/json/", {
+      method: "GET",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Generate QR Code Api Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "QR Code Generated Successfully",
+      {
+        id: channel_data_hash,
+        generatedTimestamp: Date.now(),
+        metaData: data,
+      }
+    );
+  } catch (error) {
+    console.log("Generate QR Code Api Rejected");
+    console.log(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Generate QR Code");
+  }
+};
+
+const verifyAuthToken = async (req, res) => {
+  try {
+    console.log("Verify Auth Token Api Pending");
+
+    const generatedTimestamp = req.body.generatedTimestamp;
+    const duration = generatedTimestamp - new Date().getTime();
+
+    if (duration < 0) {
+      return ApiResponse.ErrorResponse(res, "Auth Token has been expired.");
+    }
+
+    const [userData] = await User.getUserProfileDetails(req.body.profileId);
+
+    if (!userData.length) {
+      return ApiResponse.notFoundResponse(res, "User Not Found");
+    }
+
+    console.log("Verify Auth Token Api Fullfilled");
+
+    // @ts-ignore
+    global.SocketService.handleLoginUserToWeb({
+      id: `login-event-${req.body.id}`,
+      user: userData[0],
+    });
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Verify Auth Token Api Successfully",
+      userData[0]
+    );
+  } catch (error) {
+    console.log("Verify Auth Token Api Rejected");
+    console.log(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Verify Auth Token");
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfileDetails,
   updateUserProfile,
+  generateQR,
+  verifyAuthToken,
 };

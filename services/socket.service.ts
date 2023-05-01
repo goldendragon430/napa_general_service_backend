@@ -80,6 +80,18 @@ class SocketService {
       );
     });
   }
+
+  handleLoginUserToWeb(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("User send with websocket");
+      socket.send(
+        this.stringify({
+          event: `login-event-${payload.id}`,
+          user: payload.user,
+        })
+      );
+    });
+  }
 }
 
 module.exports.SocketService = SocketService;
