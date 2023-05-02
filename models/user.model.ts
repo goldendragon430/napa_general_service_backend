@@ -101,6 +101,16 @@ class User {
     }
   }
 
+  static findByMetamaskAccountNumber(metamaskAccountNumber: string) {
+    try {
+      const sql = `SELECT * FROM users WHERE metamaskAccountNumber = "${metamaskAccountNumber}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async update(id: string) {
     try {
       const updateSql = `UPDATE users SET metamaskAccountNumber = "${

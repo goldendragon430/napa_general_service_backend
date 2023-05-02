@@ -92,6 +92,18 @@ class SocketService {
       );
     });
   }
+
+  handleUpdateUser(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Updated User send with websocket");
+      socket.send(
+        this.stringify({
+          event: `update-user-${payload.user.profileId}`,
+          user: payload.user,
+        })
+      );
+    });
+  }
 }
 
 module.exports.SocketService = SocketService;

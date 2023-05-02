@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { uploadS3 } from "../utils/upload-s3";
 import axios from "axios";
 import crypto from "crypto";
+import moment from "moment";
 
 const createUserProfile = async (req, res) => {
   try {
@@ -157,6 +158,22 @@ const updateUserProfile = async (req, res) => {
       return ApiResponse.notFoundResponse(res, "User Not Found");
     }
 
+    if (req.body.metamaskAccountNumber) {
+      const [metamaskAccountNumberCheck] =
+        await User.findByMetamaskAccountNumber(req.body.metamaskAccountNumber);
+      // @ts-ignore
+      if (metamaskAccountNumberCheck.length) {
+        const isEmailAssociated =
+          metamaskAccountNumberCheck[0].emailAddress == req.body.emailAddress;
+        if (!isEmailAssociated) {
+          return ApiResponse.notFoundResponse(
+            res,
+            "Please connect the account associated with e-mail address"
+          );
+        }
+      }
+    }
+
     if (req.file) {
       const result = await uploadS3(avatarUuid, req.file.mimetype, req.file);
       user.avatar = result.Location;
@@ -198,6 +215,11 @@ const updateUserProfile = async (req, res) => {
     }
 
     console.log("Get Update User Profile Api Fullfilled");
+
+    // @ts-ignore
+    global.SocketService.handleUpdateUser({
+      user: userData[0],
+    });
 
     return ApiResponse.successResponseWithData(
       res,
@@ -257,7 +279,13 @@ const verifyAuthToken = async (req, res) => {
   try {
     console.log("Verify Auth Token Api Pending");
 
-    const generatedTimestamp = req.body.generatedTimestamp;
+    // const postTime = moment(timestamp).add(1, 'hours').format();
+    // const countDownTime = new Date(postTime).getTime();
+    // const duration = countDownTime - new Date().getTime();
+
+    const generatedTimestamp = new Date(
+      moment(req.body.generatedTimestamp).add(20, "seconds").format()
+    ).getTime();
     const duration = generatedTimestamp - new Date().getTime();
 
     if (duration < 0) {
@@ -274,8 +302,8 @@ const verifyAuthToken = async (req, res) => {
 
     // @ts-ignore
     global.SocketService.handleLoginUserToWeb({
-      id: `login-event-${req.body.id}`,
-      user: userData[0],
+      id: req.body.id,
+      user: userData[0].profileId,
     });
 
     return ApiResponse.successResponseWithData(

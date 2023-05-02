@@ -44,13 +44,7 @@ router.patch(
   // typeValidation(userValidationRule),
   UserController.updateUserProfile
 );
-router.get(
-  "/account/generateQrCode",
-  UserController.generateQR
-);
-router.post(
-  "/account/verifuAuthToken",
-  UserController.verifyAuthToken
-);
+router.get("/account/generateQrCode", UserController.generateQR);
+router.post("/account/verifyAuthToken", UserController.verifyAuthToken);
 
 module.exports = { router };
