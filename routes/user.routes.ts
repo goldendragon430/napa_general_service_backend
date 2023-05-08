@@ -37,6 +37,10 @@ router.get(
   UserController.getUserProfileDetails
 );
 router.patch(
+  "/account/status/update/:id",
+  UserController.updateUserProfileStatus
+);
+router.patch(
   "/account/update/:id",
   avatarUpload.single("avatar"),
   // uuidValidator,

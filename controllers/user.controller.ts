@@ -129,6 +129,10 @@ const getUserProfileDetails = async (req, res) => {
 
     console.log("Get User Profile Api Fullfilled");
 
+    if (user[0].accountStatus == "2") {
+      return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
+    }
+
     return ApiResponse.successResponseWithData(
       res,
       "Get User Profile Successfully",
@@ -156,6 +160,10 @@ const updateUserProfile = async (req, res) => {
 
     if (!isExit.length) {
       return ApiResponse.notFoundResponse(res, "User Not Found");
+    }
+
+    if (isExit[0].accountStatus == "2") {
+      return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
     }
 
     if (req.body.metamaskAccountNumber) {
@@ -230,6 +238,48 @@ const updateUserProfile = async (req, res) => {
     console.log("Get Update User Profile Api Rejected");
     console.log(error);
     return ApiResponse.ErrorResponse(res, "Unable to user update");
+  }
+};
+
+const updateUserProfileStatus = async (req, res) => {
+  try {
+    console.log("Update User Profile Account Status Api Pending");
+
+    const { id } = req.params;
+
+    const { accountStatus } = req.body;
+
+    const [isExit] = await User.getUserProfileDetails(id);
+
+    if (!isExit.length) {
+      return ApiResponse.notFoundResponse(res, "User Not Found");
+    }
+
+    if (!["1", "2", "3"].includes(accountStatus)) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Account Status is invalid"
+      );
+    }
+
+    const updateUser = new User(req.body);
+
+    const [userData] = await updateUser.updateStatus(id);
+
+    console.log("Update User Profile Account Status Api Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "User Profile Account Status Updated Successfully",
+      userData[0]
+    );
+  } catch (error) {
+    console.log("Update User Profile Account Status Api Rejected");
+    console.log(error);
+    return ApiResponse.ErrorResponse(
+      res,
+      "Unable to update user profile account status"
+    );
   }
 };
 
@@ -324,4 +374,5 @@ module.exports = {
   updateUserProfile,
   generateQR,
   verifyAuthToken,
+  updateUserProfileStatus,
 };

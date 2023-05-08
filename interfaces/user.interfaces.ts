@@ -12,5 +12,6 @@ export interface UserInterface {
   napaWalletAccount: string;
   binanceWalletAccount: string;
   emailAddress: string;
+  accountStatus: string;
   biometricPublickey: string;
 }
