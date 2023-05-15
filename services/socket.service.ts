@@ -87,7 +87,9 @@ class SocketService {
       socket.send(
         this.stringify({
           event: `login-event-${payload.id}`,
-          user: payload.user,
+          profileId: payload.profileId,
+          emailAddress: payload.emailAddress,
+          napaWalletAccount: payload.napaWalletAccount,
         })
       );
     });

@@ -352,8 +352,10 @@ const verifyAuthToken = async (req, res) => {
 
     // @ts-ignore
     global.SocketService.handleLoginUserToWeb({
-      id: req.body.id,
-      user: userData[0].profileId,
+      id: req?.body?.id,
+      profileId: userData[0]?.profileId || "",
+      emailAddress: userData[0]?.emailAddress || "",
+      napaWalletAccount: userData[0]?.napaWalletAccount || "",
     });
 
     return ApiResponse.successResponseWithData(
