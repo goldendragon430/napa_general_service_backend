@@ -31,7 +31,7 @@ const createUserProfile = async (req, res) => {
     };
 
     const walletResponse = await axios(options);
-    const napaWalletAccount = walletResponse?.data?.data?.CreateWallet?.address;
+    const napaWalletAccount = walletResponse?.data?.data?.CreateWallet?.public_key;
     user.napaWalletAccount = napaWalletAccount;
 
     if (req.file) {

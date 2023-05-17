@@ -69,6 +69,18 @@ class SocketService {
     });
   }
 
+  handleGetNewImportedToken(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Imported token send with websocket");
+      socket.send(
+        this.stringify({
+          event: "new-imported-token",
+          token: payload.token,
+        })
+      );
+    });
+  }
+
   handleGetTotalUsers(payload) {
     this.wss.clients.forEach((socket) => {
       console.log("Total users send with websocket");
