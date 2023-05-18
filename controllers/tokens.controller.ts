@@ -8,6 +8,11 @@ const importToken = async (req, res) => {
 
     const token = req.body;
 
+    const tokens = []
+    tokens.push(token.tokenAddresses)
+
+    token.tokenAddresses = `${tokens.join(',')}`    
+    
     const [isExit] = await Tokens.get(
       token.napaWalletAccount,
       token.networkId,

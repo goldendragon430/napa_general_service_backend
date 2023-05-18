@@ -6,4 +6,7 @@ export interface TokensInterface {
   decimals: string;
   name: string;
   symbol: string;
+  tokenAddresses: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
