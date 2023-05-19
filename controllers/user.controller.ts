@@ -6,6 +6,8 @@ import { uploadS3 } from "../utils/upload-s3";
 import axios from "axios";
 import crypto from "crypto";
 import moment from "moment";
+import NapaAccounts from "../models/napa-accounts.model";
+import { encryptString } from "../utils/encryption";
 
 const createUserProfile = async (req, res) => {
   try {
@@ -31,7 +33,10 @@ const createUserProfile = async (req, res) => {
     };
 
     const walletResponse = await axios(options);
-    const napaWalletAccount = walletResponse?.data?.data?.CreateWallet?.public_key;
+    const napaWalletAccount =
+      walletResponse?.data?.data?.CreateWallet?.public_key;
+    const napaWalletAccountPhrase =
+      walletResponse?.data?.data?.CreateWallet?.mnemonic;
     user.napaWalletAccount = napaWalletAccount;
 
     if (req.file) {
@@ -77,6 +82,35 @@ const createUserProfile = async (req, res) => {
 
     const [userData] = await newUser.create();
     const [allUsers] = await User.getAllUsers();
+
+    const options2 = {
+      method: "GET",
+      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=0&phrase=${napaWalletAccountPhrase}`,
+    };
+
+    const firstAccount = await axios(options2);
+
+    const napaWalletAccountPhraseEncrpted = encryptString(
+      napaWalletAccountPhrase
+    );
+    const subAcWalletPrivatekeyEncrpted = encryptString(
+      firstAccount?.data?.data?.tokenData?.desiredAccount?.privateKey
+    );
+
+    const napaUser = {
+      profileId: userData[0]?.profileId,
+      napaWalletAccount: userData[0]?.napaWalletAccount,
+      napaWalletAccountPhrase: napaWalletAccountPhraseEncrpted,
+      subAcWalletAddress:
+        firstAccount?.data?.data?.tokenData?.desiredAccount?.address,
+      subAcWalletName: userData[0]?.profileName,
+      subAcWalletPrivatekey: subAcWalletPrivatekeyEncrpted,
+      subAcWalletStatus: "1",
+      isActive: "true",
+    };
+
+    const napaAc = new NapaAccounts(napaUser);
+    await napaAc.create();
 
     // @ts-ignore
     global.SocketService.handleGetTotalUsers({
