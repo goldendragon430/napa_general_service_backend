@@ -200,21 +200,21 @@ const updateUserProfile = async (req, res) => {
       return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
     }
 
-    if (req.body.metamaskAccountNumber) {
-      const [metamaskAccountNumberCheck] =
-        await User.findByMetamaskAccountNumber(req.body.metamaskAccountNumber);
-      // @ts-ignore
-      if (metamaskAccountNumberCheck.length) {
-        const isEmailAssociated =
-          metamaskAccountNumberCheck[0].emailAddress == req.body.emailAddress;
-        if (!isEmailAssociated) {
-          return ApiResponse.notFoundResponse(
-            res,
-            "Please connect the account associated with e-mail address"
-          );
-        }
-      }
-    }
+    // if (req.body.metamaskAccountNumber) {
+    //   const [metamaskAccountNumberCheck] =
+    //     await User.findByMetamaskAccountNumber(req.body.metamaskAccountNumber);
+    //   // @ts-ignore
+    //   if (metamaskAccountNumberCheck.length) {
+    //     const isEmailAssociated =
+    //       metamaskAccountNumberCheck[0].emailAddress == req.body.emailAddress;
+    //     if (!isEmailAssociated) {
+    //       return ApiResponse.notFoundResponse(
+    //         res,
+    //         "Please connect the account associated with e-mail address"
+    //       );
+    //     }
+    //   }
+    // }
 
     if (req.file) {
       const result = await uploadS3(avatarUuid, req.file.mimetype, req.file);
