@@ -118,6 +118,17 @@ class SocketService {
       );
     });
   }
+
+  handleNewNapaAccount(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("New napa account send with websocket");
+      socket.send(
+        this.stringify({
+          event: `new-napa-account-${payload.id}`,
+        })
+      );
+    });
+  }
 }
 
 module.exports.SocketService = SocketService;
