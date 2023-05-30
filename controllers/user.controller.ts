@@ -121,7 +121,7 @@ const createUserProfile = async (req, res) => {
       NWA_5_NE: "",
       NWA_5_PK: "",
       NWA_5_ST: "1",
-      activeWalletAC: "0",
+      activeWalletAC: "1",
     };
 
     const napaAc = new NapaAccounts(napaUser);
