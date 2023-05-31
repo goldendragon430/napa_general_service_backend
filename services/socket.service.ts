@@ -129,6 +129,18 @@ class SocketService {
       );
     });
   }
+
+  handleSwitchNapaAccount(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Switch to new napa account send with websocket");
+      socket.send(
+        this.stringify({
+          event: `switch-to-new-napa-account-${payload.profileId}`,
+          account: payload.account,
+        })
+      );
+    });
+  }
 }
 
 module.exports.SocketService = SocketService;

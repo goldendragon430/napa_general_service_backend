@@ -75,6 +75,20 @@ class NapaAccounts {
       throw new Error(error);
     }
   }
+
+  static async switchAccount(profileId: string, index: string) {
+    try {      
+      const updateSql = `UPDATE napa_accounts SET activeWalletAC = "${index}", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${profileId}"`;
+
+      await db.execute(updateSql);
+
+      const sql = `SELECT * FROM napa_accounts WHERE profileId = "${profileId}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 export default NapaAccounts;

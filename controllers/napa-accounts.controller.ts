@@ -84,7 +84,46 @@ const AddNapaAccount = async (req, res) => {
   }
 };
 
+const switchNapaAccount = async (req, res) => {
+  try {
+    console.log("Switch Napa Account Api Pending");
+
+    const { profileId, index } = req.query;
+
+    const [napaAccounts] = await NapaAccounts.get(profileId);
+
+    // @ts-ignore
+    if (!napaAccounts.length) {
+      return ApiResponse.validationErrorWithData(res, "Napa Account Not Found");
+    }
+
+    const [updatedAccounts] = await NapaAccounts.switchAccount(
+      profileId,
+      index
+    );
+
+    console.log("Switch Napa Account Api Fullfilled");
+
+    // @ts-ignore
+    global.SocketService.handleSwitchNapaAccount({
+      profileId,
+      account: updatedAccounts[0],
+    });
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Switch Napa Account Successfully",
+      updatedAccounts[0]
+    );
+  } catch (error) {
+    console.log("Switch Napa Account Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Switch Napa Account");
+  }
+};
+
 module.exports = {
   getNapaAccounts,
   AddNapaAccount,
+  switchNapaAccount,
 };

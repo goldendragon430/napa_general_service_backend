@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get("/napaccounts", NapaAccountsController.getNapaAccounts);
 router.get("/napaccounts/new", NapaAccountsController.AddNapaAccount);
+router.get("/napaccounts/switch", NapaAccountsController.switchNapaAccount);
 
 module.exports = { router };
