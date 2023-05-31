@@ -80,7 +80,7 @@ const AddNapaAccount = async (req, res) => {
   } catch (error) {
     console.log("Add Napa Account Api Rejected");
     console.error(error);
-    return ApiResponse.ErrorResponse(res, "Unable to Add Napa Account");
+    return ApiResponse.ErrorResponse(res, "Error adding new NAPA Wallet account");
   }
 };
 
