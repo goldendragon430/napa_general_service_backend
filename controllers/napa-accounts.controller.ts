@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import axios from "axios";
-import { decryptString, encryptString } from "../utils/encryption";
+import { encryptString } from "../utils/encryption";
 import NapaAccounts from "../models/napa-accounts.model";
 const ApiResponse = require("../utils/api-response");
 
@@ -30,7 +30,7 @@ const AddNapaAccount = async (req, res) => {
   try {
     console.log("Add Napa Account Api Pending");
 
-    const { napaWalletAccountPhrase, name, index } = req.query;
+    const { profileId, name, index } = req.query;    
 
     if (index > 4) {
       return ApiResponse.validationErrorWithData(
@@ -39,13 +39,13 @@ const AddNapaAccount = async (req, res) => {
       );
     }
 
-    const napaWalletAccountPhraseDecrypted = decryptString(
-      napaWalletAccountPhrase
-    );
+    // const napaWalletAccountPhraseDecrypted = decryptString(
+    //   napaWalletAccountPhrase
+    // );
 
     const options = {
       method: "GET",
-      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=${index}&phrase=${napaWalletAccountPhraseDecrypted}`,
+      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=${index}&profileId=${profileId}`,
     };
 
     const newAccount = await axios(options);
@@ -58,7 +58,7 @@ const AddNapaAccount = async (req, res) => {
       newAccount?.data?.data?.tokenData?.desiredAccount?.address;
 
     const [napaAccounts] = await NapaAccounts.add(
-      napaWalletAccountPhrase,
+      profileId,
       name,
       index,
       newAcWalletPrivatekeyEncrpted,
@@ -69,7 +69,7 @@ const AddNapaAccount = async (req, res) => {
 
     // @ts-ignore
     global.SocketService.handleNewNapaAccount({
-      id: napaWalletAccountPhrase,
+      id: profileId,
     });
 
     return ApiResponse.successResponseWithData(
@@ -122,8 +122,54 @@ const switchNapaAccount = async (req, res) => {
   }
 };
 
+const getPhraseByProfileId = async (req, res) => {
+  try {
+    console.log("Get Phrase By ProfileId Api Pending");
+
+    const { profileId } = req.query;
+
+    const [napaAccounts] = await NapaAccounts.get(profileId);
+
+    console.log("Get Phrase By ProfileId Api  Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get Phrase By ProfileId Successfully",
+      napaAccounts[0] ? napaAccounts[0].napaWalletAccountPhrase : null
+    );
+  } catch (error) {
+    console.log("Get Phrase By ProfileId Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Get Phrase By ProfileId");
+  }
+};
+
+const getPrivateKeyByProfileId = async (req, res) => {
+  try {
+    console.log("Get Private Key By ProfileId Api Pending");
+
+    const { profileId } = req.query;
+
+    const [napaAccounts] = await NapaAccounts.get(profileId);
+
+    console.log("Get Private Key By ProfileId Api  Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get Private Key By ProfileId Successfully",
+      napaAccounts[0]
+    );
+  } catch (error) {
+    console.log("Get Private Key By ProfileId Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Get Private Key By ProfileId");
+  }
+};
+
 module.exports = {
   getNapaAccounts,
   AddNapaAccount,
   switchNapaAccount,
+  getPhraseByProfileId,
+  getPrivateKeyByProfileId
 };

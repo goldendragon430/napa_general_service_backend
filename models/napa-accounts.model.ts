@@ -62,13 +62,13 @@ class NapaAccounts {
     }
   }
 
-  static async add(napaWalletAccountPhrase: string, name: string, index: number, newAcWalletPrivatekeyEncrpted, newAcWalletAddress) {
+  static async add(profileId: string, name: string, index: number, newAcWalletPrivatekeyEncrpted, newAcWalletAddress) {
     try {
-      const updateSql = `UPDATE napa_accounts SET ${`NWA_${Number(index)+1}_AC`} = "${newAcWalletAddress}", ${`NWA_${Number(index)+1}_NE`} = "${name}", ${`NWA_${Number(index)+1}_PK`} = "${newAcWalletPrivatekeyEncrpted}", ${`NWA_${Number(index)+1}_ST`} = "1", updatedAt = CURRENT_TIMESTAMP WHERE napaWalletAccountPhrase = "${napaWalletAccountPhrase}"`;
+      const updateSql = `UPDATE napa_accounts SET ${`NWA_${Number(index)+1}_AC`} = "${newAcWalletAddress}", ${`NWA_${Number(index)+1}_NE`} = "${name}", ${`NWA_${Number(index)+1}_PK`} = "${newAcWalletPrivatekeyEncrpted}", ${`NWA_${Number(index)+1}_ST`} = "1", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${profileId}"`;
 
       await db.execute(updateSql);
 
-      const sql = `SELECT * FROM napa_accounts WHERE napaWalletAccountPhrase = "${napaWalletAccountPhrase}"`;
+      const sql = `SELECT * FROM napa_accounts WHERE profileId = "${profileId}"`;
 
       return db.execute(sql);
     } catch (error) {
