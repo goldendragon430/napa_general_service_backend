@@ -85,7 +85,7 @@ const createUserProfile = async (req, res) => {
 
     const options2 = {
       method: "GET",
-      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=0&phrase=${napaWalletAccountPhrase}`,
+      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=0&profileId=${userData[0]?.profileId}`,
     };
 
     const firstAccount = await axios(options2);
