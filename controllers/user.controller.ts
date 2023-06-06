@@ -83,27 +83,17 @@ const createUserProfile = async (req, res) => {
     const [userData] = await newUser.create();
     const [allUsers] = await User.getAllUsers();
 
-    const options2 = {
-      method: "GET",
-      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=0&profileId=${userData[0]?.profileId}`,
-    };
-
-    const firstAccount = await axios(options2);
-
     const napaWalletAccountPhraseEncrpted = encryptString(
       napaWalletAccountPhrase
-    );
-    const subAcWalletPrivatekeyEncrpted = encryptString(
-      firstAccount?.data?.data?.tokenData?.desiredAccount?.privateKey
     );
 
     const napaUser = {
       profileId: userData[0]?.profileId,
       napaWalletAccount: userData[0]?.napaWalletAccount,
       napaWalletAccountPhrase: napaWalletAccountPhraseEncrpted,
-      NWA_1_AC: firstAccount?.data?.data?.tokenData?.desiredAccount?.address,
-      NWA_1_NE: userData[0]?.profileName,
-      NWA_1_PK: subAcWalletPrivatekeyEncrpted,
+      NWA_1_AC: '',
+      NWA_1_NE: '',
+      NWA_1_PK: '',
       NWA_1_ST: "1",
       NWA_2_AC: "",
       NWA_2_NE: "",
@@ -127,6 +117,21 @@ const createUserProfile = async (req, res) => {
     const napaAc = new NapaAccounts(napaUser);
     await napaAc.create();
 
+    const options2 = {
+      method: "GET",
+      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=0&profileId=${userData[0]?.profileId}`,
+    };
+
+    const firstAccount = await axios(options2);
+
+    const subAcWalletPrivatekeyEncrpted = encryptString(
+      firstAccount?.data?.data?.tokenData?.desiredAccount?.privateKey
+    );
+
+    await NapaAccounts.update(firstAccount?.data?.data?.tokenData?.desiredAccount?.address, userData[0]?.profileName,subAcWalletPrivatekeyEncrpted, userData[0]?.profileId)
+
+    const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
+
     // @ts-ignore
     global.SocketService.handleGetTotalUsers({
       totalUsers: String(allUsers?.length) ?? "0",
@@ -137,7 +142,7 @@ const createUserProfile = async (req, res) => {
     return ApiResponse.successResponseWithData(
       res,
       "User Created Successfully",
-      userData[0]
+      isExit2[0]
     );
   } catch (error) {
     console.log("Create User Profile Api Rejected");

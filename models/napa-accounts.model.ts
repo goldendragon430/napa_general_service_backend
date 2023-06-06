@@ -89,6 +89,20 @@ class NapaAccounts {
       throw new Error(error);
     }
   }
+
+  static async update(NWA_1_AC: string, NWA_1_NE: string, NWA_1_PK: string, profileId: string) {
+    try {
+      const updateSql = `UPDATE napa_accounts SET NWA_1_AC = "${NWA_1_AC}", NWA_1_NE = "${NWA_1_NE}", NWA_1_PK = "${NWA_1_PK}", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${profileId}"`;
+
+      await db.execute(updateSql);
+
+      const sql = `SELECT * FROM napa_accounts WHERE profileId = "${profileId}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 export default NapaAccounts;
