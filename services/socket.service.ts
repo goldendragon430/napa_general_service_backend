@@ -34,7 +34,7 @@ class SocketService {
           console.log(err);
         });
       });
-    }, 50000);
+    }, 1000);
   }
 
   stringify(data) {
