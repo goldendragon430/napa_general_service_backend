@@ -28,6 +28,13 @@ class SocketService {
         console.log("open from server ", event.data);
       });
     });
+    setInterval(() => {
+      this.wss.clients.forEach((socket) => {
+        socket.ping((err) => {
+          console.log(err);
+        });
+      });
+    }, 50000);
   }
 
   stringify(data) {
