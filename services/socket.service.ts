@@ -154,7 +154,7 @@ class SocketService {
       console.log("Token visibility send with websocket");
       socket.send(
         this.stringify({
-          event: `token-visibility-update-${payload.tokenId}`,
+          event: `token-visibility-update-${payload.profileId}`,
           token: payload.token,
         })
       );

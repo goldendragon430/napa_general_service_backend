@@ -78,11 +78,13 @@ const updateTokenVisibility = async (req, res) => {
   try {
     console.log("Update Token Visibility Api Pending");
     const { tokenId, visible } = req.query;
+    
     const [tokenData] = await Tokens.updateVisibility(tokenId, visible);
+    
     console.log("Get Imported Tokens Api Fullfilled");
     // @ts-ignore
     global.SocketService.handleTokenVisibility({
-      tokenId,
+      profileId:tokenData[0]?.profileId,
       token: tokenData[0],
     });
     return ApiResponse.successResponseWithData(
