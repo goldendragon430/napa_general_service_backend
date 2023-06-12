@@ -7,6 +7,7 @@ export interface TokensInterface {
   name: string;
   symbol: string;
   tokenAddresses: string;
+  isVisible: string;
   createdAt?: string;
   updatedAt?: string;
 }

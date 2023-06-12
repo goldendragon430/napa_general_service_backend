@@ -8,11 +8,11 @@ const importToken = async (req, res) => {
 
     const token = req.body;
 
-    const tokens = []
-    tokens.push(token.tokenAddresses)
+    const tokens = [];
+    tokens.push(token.tokenAddresses);
 
-    token.tokenAddresses = `${tokens.join(',')}`    
-    
+    token.tokenAddresses = `${tokens.join(",")}`;
+
     const [isExit] = await Tokens.get(
       token.napaWalletAccount,
       token.networkId,
@@ -74,7 +74,31 @@ const getImportedTokens = async (req, res) => {
   }
 };
 
+const updateTokenVisibility = async (req, res) => {
+  try {
+    console.log("Update Token Visibility Api Pending");
+    const { tokenId, visible } = req.query;
+    const [tokenData] = await Tokens.updateVisibility(tokenId, visible);
+    console.log("Get Imported Tokens Api Fullfilled");
+    // @ts-ignore
+    global.SocketService.handleTokenVisibility({
+      tokenId,
+      token: tokenData[0],
+    });
+    return ApiResponse.successResponseWithData(
+      res,
+      "Update Token Visibility Successfully",
+      tokenData[0]
+    );
+  } catch (error) {
+    console.log("Update Token Visibility Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Update Token Visibility");
+  }
+};
+
 module.exports = {
   importToken,
   getImportedTokens,
+  updateTokenVisibility,
 };

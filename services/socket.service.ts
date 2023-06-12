@@ -148,6 +148,18 @@ class SocketService {
       );
     });
   }
+
+  handleTokenVisibility(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Token visibility send with websocket");
+      socket.send(
+        this.stringify({
+          event: `token-visibility-update-${payload.tokenId}`,
+          token: payload.token,
+        })
+      );
+    });
+  }
 }
 
 module.exports.SocketService = SocketService;
