@@ -103,6 +103,26 @@ class NapaAccounts {
       throw new Error(error);
     }
   }
+  static async delete(index: number, NW_AC_ID: string, profileId: string, activeAccountIndex: number) {
+    try {
+      const updateSql = `UPDATE napa_accounts SET NWA_${index}_ST = "${'2'}", activeWalletAC = "${activeAccountIndex}" WHERE NWA_${index}_AC = "${NW_AC_ID}"`;
+      await db.execute(updateSql);
+      const sql = `SELECT * FROM napa_accounts WHERE profileId = "${profileId}"`;
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  static async updateAccount(index: number, NW_AC_ID: string, profileId: string,name: string) {
+    try {
+      const updateSql = `UPDATE napa_accounts SET NWA_${index}_ST = "${'1'}", ${`NWA_${Number(index)}_NE`} = "${name}" WHERE NWA_${index}_AC = "${NW_AC_ID}"`;
+      await db.execute(updateSql);
+      const sql = `SELECT * FROM napa_accounts WHERE profileId = "${profileId}"`;
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 export default NapaAccounts;

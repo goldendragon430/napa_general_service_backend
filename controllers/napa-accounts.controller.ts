@@ -29,17 +29,51 @@ const getNapaAccounts = async (req, res) => {
 const AddNapaAccount = async (req, res) => {
   try {
     console.log("Add Napa Account Api Pending");
+    const { profileId, name, index } = req.query;
+    const [accounts]: any = await NapaAccounts.get(profileId);
 
-    const { profileId, name, index } = req.query;    
+    const activeAccounts: any = Array.from({ length: 5 }).reduce((acc: any, _, index) => {
+      if (accounts[0][`NWA_${index + 1}_ST`] !== "2") {
+        acc.push({
+          NW_ST: accounts[0][`NWA_${index + 1}_ST`],
 
-    if (index > 4) {
+        })
+      }
+      return acc
+    }, [])
+
+    if (activeAccounts?.length > 4) {
       return ApiResponse.validationErrorWithData(
         res,
         "Can not create more than 5 accounts."
       );
     }
 
-    // const napaWalletAccountPhraseDecrypted = decryptString(
+    const userAccounts: any = Array.from({ length: 5 }).reduce((acc: any, _, index) => {
+      acc.push({
+        NW_ST: accounts[0][`NWA_${index + 1}_ST`],
+        NW_AC: accounts[0][`NWA_${index + 1}_AC`]
+      })
+      return acc
+    }, [])
+
+
+    const findIndex = userAccounts.findIndex(account => account?.NW_ST === "2")
+    if (findIndex !== -1) {
+      const accountIndex = findIndex + 1
+      const [napaAccounts] = await NapaAccounts.updateAccount(
+        accountIndex,
+        userAccounts[findIndex][`NW_AC`],
+        profileId,
+        name,
+      );
+      return ApiResponse.successResponseWithData(
+        res,
+        "Add Napa Account Api Successfully",
+        napaAccounts
+      );
+    }
+    // const napa +WalletAccountPhraseDecrypted = decryptString(
     //   napaWalletAccountPhrase
     // );
 
@@ -166,10 +200,68 @@ const getPrivateKeyByProfileId = async (req, res) => {
   }
 };
 
+
+const deleteNapaAccount = async (req, res) => {
+  try {
+    const { profileId, accountId } = req.query;
+    const [napaAccounts]: any = await NapaAccounts.get(profileId);
+
+    if (!napaAccounts?.length) {
+      return ApiResponse.validationErrorWithData(res, "Napa Account Not Found");
+    }
+
+    const activeAccounts: any = Array.from({ length: 5 }).reduce((acc: any, _, index) => {
+      if (napaAccounts[0][`NWA_${index + 1}_ST`] !== "2") {
+        acc.push({
+          NW_ST: napaAccounts[0][`NWA_${index + 1}_ST`],
+          NW_ID: index + 1
+        })
+      }
+      return acc
+    }, [])
+
+    if (activeAccounts.length === 1) {
+      return ApiResponse.validationErrorWithData(res, "You Must Have One Active Account");
+    }
+
+    const accountIds: any = Array.from({ length: 5 }).reduce((acc: any, _, index) => {
+      acc.push({
+        NW_AC: napaAccounts[0][`NWA_${index + 1}_AC`]
+      })
+      return acc
+    }, [])
+
+    const findAccountIndex = accountIds.findIndex(account => account?.NW_AC == accountId)
+    const activeAnotherAccount = activeAccounts.find(item => item?.NW_ID !== findAccountIndex + 1);
+    const activeAccountIndex = activeAnotherAccount["NW_ID"]
+
+    if (findAccountIndex === -1) {
+      return ApiResponse.validationErrorWithData(res, "Napa Account Not Found");
+    }
+    const accountIndex = findAccountIndex + 1
+    const [deletedAccounts] = await NapaAccounts.delete(
+      accountIndex,
+      accountId,
+      profileId, activeAccountIndex
+    );
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Napa Account Delete Successfully",
+      deletedAccounts[0]
+    );
+  } catch (error) {
+    console.log("Delete Napa Account Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Delete Napa Account");
+  }
+};
+
 module.exports = {
   getNapaAccounts,
   AddNapaAccount,
   switchNapaAccount,
   getPhraseByProfileId,
-  getPrivateKeyByProfileId
+  getPrivateKeyByProfileId,
+  deleteNapaAccount
 };

@@ -9,5 +9,6 @@ router.get("/napaccounts/new", NapaAccountsController.AddNapaAccount);
 router.get("/napaccounts/switch", NapaAccountsController.switchNapaAccount);
 router.get("/getPhraseByProfileId", NapaAccountsController.getPhraseByProfileId);
 router.get("/getPrivateKeyByProfileId", NapaAccountsController.getPrivateKeyByProfileId);
+router.post("/deleteNapaAccount", NapaAccountsController.deleteNapaAccount)
 
 module.exports = { router };
