@@ -18,7 +18,7 @@ class Tokens {
       await db.execute(tableQuery);
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO tokens (tokenId, profileId, napaWalletAccount, networkId, decimals, name, symbol, tokenAddresses, createdAt, updatedAt) VALUES ("${uuid}","${
+      const insertQuery = `INSERT INTO tokens (tokenId, profileId, napaWalletAccount, networkId, decimals, name, symbol, tokenAddresses, isVisible, createdAt, updatedAt) VALUES ("${uuid}","${
         this.token.profileId || ""
       }", "${this.token.napaWalletAccount || ""}", "${
         this.token.networkId || ""
