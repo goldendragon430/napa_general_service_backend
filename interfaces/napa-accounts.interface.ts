@@ -23,4 +23,14 @@ export interface NapaAccountsInterface {
   NWA_5_PK: string;
   NWA_5_ST: string;
   activeWalletAC: string;
+  NWA_1_Type: string;
+  NWA_1_CreatedAt: string;
+  NWA_2_Type: string;
+  NWA_2_CreatedAt: string;
+  NWA_3_Type: string;
+  NWA_3_CreatedAt: string;
+  NWA_4_Type: string;
+  NWA_4_CreatedAt: string;
+  NWA_5_Type: string;
+  NWA_5_CreatedAt: string;
 }

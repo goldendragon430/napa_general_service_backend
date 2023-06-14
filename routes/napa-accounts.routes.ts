@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get("/napaccounts", NapaAccountsController.getNapaAccounts);
 router.get("/napaccounts/new", NapaAccountsController.AddNapaAccount);
+router.get("/napaccounts/import/new", NapaAccountsController.ImportNapaAccount);
 router.get("/napaccounts/switch", NapaAccountsController.switchNapaAccount);
 router.get("/getPhraseByProfileId", NapaAccountsController.getPhraseByProfileId);
 router.get("/getPrivateKeyByProfileId", NapaAccountsController.getPrivateKeyByProfileId);
