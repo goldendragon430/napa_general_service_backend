@@ -8,6 +8,7 @@ import crypto from "crypto";
 import moment from "moment";
 import NapaAccounts from "../models/napa-accounts.model";
 import { encryptString } from "../utils/encryption";
+import Tokens from "../models/tokens.model";
 
 const createUserProfile = async (req, res) => {
   try {
@@ -91,9 +92,9 @@ const createUserProfile = async (req, res) => {
       profileId: userData[0]?.profileId,
       napaWalletAccount: userData[0]?.napaWalletAccount,
       napaWalletAccountPhrase: napaWalletAccountPhraseEncrpted,
-      NWA_1_AC: '',
-      NWA_1_NE: '',
-      NWA_1_PK: '',
+      NWA_1_AC: "",
+      NWA_1_NE: "",
+      NWA_1_PK: "",
       NWA_1_ST: "1",
       NWA_2_AC: "",
       NWA_2_NE: "",
@@ -115,13 +116,13 @@ const createUserProfile = async (req, res) => {
       NWA_1_Type: "NAPA Account",
       NWA_1_CreatedAt: moment(new Date()).format("YYYY-MM-DDTHH:mm:ssZ"),
       NWA_2_Type: "",
-      NWA_2_CreatedAt:"",
+      NWA_2_CreatedAt: "",
       NWA_3_Type: "",
-      NWA_3_CreatedAt:"",
+      NWA_3_CreatedAt: "",
       NWA_4_Type: "",
-      NWA_4_CreatedAt:"",
+      NWA_4_CreatedAt: "",
       NWA_5_Type: "",
-      NWA_5_CreatedAt:""
+      NWA_5_CreatedAt: "",
     };
 
     const napaAc = new NapaAccounts(napaUser);
@@ -138,9 +139,39 @@ const createUserProfile = async (req, res) => {
       firstAccount?.data?.data?.tokenData?.desiredAccount?.privateKey
     );
 
-    await NapaAccounts.update(firstAccount?.data?.data?.tokenData?.desiredAccount?.address, userData[0]?.profileName,subAcWalletPrivatekeyEncrpted, userData[0]?.profileId)
+    await NapaAccounts.update(
+      firstAccount?.data?.data?.tokenData?.desiredAccount?.address,
+      userData[0]?.profileName,
+      subAcWalletPrivatekeyEncrpted,
+      userData[0]?.profileId
+    );
 
     const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
+
+    const tokenAddresses = "0xE2D4E29BfAC30D91a5e5Dd9BF4492A4241AE2A1D";
+
+    const options3 = {
+      method: "GET",
+      url: `https://napa-asset-backend-staging.napasociety.io/importTokens?chainId=2&contracts=${tokenAddresses}`,
+    };
+
+    const resp = await axios(options3);
+
+    const token = {
+      profileId: userData[0]?.profileId,
+      // @ts-ignore
+      napaWalletAccount:
+        firstAccount?.data?.data?.tokenData?.desiredAccount?.address,
+      networkId: "2",
+      decimals: resp.data?.data?.tokenData?.response[0]?.decimals,
+      symbol: resp.data?.data?.tokenData?.response[0]?.symbol,
+      name: resp.data?.data?.tokenData?.response[0]?.name,
+      tokenAddresses,
+    };
+    // @ts-ignore
+    const newToken = new Tokens(token);
+
+    await newToken.create();
 
     // @ts-ignore
     global.SocketService.handleGetTotalUsers({
