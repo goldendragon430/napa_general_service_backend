@@ -261,6 +261,7 @@ const ImportNapaAccount = async (req, res) => {
       (acc: any, _, index) => {
         acc.push({
           NW_PK: accounts[0][`NWA_${index + 1}_PK`],
+          NW_ST: accounts[0][`NWA_${index + 1}_ST`],
         });
         return acc;
       },
@@ -268,8 +269,8 @@ const ImportNapaAccount = async (req, res) => {
     );
 
     const findIndexPrivateKeys = userAccountsPrivateKeys.find(
-      (account) => account?.NW_PK === encryptString(privateKey)
-    );
+      (account) => account?.NW_PK === encryptString(privateKey) && account.NW_ST == '1'
+    );    
 
     // @ts-ignore
     if (findIndexPrivateKeys) {
@@ -602,7 +603,7 @@ const deleteNapaAccount = async (req, res) => {
     );
 
     // @ts-ignore
-    global.SocketService.handleSwitchNapaAccount({
+    global.SocketService.handleDeleteNapaAccount({
       profileId,
       account: deletedAccounts[0],
     });
