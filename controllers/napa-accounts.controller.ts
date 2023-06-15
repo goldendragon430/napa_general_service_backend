@@ -6,6 +6,7 @@ const ApiResponse = require("../utils/api-response");
 import { ethers } from "ethers";
 import ArchievedAccounts from "../models/archieved_accounts";
 import Tokens from "../models/tokens.model";
+import { createEthToken, createNapaToken } from "../utils/napa-accounts";
 
 const getNapaAccounts = async (req, res) => {
   try {
@@ -108,29 +109,10 @@ const AddNapaAccount = async (req, res) => {
         "NAPA Account"
       );
 
-      const tokenAddresses = "0xE2D4E29BfAC30D91a5e5Dd9BF4492A4241AE2A1D";
-
-      const options3 = {
-        method: "GET",
-        url: `https://napa-asset-backend-staging.napasociety.io/importTokens?chainId=2&contracts=${tokenAddresses}`,
-      };
-
-      const resp = await axios(options3);
-
-      const token = {
-        profileId,
-        // @ts-ignore
-        napaWalletAccount: newAcWalletAddress,
-        networkId: "2",
-        decimals: resp.data?.data?.tokenData?.response[0]?.decimals,
-        symbol: resp.data?.data?.tokenData?.response[0]?.symbol,
-        name: resp.data?.data?.tokenData?.response[0]?.name,
-        tokenAddresses,
-      };
-      // @ts-ignore
-      const newToken = new Tokens(token);
-
-      await newToken.create();
+      await createNapaToken('0',profileId,newAcWalletAddress)
+      await createNapaToken('2',profileId,newAcWalletAddress)
+      await createEthToken('0',profileId,newAcWalletAddress)
+      await createEthToken('2',profileId,newAcWalletAddress)
 
       console.log("Add Napa Account Api Fullfilled");
 
@@ -170,29 +152,10 @@ const AddNapaAccount = async (req, res) => {
       "NAPA Account"
     );
 
-    const tokenAddresses = "0xE2D4E29BfAC30D91a5e5Dd9BF4492A4241AE2A1D";
-
-    const options3 = {
-      method: "GET",
-      url: `https://napa-asset-backend-staging.napasociety.io/importTokens?chainId=2&contracts=${tokenAddresses}`,
-    };
-
-    const resp = await axios(options3);
-
-    const token = {
-      profileId,
-      // @ts-ignore
-      napaWalletAccount: newAcWalletAddress,
-      networkId: "2",
-      decimals: resp.data?.data?.tokenData?.response[0]?.decimals,
-      symbol: resp.data?.data?.tokenData?.response[0]?.symbol,
-      name: resp.data?.data?.tokenData?.response[0]?.name,
-      tokenAddresses,
-    };
-    // @ts-ignore
-    const newToken = new Tokens(token);
-
-    await newToken.create();
+    await createNapaToken('0',profileId,newAcWalletAddress)
+    await createNapaToken('2',profileId,newAcWalletAddress)
+    await createEthToken('0',profileId,newAcWalletAddress)
+    await createEthToken('2',profileId,newAcWalletAddress)
 
     console.log("Add Napa Account Api Fullfilled");
 
@@ -318,29 +281,15 @@ const ImportNapaAccount = async (req, res) => {
         "Imported"
       );
 
-      const tokenAddresses = "0xE2D4E29BfAC30D91a5e5Dd9BF4492A4241AE2A1D";
-
-      const options3 = {
-        method: "GET",
-        url: `https://napa-asset-backend-staging.napasociety.io/importTokens?chainId=2&contracts=${tokenAddresses}`,
-      };
-
-      const resp = await axios(options3);
-
-      const token = {
-        profileId,
-        // @ts-ignore
-        napaWalletAccount: newAcWalletAddress,
-        networkId: "2",
-        decimals: resp.data?.data?.tokenData?.response[0]?.decimals,
-        symbol: resp.data?.data?.tokenData?.response[0]?.symbol,
-        name: resp.data?.data?.tokenData?.response[0]?.name,
-        tokenAddresses,
-      };
-      // @ts-ignore
-      const newToken = new Tokens(token);
-
-      await newToken.create();
+      const [isNapaTokenExit] = await Tokens.getTokensByAddress(profileId,newAcWalletAddress)
+      
+      if(!isNapaTokenExit.length)
+      {
+        await createNapaToken('0',profileId,newAcWalletAddress)
+        await createNapaToken('2',profileId,newAcWalletAddress)
+        await createEthToken('0',profileId,newAcWalletAddress)
+        await createEthToken('2',profileId,newAcWalletAddress) 
+      }
 
       console.log("Import Napa Account Api Fullfilled");
 
@@ -377,29 +326,15 @@ const ImportNapaAccount = async (req, res) => {
       "Imported"
     );
 
-    const tokenAddresses = "0xE2D4E29BfAC30D91a5e5Dd9BF4492A4241AE2A1D";
-
-    const options3 = {
-      method: "GET",
-      url: `https://napa-asset-backend-staging.napasociety.io/importTokens?chainId=2&contracts=${tokenAddresses}`,
-    };
-
-    const resp = await axios(options3);
-
-    const token = {
-      profileId,
-      // @ts-ignore
-      napaWalletAccount: newAcWalletAddress,
-      networkId: "2",
-      decimals: resp.data?.data?.tokenData?.response[0]?.decimals,
-      symbol: resp.data?.data?.tokenData?.response[0]?.symbol,
-      name: resp.data?.data?.tokenData?.response[0]?.name,
-      tokenAddresses,
-    };
-    // @ts-ignore
-    const newToken = new Tokens(token);
-
-    await newToken.create();
+    const [isNapaTokenExit] = await Tokens.getTokensByAddress(profileId,newAcWalletAddress)
+      
+    if(!isNapaTokenExit.length)
+    {
+      await createNapaToken('0',profileId,newAcWalletAddress)
+      await createNapaToken('2',profileId,newAcWalletAddress)
+      await createEthToken('0',profileId,newAcWalletAddress)
+      await createEthToken('2',profileId,newAcWalletAddress) 
+    }
 
     console.log("Add Napa Account Api Fullfilled");
 

@@ -9,6 +9,7 @@ import moment from "moment";
 import NapaAccounts from "../models/napa-accounts.model";
 import { encryptString } from "../utils/encryption";
 import Tokens from "../models/tokens.model";
+import { createEthToken, createNapaToken } from "../utils/napa-accounts";
 
 const createUserProfile = async (req, res) => {
   try {
@@ -148,30 +149,10 @@ const createUserProfile = async (req, res) => {
 
     const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
 
-    const tokenAddresses = "0xE2D4E29BfAC30D91a5e5Dd9BF4492A4241AE2A1D";
-
-    const options3 = {
-      method: "GET",
-      url: `https://napa-asset-backend-staging.napasociety.io/importTokens?chainId=2&contracts=${tokenAddresses}`,
-    };
-
-    const resp = await axios(options3);
-
-    const token = {
-      profileId: userData[0]?.profileId,
-      // @ts-ignore
-      napaWalletAccount:
-        firstAccount?.data?.data?.tokenData?.desiredAccount?.address,
-      networkId: "2",
-      decimals: resp.data?.data?.tokenData?.response[0]?.decimals,
-      symbol: resp.data?.data?.tokenData?.response[0]?.symbol,
-      name: resp.data?.data?.tokenData?.response[0]?.name,
-      tokenAddresses,
-    };
-    // @ts-ignore
-    const newToken = new Tokens(token);
-
-    await newToken.create();
+    await createNapaToken('0',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
+    await createNapaToken('2',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
+    await createEthToken('0',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
+    await createEthToken('2',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
 
     // @ts-ignore
     global.SocketService.handleGetTotalUsers({

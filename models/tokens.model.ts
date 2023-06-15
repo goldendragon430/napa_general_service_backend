@@ -59,6 +59,16 @@ class Tokens {
     }
   }
 
+  static getTokensByAddress(profileId:string, napaWalletAccount: string) {
+    try {
+      const sql = `SELECT * FROM tokens WHERE napaWalletAccount = "${napaWalletAccount}" AND profileId = "${profileId}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   static async updateVisibility(tokenId: string, visible: string) {
     try {
       const updateSql = `UPDATE tokens SET isVisible = "${visible}", updatedAt = "${moment(new Date()).format("YYYY-MM-DDTHH:mm:ssZ")}" WHERE tokenId = "${tokenId}"`;
