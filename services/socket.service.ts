@@ -149,6 +149,18 @@ class SocketService {
     });
   }
 
+  handleDeleteNapaAccount(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Switch to new napa account send with websocket");
+      socket.send(
+        this.stringify({
+          event: `delete-napa-account-${payload.profileId}`,
+          account: payload.account,
+        })
+      );
+    });
+  }
+
   handleTokenVisibility(payload) {
     this.wss.clients.forEach((socket) => {
       console.log("Token visibility send with websocket");
