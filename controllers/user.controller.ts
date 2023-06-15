@@ -149,7 +149,6 @@ const createUserProfile = async (req, res) => {
 
     const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
 
-    await createNapaToken('0',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
     await createNapaToken('2',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
     await createEthToken('0',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
     await createEthToken('2',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)

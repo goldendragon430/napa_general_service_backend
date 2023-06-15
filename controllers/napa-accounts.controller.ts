@@ -109,7 +109,6 @@ const AddNapaAccount = async (req, res) => {
         "NAPA Account"
       );
 
-      await createNapaToken('0',profileId,newAcWalletAddress)
       await createNapaToken('2',profileId,newAcWalletAddress)
       await createEthToken('0',profileId,newAcWalletAddress)
       await createEthToken('2',profileId,newAcWalletAddress)
@@ -152,7 +151,6 @@ const AddNapaAccount = async (req, res) => {
       "NAPA Account"
     );
 
-    await createNapaToken('0',profileId,newAcWalletAddress)
     await createNapaToken('2',profileId,newAcWalletAddress)
     await createEthToken('0',profileId,newAcWalletAddress)
     await createEthToken('2',profileId,newAcWalletAddress)
@@ -285,7 +283,6 @@ const ImportNapaAccount = async (req, res) => {
       
       if(!isNapaTokenExit.length)
       {
-        await createNapaToken('0',profileId,newAcWalletAddress)
         await createNapaToken('2',profileId,newAcWalletAddress)
         await createEthToken('0',profileId,newAcWalletAddress)
         await createEthToken('2',profileId,newAcWalletAddress) 
@@ -330,7 +327,6 @@ const ImportNapaAccount = async (req, res) => {
       
     if(!isNapaTokenExit.length)
     {
-      await createNapaToken('0',profileId,newAcWalletAddress)
       await createNapaToken('2',profileId,newAcWalletAddress)
       await createEthToken('0',profileId,newAcWalletAddress)
       await createEthToken('2',profileId,newAcWalletAddress) 
