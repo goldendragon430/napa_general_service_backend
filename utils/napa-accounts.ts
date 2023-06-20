@@ -6,7 +6,7 @@ export const createNapaToken = async (
   profileId: string,
   napaWalletAccount: string
 ) => {
-  const tokenAddresses = "0xE2D4E29BfAC30D91a5e5Dd9BF4492A4241AE2A1D";
+  const tokenAddresses = "0x245567d7CC4a7382FA5E69E73C647ce6a10bF8D4";
 
   const options3 = {
     method: "GET",
