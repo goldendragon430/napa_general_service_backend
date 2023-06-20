@@ -39,9 +39,9 @@ class Tokens {
     }
   }
 
-  static get(napaWalletAccount: string, networkId: string, symbol: string) {
+  static get(napaWalletAccount: string, networkId: string, tokenAddresses: string) {
     try {
-      const sql = `SELECT * FROM tokens WHERE napaWalletAccount = "${napaWalletAccount}" AND networkId = "${networkId}" AND symbol = "${symbol}"`;
+      const sql = `SELECT * FROM tokens WHERE napaWalletAccount = "${napaWalletAccount}" AND networkId = "${networkId}" AND tokenAddresses = "${tokenAddresses}"`;
 
       return db.execute(sql);
     } catch (error) {
@@ -51,7 +51,7 @@ class Tokens {
 
   static getTokens(napaWalletAccount: string, networkId) {
     try {
-      const sql = `SELECT * FROM tokens WHERE napaWalletAccount = "${napaWalletAccount}" AND networkId = "${networkId}"`;
+      const sql = `SELECT * FROM tokens WHERE napaWalletAccount = "${napaWalletAccount}" AND networkId = "${networkId}" ORDER BY createdAt DESC`;
 
       return db.execute(sql);
     } catch (error) {

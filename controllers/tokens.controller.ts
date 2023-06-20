@@ -16,7 +16,7 @@ const importToken = async (req, res) => {
     const [isExit] = await Tokens.get(
       token.napaWalletAccount,
       token.networkId,
-      token.symbol
+      token.tokenAddresses
     );
 
     if (isExit.length) {
