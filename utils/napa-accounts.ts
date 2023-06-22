@@ -1,5 +1,6 @@
 import axios from "axios";
 import Tokens from "../models/tokens.model";
+import { ASSET_MANAGEMENT_API_URL } from "./url";
 
 export const createNapaToken = async (
   networkId: string,
@@ -10,7 +11,7 @@ export const createNapaToken = async (
 
   const options3 = {
     method: "GET",
-    url: `https://napa-asset-backend-staging.napasociety.io/importTokens?chainId=${networkId}&contracts=${tokenAddresses}`,
+    url: `${ASSET_MANAGEMENT_API_URL}/importTokens?chainId=${networkId}&contracts=${tokenAddresses}`,
   };
 
   const resp = await axios(options3);

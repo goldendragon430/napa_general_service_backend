@@ -1,0 +1,1 @@
+export const ASSET_MANAGEMENT_API_URL = 'https://napa-asset-backend-staging.napasociety.io'

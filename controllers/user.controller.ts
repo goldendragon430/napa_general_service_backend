@@ -10,6 +10,7 @@ import NapaAccounts from "../models/napa-accounts.model";
 import { encryptString } from "../utils/encryption";
 import Tokens from "../models/tokens.model";
 import { createEthToken, createNapaToken } from "../utils/napa-accounts";
+import { ASSET_MANAGEMENT_API_URL } from "../utils/url";
 
 const createUserProfile = async (req, res) => {
   try {
@@ -31,7 +32,7 @@ const createUserProfile = async (req, res) => {
 
     const options = {
       method: "GET",
-      url: "https://napa-asset-backend-staging.napasociety.io/createWallet",
+      url: `${ASSET_MANAGEMENT_API_URL}/createWallet`,
     };
 
     const walletResponse = await axios(options);
@@ -131,7 +132,7 @@ const createUserProfile = async (req, res) => {
 
     const options2 = {
       method: "GET",
-      url: `https://napa-asset-backend-staging.napasociety.io/fetchAccountsByIndex?index=0&profileId=${userData[0]?.profileId}`,
+      url: `${ASSET_MANAGEMENT_API_URL}/fetchAccountsByIndex?index=0&profileId=${userData[0]?.profileId}`,
     };
 
     const firstAccount = await axios(options2);
