@@ -11,5 +11,6 @@ router.get("/napaccounts/switch", NapaAccountsController.switchNapaAccount);
 router.get("/getPhraseByProfileId", NapaAccountsController.getPhraseByProfileId);
 router.get("/getPrivateKeyByProfileId", NapaAccountsController.getPrivateKeyByProfileId);
 router.post("/deleteNapaAccount", NapaAccountsController.deleteNapaAccount)
+router.get("/napaccounts/getRecoveryPhrase", NapaAccountsController.getRecoveryPhrase);
 
 module.exports = { router };

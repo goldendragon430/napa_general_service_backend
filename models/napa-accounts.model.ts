@@ -169,6 +169,16 @@ class NapaAccounts {
       throw new Error(error);
     }
   }
+
+  static getRecoveryPhrase(profileId: string) {
+    try {
+      const sql = `SELECT napaWalletAccountPhrase FROM napa_accounts WHERE profileId = "${profileId}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 export default NapaAccounts;

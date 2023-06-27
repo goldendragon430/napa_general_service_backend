@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import axios from "axios";
-import { encryptString } from "../utils/encryption";
+import { decryptString, encryptString } from "../utils/encryption";
 import NapaAccounts from "../models/napa-accounts.model";
 const ApiResponse = require("../utils/api-response");
 import { ethers } from "ethers";
@@ -19,6 +19,13 @@ const getNapaAccounts = async (req, res) => {
 
     console.log("Get Napa Accounts Api Fullfilled");
 
+    delete napaAccounts[0]['napaWalletAccountPhrase']
+    delete napaAccounts[0]['NWA_1_PK']
+    delete napaAccounts[0]['NWA_2_PK']
+    delete napaAccounts[0]['NWA_3_PK']
+    delete napaAccounts[0]['NWA_4_PK']
+    delete napaAccounts[0]['NWA_5_PK']
+
     return ApiResponse.successResponseWithData(
       res,
       "Get Napa Accounts Successfully",
@@ -28,6 +35,32 @@ const getNapaAccounts = async (req, res) => {
     console.log("Get Napa Accounts Api Rejected");
     console.error(error);
     return ApiResponse.ErrorResponse(res, "Unable to Get Napa Accounts");
+  }
+};
+
+const getRecoveryPhrase = async (req, res) => {
+  try {
+    console.log("Get Recovery Phrase Api Pending");
+
+    const { profileId } = req.query;
+
+    const [napaAccounts] = await NapaAccounts.getRecoveryPhrase(profileId);
+
+    const decryptedPhrase = decryptString(napaAccounts[0].napaWalletAccountPhrase)
+
+	console.log("Get Recovery Phrase Api Fullfilled");
+    
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get Recovery Phrase Successfully",
+      {
+        phrase: decryptedPhrase
+      }
+    );
+  } catch (error) {
+    console.log("Get Recovery Phrase Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to Get Recovery Phrase");
   }
 };
 
@@ -560,4 +593,5 @@ module.exports = {
   getPrivateKeyByProfileId,
   deleteNapaAccount,
   ImportNapaAccount,
+  getRecoveryPhrase
 };
