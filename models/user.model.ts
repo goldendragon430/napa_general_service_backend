@@ -2,6 +2,7 @@
 import { UserInterface } from "../interfaces/user.interfaces";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import { decryptString, encryptString } from "../utils/encryption";
 const { db, socialArtDb, stakingDB } = require("../index");
 
 class User {
@@ -13,14 +14,14 @@ class User {
   async create() {
     try {
       const tableQuery =
-        "CREATE TABLE IF NOT EXISTS users (rowId INTEGER AUTO_INCREMENT NOT NULL UNIQUE KEY, profileId VARCHAR(45) NOT NULL PRIMARY KEY, biometricPublickey VARCHAR(255), metamaskAccountNumber VARCHAR(255), napaWalletAccount VARCHAR(255), binanceWalletAccount VARCHAR(255), emailAddress VARCHAR(255) NOT NULL, accountStatus ENUM('1', '2', '3') NOT NULL DEFAULT '1', profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', accountType text NULL, createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, awardsEarned INT, awardsGiven INT, netAwardsAvailable INT, dailyActive VARCHAR(45) NOT NULL, monthlyActive VARCHAR(45) NOT NULL, UNIQUE(emailAddress))";
+        "CREATE TABLE IF NOT EXISTS users (rowId INTEGER AUTO_INCREMENT NOT NULL UNIQUE KEY, profileId VARCHAR(45) NOT NULL PRIMARY KEY, biometricPublickey VARCHAR(255), metamaskAccountNumber VARCHAR(255), napaWalletAccount VARCHAR(255), binanceWalletAccount VARCHAR(255), emailAddress VARCHAR(255) NOT NULL, accountStatus ENUM('1', '2', '3') NOT NULL DEFAULT '1', profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', accountType text NULL, registrationType VARCHAR(45), pin VARCHAR(255), createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, awardsEarned INT, awardsGiven INT, netAwardsAvailable INT, dailyActive VARCHAR(45) NOT NULL, monthlyActive VARCHAR(45) NOT NULL, UNIQUE(emailAddress))";
 
       await db.execute(tableQuery);
       await socialArtDb.execute(tableQuery);
       await stakingDB.execute(tableQuery);
       const uuid = uuidv4();
 
-      const insertQuery = `INSERT INTO users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, accountStatus, profileName, bio, timezone, primaryCurrency, language, accountType, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
+      const insertQuery = `INSERT INTO users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, accountStatus, profileName, bio, timezone, primaryCurrency, language, accountType, registrationType, pin, avatar, dailyActive, monthlyActive) VALUES ("${uuid}", "${
         this.user.biometricPublickey || ""
       }", "${this.user.metamaskAccountNumber || ""}", "${
         this.user.napaWalletAccount || ""
@@ -30,9 +31,10 @@ class User {
         this.user.timezone || ""
       }", "${this.user.primaryCurrency || "NAPA"}", "${
         this.user.language || "English"
-      }", "${this.user.accountType || ""}", "${
-        this.user.avatar || ""
-      }", "false", "false")`;
+      }", "${this.user.accountType || ""}", 
+      "${this.user.registrationType || "Biometric"}",
+      "${this.user.pin || ""}",
+      "${this.user.avatar || ""}", "false", "false")`;
 
       await db.execute(insertQuery);
       await socialArtDb.execute(insertQuery);
@@ -94,6 +96,17 @@ class User {
   static getUserProfileDetails(id: string) {
     try {
       const sql = `SELECT * FROM users WHERE profileId = "${id}" OR metamaskAccountNumber = "${id}" OR napaWalletAccount = "${id}" OR emailAddress = "${id}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  static getUserProfileDetailsByPin(emailAddress: string, pin) {
+    try {
+      const encryptedPin = encryptString(pin);
+      const sql = `SELECT * FROM users WHERE emailAddress = "${emailAddress}" AND pin = "${encryptedPin}"`;
 
       return db.execute(sql);
     } catch (error) {

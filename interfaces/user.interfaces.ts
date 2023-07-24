@@ -14,4 +14,6 @@ export interface UserInterface {
   emailAddress: string;
   accountStatus: string;
   biometricPublickey: string;
+  registrationType: string;
+  pin: string;
 }

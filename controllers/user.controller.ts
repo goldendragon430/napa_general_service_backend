@@ -42,6 +42,10 @@ const createUserProfile = async (req, res) => {
       walletResponse?.data?.data?.CreateWallet?.mnemonic;
     user.napaWalletAccount = napaWalletAccount;
 
+    if (user.pin) {
+      user.pin = encryptString(user.pin);
+    }
+
     if (req.file) {
       const result = await uploadS3(avatarUuid, req.file.mimetype, req.file);
       user.avatar = result.Location;
@@ -150,9 +154,21 @@ const createUserProfile = async (req, res) => {
 
     const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
 
-    await createNapaToken('2',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
-    await createEthToken('0',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
-    await createEthToken('2',userData[0]?.profileId, firstAccount?.data?.data?.tokenData?.desiredAccount?.address)
+    await createNapaToken(
+      "2",
+      userData[0]?.profileId,
+      firstAccount?.data?.data?.tokenData?.desiredAccount?.address
+    );
+    await createEthToken(
+      "0",
+      userData[0]?.profileId,
+      firstAccount?.data?.data?.tokenData?.desiredAccount?.address
+    );
+    await createEthToken(
+      "2",
+      userData[0]?.profileId,
+      firstAccount?.data?.data?.tokenData?.desiredAccount?.address
+    );
 
     // @ts-ignore
     global.SocketService.handleGetTotalUsers({
@@ -198,6 +214,57 @@ const getUserProfileDetails = async (req, res) => {
     // }
 
     const [user] = await User.getUserProfileDetails(id);
+
+    if (!user.length) {
+      return ApiResponse.notFoundResponse(res, "User Not Found");
+    }
+
+    console.log("Get User Profile Api Fullfilled");
+
+    if (user[0].accountStatus == "2") {
+      return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
+    }
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get User Profile Successfully",
+      user[0]
+    );
+  } catch (error) {
+    console.log("Get User Profile Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, "Unable to fetch user profile");
+  }
+};
+
+const getUserProfileDetailsByPin = async (req, res) => {
+  try {
+    console.log("Get User Profile Api Pending");
+
+    const { emailAddress, pin } = req.params;
+
+    console.log(emailAddress, pin);
+    
+
+    // if (!id) {
+    //   return ApiResponse.validationErrorWithData(
+    //     res,
+    //     "id is required in params"
+    //   );
+    // }
+
+    // if (
+    //   id.length < 36 ||
+    //   id.length > 42 ||
+    //   (id.length > 36 && id.length < 42)
+    // ) {
+    //   return ApiResponse.validationErrorWithData(
+    //     res,
+    //     "Wallet address or UUID is invalid"
+    //   );
+    // }
+
+    const [user] = await User.getUserProfileDetailsByPin(emailAddress, pin);
 
     if (!user.length) {
       return ApiResponse.notFoundResponse(res, "User Not Found");
@@ -453,4 +520,5 @@ module.exports = {
   generateQR,
   verifyAuthToken,
   updateUserProfileStatus,
+  getUserProfileDetailsByPin,
 };

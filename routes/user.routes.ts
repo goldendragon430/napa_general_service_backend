@@ -36,6 +36,12 @@ router.get(
   walletValidator,
   UserController.getUserProfileDetails
 );
+router.get(
+  "/account/detailsByPin/:emailAddress/:pin",
+  // uuidValidator,
+  // walletValidator,
+  UserController.getUserProfileDetailsByPin
+);
 router.patch(
   "/account/status/update/:id",
   UserController.updateUserProfileStatus
