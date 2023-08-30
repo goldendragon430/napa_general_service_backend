@@ -16,4 +16,7 @@ export interface UserInterface {
   biometricPublickey: string;
   registrationType: string;
   pin: string;
+  fans: number;
+  fansOf: number;
+  deviceToken: string;
 }

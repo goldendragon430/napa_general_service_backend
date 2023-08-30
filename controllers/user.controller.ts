@@ -192,6 +192,7 @@ const createUserProfile = async (req, res) => {
 const getUserProfileDetails = async (req, res) => {
   try {
     console.log("Get User Profile Api Pending");
+    const { deviceToken } = req.query;
 
     const { id } = req.params;
 
@@ -225,6 +226,15 @@ const getUserProfileDetails = async (req, res) => {
       return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
     }
 
+    if (deviceToken) {
+      const [userUpdated] = await User.updateDeviceToken(deviceToken, id);
+      return ApiResponse.successResponseWithData(
+        res,
+        "Get User Profile Successfully",
+        userUpdated[0]
+      );
+    }
+
     return ApiResponse.successResponseWithData(
       res,
       "Get User Profile Successfully",
@@ -240,11 +250,9 @@ const getUserProfileDetails = async (req, res) => {
 const getUserProfileDetailsByPin = async (req, res) => {
   try {
     console.log("Get User Profile Api Pending");
+    const { deviceToken } = req.query;
 
     const { emailAddress, pin } = req.params;
-
-    console.log(emailAddress, pin);
-    
 
     // if (!id) {
     //   return ApiResponse.validationErrorWithData(
@@ -274,6 +282,15 @@ const getUserProfileDetailsByPin = async (req, res) => {
 
     if (user[0].accountStatus == "2") {
       return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
+    }
+
+    if (deviceToken) {
+      const [userUpdated] = await User.updateDeviceToken(deviceToken, emailAddress);
+      return ApiResponse.successResponseWithData(
+        res,
+        "Get User Profile Successfully",
+        userUpdated[0]
+      );
     }
 
     return ApiResponse.successResponseWithData(
