@@ -226,7 +226,7 @@ const getUserProfileDetails = async (req, res) => {
       return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
     }
 
-    if (deviceToken) {
+    if (deviceToken && deviceToken != "undefined" && deviceToken != "") {
       const [userUpdated] = await User.updateDeviceToken(deviceToken, id);
       return ApiResponse.successResponseWithData(
         res,
@@ -284,7 +284,7 @@ const getUserProfileDetailsByPin = async (req, res) => {
       return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
     }
 
-    if (deviceToken) {
+    if (deviceToken && deviceToken != "undefined" && deviceToken != "") {
       const [userUpdated] = await User.updateDeviceToken(deviceToken, emailAddress);
       return ApiResponse.successResponseWithData(
         res,
