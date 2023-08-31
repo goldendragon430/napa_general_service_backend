@@ -498,6 +498,31 @@ const getPrivateKeyByProfileId = async (req, res) => {
   }
 };
 
+const getDeviceToken = async (req, res) => {
+  try {
+    console.log("Get Device Token Api Pending");
+
+    const { address } = req.query;
+
+    const [deviceToken] = await NapaAccounts.getDeviceToken(address);
+
+    console.log("Get Device Token Api Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get Device Token Api Successfully",
+      deviceToken[0]
+    );
+  } catch (error) {
+    console.log("Get Device Token Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(
+      res,
+      "Unable to Get Device Token"
+    );
+  }
+};
+
 const deleteNapaAccount = async (req, res) => {
   try {
     const { profileId, accountId } = req.query;
@@ -593,5 +618,6 @@ module.exports = {
   getPrivateKeyByProfileId,
   deleteNapaAccount,
   ImportNapaAccount,
-  getRecoveryPhrase
+  getRecoveryPhrase,
+  getDeviceToken
 };

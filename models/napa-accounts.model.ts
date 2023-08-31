@@ -71,6 +71,13 @@ class NapaAccounts {
     }
   }
 
+  static async getDeviceToken(address: string) {
+    const getProfileId = `SELECT profileId FROM napa_accounts WHERE NWA_1_AC = "${address}" OR NWA_2_AC = "${address}" OR NWA_3_AC = "${address}" OR NWA_4_AC = "${address}" OR NWA_5_AC = "${address}"`;
+    const [profileId] = await db.execute(getProfileId);
+    const getDeviceToken = `SELECT deviceToken FROM users WHERE profileId = "${profileId[0]?.profileId}"`;
+    return db.execute(getDeviceToken);
+  }
+
   static async add(
     profileId: string,
     name: string,
@@ -89,7 +96,11 @@ class NapaAccounts {
         Number(index) + 1
       }_PK`} = "${newAcWalletPrivatekeyEncrpted}", ${`NWA_${
         Number(index) + 1
-      }_ST`} = "1", totalAccounts = "${totalAccounts}", NWA_${Number(index) + 1}_Type = "${type}", NWA_${Number(index) + 1}_CreatedAt = "${moment(new Date()).format("YYYY-MM-DDTHH:mm:ssZ")}" WHERE profileId = "${profileId}"`;
+      }_ST`} = "1", totalAccounts = "${totalAccounts}", NWA_${
+        Number(index) + 1
+      }_Type = "${type}", NWA_${Number(index) + 1}_CreatedAt = "${moment(
+        new Date()
+      ).format("YYYY-MM-DDTHH:mm:ssZ")}" WHERE profileId = "${profileId}"`;
 
       await db.execute(updateSql);
 
@@ -161,7 +172,9 @@ class NapaAccounts {
     try {
       const updateSql = `UPDATE napa_accounts SET NWA_${index}_ST = "${"1"}", ${`NWA_${Number(
         index
-      )}_NE`} = "${name}", NWA_${index}_PK = "${PK}", NWA_${index}_AC = "${address}", totalAccounts = "${totalAccounts}", NWA_${index}_Type = "${type}", NWA_${index}_CreatedAt = "${moment(new Date()).format("YYYY-MM-DDTHH:mm:ssZ")}" WHERE NWA_${index}_AC = "${NW_AC_ID}"`;
+      )}_NE`} = "${name}", NWA_${index}_PK = "${PK}", NWA_${index}_AC = "${address}", totalAccounts = "${totalAccounts}", NWA_${index}_Type = "${type}", NWA_${index}_CreatedAt = "${moment(
+        new Date()
+      ).format("YYYY-MM-DDTHH:mm:ssZ")}" WHERE NWA_${index}_AC = "${NW_AC_ID}"`;
       await db.execute(updateSql);
       const sql = `SELECT * FROM napa_accounts WHERE profileId = "${profileId}"`;
       return db.execute(sql);

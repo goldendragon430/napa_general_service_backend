@@ -10,6 +10,7 @@ router.get("/napaccounts/import/new", NapaAccountsController.ImportNapaAccount);
 router.get("/napaccounts/switch", NapaAccountsController.switchNapaAccount);
 router.get("/getPhraseByProfileId", NapaAccountsController.getPhraseByProfileId);
 router.get("/getPrivateKeyByProfileId", NapaAccountsController.getPrivateKeyByProfileId);
+router.get("/getDeviceToken", NapaAccountsController.getDeviceToken);
 router.post("/deleteNapaAccount", NapaAccountsController.deleteNapaAccount)
 router.get("/napaccounts/getRecoveryPhrase", NapaAccountsController.getRecoveryPhrase);
 
