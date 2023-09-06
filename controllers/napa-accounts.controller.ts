@@ -7,7 +7,6 @@ import { ethers } from "ethers";
 import ArchievedAccounts from "../models/archieved_accounts";
 import Tokens from "../models/tokens.model";
 import { createEthToken, createNapaToken } from "../utils/napa-accounts";
-import { ASSET_MANAGEMENT_API_URL } from "../utils/url";
 
 const getNapaAccounts = async (req, res) => {
   try {
@@ -120,7 +119,7 @@ const AddNapaAccount = async (req, res) => {
 
       const options = {
         method: "GET",
-        url: `${ASSET_MANAGEMENT_API_URL}/fetchAccountsByIndex?index=${accounts[0].totalAccounts}&profileId=${profileId}`,
+        url: `${process.env.ASSET_MANAGEMENT_API_URL}/fetchAccountsByIndex?index=${accounts[0].totalAccounts}&profileId=${profileId}`,
       };
 
       const newAccount = await axios(options);
@@ -163,7 +162,7 @@ const AddNapaAccount = async (req, res) => {
 
     const options = {
       method: "GET",
-      url: `${ASSET_MANAGEMENT_API_URL}/fetchAccountsByIndex?index=${accounts[0].totalAccounts}&profileId=${profileId}`,
+      url: `${process.env.ASSET_MANAGEMENT_API_URL}/fetchAccountsByIndex?index=${accounts[0].totalAccounts}&profileId=${profileId}`,
     };
 
     const newAccount = await axios(options);
@@ -293,7 +292,7 @@ const ImportNapaAccount = async (req, res) => {
       const accountIndex = findIndex + 1;
       const options = {
         method: "GET",
-        url: `${ASSET_MANAGEMENT_API_URL}/importAccountFromPrivateKey?privateKey=${privateKey}`,
+        url: `${process.env.ASSET_MANAGEMENT_API_URL}/importAccountFromPrivateKey?privateKey=${privateKey}`,
       };
 
       const newAccount = await axios(options);
@@ -338,7 +337,7 @@ const ImportNapaAccount = async (req, res) => {
 
     const options = {
       method: "GET",
-      url: `${ASSET_MANAGEMENT_API_URL}/importAccountFromPrivateKey?privateKey=${privateKey}`,
+      url: `${process.env.ASSET_MANAGEMENT_API_URL}/importAccountFromPrivateKey?privateKey=${privateKey}`,
     };
 
     const newAccount = await axios(options);
