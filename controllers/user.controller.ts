@@ -10,6 +10,7 @@ import NapaAccounts from "../models/napa-accounts.model";
 import { encryptString } from "../utils/encryption";
 import Tokens from "../models/tokens.model";
 import { createEthToken, createNapaToken } from "../utils/napa-accounts";
+import { db } from "../index";
 
 const createUserProfile = async (req, res) => {
   try {
@@ -529,6 +530,37 @@ const verifyAuthToken = async (req, res) => {
   }
 };
 
+const serarchUsers = async (req, res) => {
+  try {
+    console.log("Search Users Api Pending");
+    const { userName } = req.query;
+
+    if (!userName) {
+      return ApiResponse.validationErrorWithData(res, "User name required");
+    }
+
+    const searchQuery = `SELECT profileId, profileName, avatar FROM users WHERE LOWER(profileName) LIKE ('%${userName}%')`;
+    const [users] = await db.query(searchQuery);
+
+    // @ts-ignore
+    if (!users.length) {
+      return ApiResponse.validationErrorWithData(res, "User Not Found");
+    }
+
+    console.log("Search Users Api Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Search Users Api Successfully",
+      users
+    );
+  } catch (error) {
+    console.log("Search Users Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfileDetails,
@@ -537,4 +569,5 @@ module.exports = {
   verifyAuthToken,
   updateUserProfileStatus,
   getUserProfileDetailsByPin,
+  serarchUsers
 };

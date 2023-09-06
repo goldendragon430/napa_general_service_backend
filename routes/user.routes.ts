@@ -36,6 +36,7 @@ router.get(
   walletValidator,
   UserController.getUserProfileDetails
 );
+router.get("/search", UserController.serarchUsers);
 router.get(
   "/account/detailsByPin/:emailAddress/:pin",
   // uuidValidator,
