@@ -155,7 +155,7 @@ const createUserProfile = async (req, res) => {
     const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
 
     await createNapaToken(
-      "2",
+      process.env.ENVIRONMENT === 'staging' ? "2" : '0',
       userData[0]?.profileId,
       firstAccount?.data?.data?.tokenData?.desiredAccount?.address
     );
