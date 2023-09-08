@@ -164,11 +164,13 @@ const createUserProfile = async (req, res) => {
       userData[0]?.profileId,
       firstAccount?.data?.data?.tokenData?.desiredAccount?.address
     );
-    await createEthToken(
-      "2",
-      userData[0]?.profileId,
-      firstAccount?.data?.data?.tokenData?.desiredAccount?.address
-    );
+    if(process.env.ENVIRONMENT === 'staging') {
+      await createEthToken(
+        "2",
+        userData[0]?.profileId,
+        firstAccount?.data?.data?.tokenData?.desiredAccount?.address
+      );
+    }
 
     // @ts-ignore
     global.SocketService.handleGetTotalUsers({

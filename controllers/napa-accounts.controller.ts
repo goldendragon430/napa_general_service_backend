@@ -144,7 +144,7 @@ const AddNapaAccount = async (req, res) => {
 
       await createNapaToken('2',profileId,newAcWalletAddress)
       await createEthToken('0',profileId,newAcWalletAddress)
-      await createEthToken('2',profileId,newAcWalletAddress)
+      if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
 
       console.log("Add Napa Account Api Fullfilled");
 
@@ -186,7 +186,7 @@ const AddNapaAccount = async (req, res) => {
 
     await createNapaToken('2',profileId,newAcWalletAddress)
     await createEthToken('0',profileId,newAcWalletAddress)
-    await createEthToken('2',profileId,newAcWalletAddress)
+    if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
 
     console.log("Add Napa Account Api Fullfilled");
 
@@ -318,7 +318,7 @@ const ImportNapaAccount = async (req, res) => {
       {
         await createNapaToken('2',profileId,newAcWalletAddress)
         await createEthToken('0',profileId,newAcWalletAddress)
-        await createEthToken('2',profileId,newAcWalletAddress) 
+        if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
       }
 
       console.log("Import Napa Account Api Fullfilled");
@@ -362,7 +362,7 @@ const ImportNapaAccount = async (req, res) => {
     {
       await createNapaToken('2',profileId,newAcWalletAddress)
       await createEthToken('0',profileId,newAcWalletAddress)
-      await createEthToken('2',profileId,newAcWalletAddress) 
+      if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
     }
 
     console.log("Add Napa Account Api Fullfilled");
