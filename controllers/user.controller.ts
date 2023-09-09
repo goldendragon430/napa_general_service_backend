@@ -536,12 +536,13 @@ const serarchUsers = async (req, res) => {
   try {
     console.log("Search Users Api Pending");
     const { userName } = req.query;
-
+    let searchQuery
     if (!userName) {
-      return ApiResponse.validationErrorWithData(res, "User name required");
+      searchQuery = `SELECT profileId, profileName, avatar FROM users LIMIT 0, 10`;
     }
-
-    const searchQuery = `SELECT profileId, profileName, avatar FROM users WHERE LOWER(profileName) LIKE ('%${userName}%')`;
+    else{
+      searchQuery = `SELECT profileId, profileName, avatar FROM users WHERE LOWER(profileName) LIKE ('%${userName}%')`;
+    }
     const [users] = await db.query(searchQuery);
 
     // @ts-ignore
