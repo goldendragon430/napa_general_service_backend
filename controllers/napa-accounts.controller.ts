@@ -142,7 +142,7 @@ const AddNapaAccount = async (req, res) => {
         "NAPA Account"
       );
 
-      await createNapaToken('0',profileId,newAcWalletAddress)
+      await createNapaToken(process.env.ENVIRONMENT === 'staging' ? "2" : '0',profileId,newAcWalletAddress)
       await createEthToken('0',profileId,newAcWalletAddress)
       if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
 
@@ -184,7 +184,7 @@ const AddNapaAccount = async (req, res) => {
       "NAPA Account"
     );
 
-    await createNapaToken('0',profileId,newAcWalletAddress)
+    await createNapaToken(process.env.ENVIRONMENT === 'staging' ? "2" : '0',profileId,newAcWalletAddress)
     await createEthToken('0',profileId,newAcWalletAddress)
     if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
 
@@ -316,7 +316,7 @@ const ImportNapaAccount = async (req, res) => {
       
       if(!isNapaTokenExit.length)
       {
-        await createNapaToken('0',profileId,newAcWalletAddress)
+        await createNapaToken(process.env.ENVIRONMENT === 'staging' ? "2" : '0',profileId,newAcWalletAddress)
         await createEthToken('0',profileId,newAcWalletAddress)
         if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
       }
@@ -360,7 +360,7 @@ const ImportNapaAccount = async (req, res) => {
       
     if(!isNapaTokenExit.length)
     {
-      await createNapaToken('0',profileId,newAcWalletAddress)
+      await createNapaToken(process.env.ENVIRONMENT === 'staging' ? "2" : '0',profileId,newAcWalletAddress)
       await createEthToken('0',profileId,newAcWalletAddress)
       if(process.env.ENVIRONMENT === 'staging') { await createEthToken('2',profileId,newAcWalletAddress) }
     }
