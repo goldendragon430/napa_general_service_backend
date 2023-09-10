@@ -5,8 +5,8 @@ const apiResponse = require("../utils/api-response");
 const walletValidator = (req, res, next) => {
   const id =
     req?.params?.id ||
-    JSON.parse(req?.body?.user).accountNumber ||
-    JSON.parse(req?.body?.user).napaWalletAccount ||
+    // JSON.parse(req?.body?.user).accountNumber ||
+    // JSON.parse(req?.body?.user).napaWalletAccount ||
     req?.body?.partner?.accountNumber ||
     req?.body?.accountNumber ||
     req?.body?.whitelist?.address;
