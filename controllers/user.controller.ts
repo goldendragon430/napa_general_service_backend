@@ -10,7 +10,7 @@ import NapaAccounts from "../models/napa-accounts.model";
 import { encryptString } from "../utils/encryption";
 import Tokens from "../models/tokens.model";
 import { createEthToken, createNapaToken } from "../utils/napa-accounts";
-import { db } from "../index";
+import { db, socialArtDb, stakingDB } from "../index";
 import path from "path";
 const ejs = require("ejs");
 const { sendEmail } = require("../utils/nodemailer");
@@ -600,18 +600,47 @@ const sendEmailToSupport = async (req, res) => {
       }
     );
 
-    sendEmail(
-      email,
-      'support@napasociety.io',
-      title,
-      file
-    );
+    sendEmail(email, "support@napasociety.io", title, file);
 
     console.log("Send Email to Support Api Fullfilled");
 
     return ApiResponse.successResponse(res, "Email Sent Successfully");
   } catch (error) {
     console.log("Send Email to Support Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
+const updateNotificationStatus = async (req, res) => {
+  try {
+    console.log("Update Notifications Status Api Pending");
+    const { allowNotifications, profileId } = req.body;
+
+    if (!profileId) {
+      return ApiResponse.validationErrorWithData(res, "ProfileId is required");
+    }
+
+    const isUserExit = `SELECT profileId FROM users WHERE profileId = "${profileId}"`;
+    const [user]: any = await db.query(isUserExit);
+
+    if (!user.length) {
+      return ApiResponse.notFoundResponse(res, "User Not Found");
+    }
+
+    const updateNotificationStatus = `UPDATE users SET allowNotifications = "${allowNotifications}", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${profileId}"`;
+    await db.query(updateNotificationStatus);
+    await socialArtDb.query(updateNotificationStatus)
+    await stakingDB.query(updateNotificationStatus)
+
+    console.log("Update Notifications Status Api Fullfilled");
+
+    return ApiResponse.successResponse(
+      res,
+      "Notification status updated successfully"
+    );
+  } catch (error) {
+    console.log("Update Notifications Status Api Rejected");
     console.error(error);
     return ApiResponse.ErrorResponse(res, error.message);
   }
@@ -627,4 +656,5 @@ module.exports = {
   getUserProfileDetailsByPin,
   serarchUsers,
   sendEmailToSupport,
+  updateNotificationStatus
 };

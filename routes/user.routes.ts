@@ -61,5 +61,9 @@ router.post(
   "/support/email",
   UserController.sendEmailToSupport
 );
+router.post(
+  "/notification/status/update",
+  UserController.updateNotificationStatus
+);
 
 module.exports = { router };

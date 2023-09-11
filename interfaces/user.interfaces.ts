@@ -19,5 +19,6 @@ export interface UserInterface {
   fans: number;
   fansOf: number;
   deviceToken: string;
-  termsAndCondition: string
+  termsAndCondition: string;
+  allowNotifications: string
 }
