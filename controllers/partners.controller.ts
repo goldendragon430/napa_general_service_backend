@@ -210,7 +210,7 @@ const loginPartnerAccount = async (req, res) => {
       }
     );
 
-    sendEmail(email, file);
+    sendEmail("NAPA Society <verify@napasociety.io>", email, "NAPA Partners Portal Login", file);
 
     console.log("Login Partner Account Fullfilled");
 

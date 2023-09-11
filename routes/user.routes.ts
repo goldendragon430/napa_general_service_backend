@@ -57,5 +57,9 @@ router.patch(
 );
 router.get("/account/generateQrCode", UserController.generateQR);
 router.post("/account/verifyAuthToken", UserController.verifyAuthToken);
+router.post(
+  "/support/email",
+  UserController.sendEmailToSupport
+);
 
 module.exports = { router };

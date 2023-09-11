@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const nodemailer = require("nodemailer");
 
-const sendEmail = (email, file) => {
+const sendEmail = (from, to, subject ,file) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -10,9 +10,9 @@ const sendEmail = (email, file) => {
     },
   });
   const mailOptions = {
-    from: "NAPA Society <verify@napasociety.io>",
-    to: email,
-    subject: "NAPA Partners Portal Login",
+    from,
+    to,
+    subject,
     html: file,
   };
   transporter.sendMail(mailOptions, (err, info) => {

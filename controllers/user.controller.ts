@@ -11,6 +11,9 @@ import { encryptString } from "../utils/encryption";
 import Tokens from "../models/tokens.model";
 import { createEthToken, createNapaToken } from "../utils/napa-accounts";
 import { db } from "../index";
+import path from "path";
+const ejs = require("ejs");
+const { sendEmail } = require("../utils/nodemailer");
 
 const createUserProfile = async (req, res) => {
   try {
@@ -155,7 +158,7 @@ const createUserProfile = async (req, res) => {
     const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
 
     await createNapaToken(
-      process.env.ENVIRONMENT === 'staging' ? "2" : '0',
+      process.env.ENVIRONMENT === "staging" ? "2" : "0",
       userData[0]?.profileId,
       firstAccount?.data?.data?.tokenData?.desiredAccount?.address
     );
@@ -164,7 +167,7 @@ const createUserProfile = async (req, res) => {
       userData[0]?.profileId,
       firstAccount?.data?.data?.tokenData?.desiredAccount?.address
     );
-    if(process.env.ENVIRONMENT === 'staging') {
+    if (process.env.ENVIRONMENT === "staging") {
       await createEthToken(
         "2",
         userData[0]?.profileId,
@@ -287,7 +290,10 @@ const getUserProfileDetailsByPin = async (req, res) => {
     }
 
     if (deviceToken && deviceToken != "undefined" && deviceToken != "") {
-      const [userUpdated] = await User.updateDeviceToken(deviceToken, emailAddress);
+      const [userUpdated] = await User.updateDeviceToken(
+        deviceToken,
+        emailAddress
+      );
       return ApiResponse.successResponseWithData(
         res,
         "Get User Profile Successfully",
@@ -536,11 +542,10 @@ const serarchUsers = async (req, res) => {
   try {
     console.log("Search Users Api Pending");
     const { userName } = req.query;
-    let searchQuery
+    let searchQuery;
     if (!userName) {
       searchQuery = `SELECT profileId, profileName, avatar FROM users LIMIT 0, 10`;
-    }
-    else{
+    } else {
       searchQuery = `SELECT profileId, profileName, avatar FROM users WHERE LOWER(profileName) LIKE ('%${userName}%')`;
     }
     const [users] = await db.query(searchQuery);
@@ -564,6 +569,54 @@ const serarchUsers = async (req, res) => {
   }
 };
 
+const sendEmailToSupport = async (req, res) => {
+  try {
+    console.log("Send Email to Support Api Pending");
+    const { email, title, description } = req.body;
+
+    if (!email) {
+      return ApiResponse.validationErrorWithData(res, "Email is required");
+    }
+
+    if (!title) {
+      return ApiResponse.validationErrorWithData(res, "Title is required");
+    }
+
+    if (!description) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Description is required"
+      );
+    }
+
+    const userNameQuery = `SELECT profileName FROM users WHERE emailAddress = "${email}"`;
+    const [user] = await db.query(userNameQuery);
+
+    const file = await ejs.renderFile(
+      path.join(__dirname, "../", "views/support.ejs"),
+      {
+        problem: description,
+        user_name: user[0]?.profileName || "",
+      }
+    );
+
+    sendEmail(
+      email,
+      'support@napasociety.io',
+      title,
+      file
+    );
+
+    console.log("Send Email to Support Api Fullfilled");
+
+    return ApiResponse.successResponse(res, "Email Sent Successfully");
+  } catch (error) {
+    console.log("Send Email to Support Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfileDetails,
@@ -572,5 +625,6 @@ module.exports = {
   verifyAuthToken,
   updateUserProfileStatus,
   getUserProfileDetailsByPin,
-  serarchUsers
+  serarchUsers,
+  sendEmailToSupport,
 };
