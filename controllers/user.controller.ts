@@ -572,7 +572,7 @@ const serarchUsers = async (req, res) => {
 const sendEmailToSupport = async (req, res) => {
   try {
     console.log("Send Email to Support Api Pending");
-    const { email, title, description } = req.body;
+    const { email, title, description, deviceType } = req.body;
 
     if (!email) {
       return ApiResponse.validationErrorWithData(res, "Email is required");
@@ -596,7 +596,10 @@ const sendEmailToSupport = async (req, res) => {
       path.join(__dirname, "../", "views/support.ejs"),
       {
         problem: description,
+        user_email: email,
         user_name: user[0]?.profileName || "",
+        device_type: deviceType || "Android",
+        timestamp: moment(new Date()).format("lll"),
       }
     );
 
@@ -630,8 +633,8 @@ const updateNotificationStatus = async (req, res) => {
 
     const updateNotificationStatus = `UPDATE users SET allowNotifications = "${allowNotifications}", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${profileId}"`;
     await db.query(updateNotificationStatus);
-    await socialArtDb.query(updateNotificationStatus)
-    await stakingDB.query(updateNotificationStatus)
+    await socialArtDb.query(updateNotificationStatus);
+    await stakingDB.query(updateNotificationStatus);
 
     console.log("Update Notifications Status Api Fullfilled");
 
@@ -656,5 +659,5 @@ module.exports = {
   getUserProfileDetailsByPin,
   serarchUsers,
   sendEmailToSupport,
-  updateNotificationStatus
+  updateNotificationStatus,
 };
