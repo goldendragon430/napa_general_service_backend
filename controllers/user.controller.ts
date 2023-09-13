@@ -715,12 +715,6 @@ const verifyPin = async (req, res) => {
         "Invalid PIN or PIN has expired."
       );
     }
-
-    const updateProfile = `UPDATE users SET recoveryPin = "", expirationTime = "" WHERE profileId = "${profile[0]?.profileId}"`;
-    await db.query(updateProfile);
-    await socialArtDb.query(updateProfile);
-    await stakingDB.query(updateProfile);
-
     return ApiResponse.successResponse(res, "Pin Code verified successfully.");
   } catch (error) {
     console.log("Verify Pin Api Rejected");
@@ -745,7 +739,7 @@ const recoverAccount = async (req, res) => {
       pin && pin != "" && pin != "undefined" ? "Pin" : "Biometric"
     }", pin = "${
       pin && pin != "" && pin != "undefined" ? encryptString(pin) : ""
-    }" WHERE emailAddress = "${email}"`;
+    }", recoveryPin = "", expirationTime = "" WHERE emailAddress = "${email}"`;
     await db.query(updateProfile);
     await socialArtDb.query(updateProfile);
     await stakingDB.query(updateProfile);
@@ -776,6 +770,123 @@ const recoverAccount = async (req, res) => {
   }
 };
 
+const archieveAccount = async (req, res) => {
+  try {
+    console.log("Archive Account Api Pending");
+    const { email } = req.body;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}"`;
+    const [profile] = await db.query(profileQuery);
+
+    //@ts-ignore
+    if (!profile.length) {
+      return ApiResponse.validationErrorWithData(res, "User Not Found");
+    }
+
+    const tableQuery =
+      "CREATE TABLE IF NOT EXISTS archived_users (rowId INTEGER AUTO_INCREMENT NOT NULL UNIQUE KEY, profileId VARCHAR(45) NOT NULL PRIMARY KEY, biometricPublickey VARCHAR(255), metamaskAccountNumber VARCHAR(255), napaWalletAccount VARCHAR(255), binanceWalletAccount VARCHAR(255), emailAddress VARCHAR(255) NOT NULL, accountStatus ENUM('1', '2', '3') NOT NULL DEFAULT '2', profileName VARCHAR(100) NOT NULL, bio VARCHAR(512) NULL, timezone VARCHAR(255) NULL, primaryCurrency  ENUM('NAPA','BNB','ETH') DEFAULT 'NAPA', language VARCHAR(255) DEFAULT 'English', accountType TEXT NULL, registrationType VARCHAR(45), pin VARCHAR(255), createdAt TIMESTAMP NOT NULL DEFAULT NOW(), updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(), avatar LONGTEXT, awardsEarned INT, awardsGiven INT, netAwardsAvailable INT, dailyActive VARCHAR(45) NOT NULL, monthlyActive VARCHAR(45) NOT NULL, fans INT DEFAULT 0, fansOf INT DEFAULT 0, deviceToken VARCHAR(255), termsAndCondition VARCHAR(20) DEFAULT 'false', allowNotifications VARCHAR(20) DEFAULT 'false', recoveryPin VARCHAR(6), expirationTime BIGINT)";
+
+    await db.execute(tableQuery);
+
+    const archiveProfileQuery = `SELECT * FROM archived_users WHERE emailAddress = "${email}"`;
+    const [archiveProfile] = await db.query(archiveProfileQuery);
+
+    //@ts-ignore
+    if (!archiveProfile.length) {
+      const insertQuery = `INSERT INTO archived_users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, accountStatus, profileName, bio, timezone, primaryCurrency, language, accountType, registrationType, pin, avatar, dailyActive, monthlyActive, fans, fansOf, deviceToken, termsAndCondition, allowNotifications, recoveryPin, expirationTime, createdAt, updatedAt) VALUES ("${
+        profile[0]?.profileId
+      }", "${profile[0]?.biometricPublickey || ""}", "${
+        profile[0]?.metamaskAccountNumber || ""
+      }", "${profile[0]?.napaWalletAccount || ""}", "${
+        profile[0]?.binanceWalletAccount || ""
+      }", "${profile[0]?.emailAddress || ""}", "2", "${
+        profile[0]?.profileName
+      }", "${profile[0]?.bio || ""}", "${profile[0]?.timezone || ""}", "${
+        profile[0]?.primaryCurrency || "NAPA"
+      }", "${profile[0]?.language || "English"}", "${
+        profile[0]?.accountType || ""
+      }", 
+    "${profile[0]?.registrationType || "Biometric"}",
+    "${profile[0]?.pin || ""}",
+    "${profile[0]?.avatar || ""}", "${profile[0]?.dailyActive || "false"}", "${
+        profile[0]?.monthlyActive || "false"
+      }", "${profile[0].fans || 0}", "${profile[0]?.fansOf || 0}", "${
+        profile[0]?.deviceToken || ""
+      }", "${profile[0]?.termsAndCondition || "false"}", "${
+        profile[0]?.allowNotifications || "false"
+      }" , "", "", "${profile[0]?.createdAt}", "${profile[0]?.updatedAt}")`;
+
+      await db.execute(insertQuery);
+      const deleteQuery = `DELETE FROM users WHERE emailAddress = "${email}"`;
+      await db.execute(deleteQuery);
+      await socialArtDb.execute(deleteQuery);
+      await stakingDB.execute(deleteQuery);
+    } else {
+      const updateQuery = `UPDATE archived_users SET profileId = "${
+        profile[0]?.profileId
+      }", biometricPublickey = "${
+        profile[0]?.biometricPublickey || ""
+      }", metamaskAccountNumber = "${
+        profile[0]?.metamaskAccountNumber || ""
+      }", napaWalletAccount = "${
+        profile[0]?.napaWalletAccount || ""
+      }", binanceWalletAccount = "${
+        profile[0]?.binanceWalletAccount || ""
+      }", accountStatus = "2", profileName = "${
+        profile[0]?.profileName
+      }", bio = "${profile[0]?.bio || ""}", timezone = "${
+        profile[0]?.timezone || ""
+      }", primaryCurrency = "${
+        profile[0]?.primaryCurrency || "NAPA"
+      }", language = "${profile[0]?.language || "English"}", accountType = "${
+        profile[0]?.accountType || ""
+      }", registrationType = "${
+        profile[0]?.registrationType || "Biometric"
+      }", pin = "${profile[0]?.pin || ""}", avatar = "${
+        profile[0]?.avatar || ""
+      }", dailyActive = "${
+        profile[0]?.dailyActive || "false"
+      }", monthlyActive = "${profile[0]?.monthlyActive || "false"}", fans = "${
+        profile[0].fans || 0
+      }", fansOf = "${profile[0]?.fansOf || 0}", deviceToken = "${
+        profile[0]?.deviceToken || ""
+      }", termsAndCondition = "${
+        profile[0]?.termsAndCondition || "false"
+      }", allowNotifications = "${
+        profile[0]?.allowNotifications || "false"
+      }", recoveryPin = "", expirationTime = "", createdAt = "${
+        profile[0]?.createdAt
+      }", updatedAt = "${
+        profile[0]?.updatedAt
+      }" WHERE emailAddress = "${email}"`;
+
+      await db.execute(updateQuery);
+      const deleteQuery = `DELETE FROM users WHERE emailAddress = "${email}"`;
+      await db.execute(deleteQuery);
+      await socialArtDb.execute(deleteQuery);
+      await stakingDB.execute(deleteQuery);
+    }
+
+    const file = await ejs.renderFile(
+      path.join(__dirname, "../", "views/archieve.ejs"),
+      {
+        user_name: profile[0]?.profileName || "",
+      }
+    );
+
+    sendEmail(
+      "NAPA Society <verify@napasociety.io>",
+      email,
+      "Account Archived",
+      file
+    );
+    return ApiResponse.successResponse(res, "Account Archieved Successfully");
+  } catch (error) {
+    console.log("Archive Account Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfileDetails,
@@ -790,4 +901,5 @@ module.exports = {
   generatePin,
   verifyPin,
   recoverAccount,
+  archieveAccount
 };

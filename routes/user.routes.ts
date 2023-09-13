@@ -77,5 +77,9 @@ router.post(
   "/account/recover",
   UserController.recoverAccount
 );
+router.post(
+  "/account/archive",
+  UserController.archieveAccount
+);
 
 module.exports = { router };
