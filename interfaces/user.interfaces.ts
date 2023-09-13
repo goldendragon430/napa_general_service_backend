@@ -22,5 +22,5 @@ export interface UserInterface {
   termsAndCondition: string;
   allowNotifications: string
   recoveryPin: string;
-  expirationTime: string
+  expirationTime: any
 }
