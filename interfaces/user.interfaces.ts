@@ -21,4 +21,6 @@ export interface UserInterface {
   deviceToken: string;
   termsAndCondition: string;
   allowNotifications: string
+  recoveryPin: string;
+  expirationTime: string
 }

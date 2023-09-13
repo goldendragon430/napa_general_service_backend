@@ -65,5 +65,17 @@ router.post(
   "/notification/status/update",
   UserController.updateNotificationStatus
 );
+router.post(
+  "/generatePin",
+  UserController.generatePin
+);
+router.post(
+  "/verifyPin",
+  UserController.verifyPin
+);
+router.post(
+  "/account/recover",
+  UserController.recoverAccount
+);
 
 module.exports = { router };

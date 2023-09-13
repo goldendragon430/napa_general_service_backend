@@ -12,6 +12,7 @@ import Tokens from "../models/tokens.model";
 import { createEthToken, createNapaToken } from "../utils/napa-accounts";
 import { db, socialArtDb, stakingDB } from "../index";
 import path from "path";
+import { generatePIN } from "../utils/pin";
 const ejs = require("ejs");
 const { sendEmail } = require("../utils/nodemailer");
 
@@ -27,7 +28,7 @@ const createUserProfile = async (req, res) => {
     const [isExit] = await User.getUserProfileDetails(user.emailAddress);
 
     if (isExit.length) {
-      return ApiResponse.notFoundResponse(
+      return ApiResponse.validationErrorWithData(
         res,
         "This Email Already Exists on NAPA"
       );
@@ -649,6 +650,132 @@ const updateNotificationStatus = async (req, res) => {
   }
 };
 
+const generatePin = async (req, res) => {
+  try {
+    console.log("Generate Pin Api Pending");
+    const { email } = req.body;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}"`;
+    const [profile] = await db.query(profileQuery);
+
+    //@ts-ignore
+    if (!profile.length) {
+      return ApiResponse.validationErrorWithData(res, "Profile Not Found");
+    }
+    const pin = generatePIN();
+    const expirationTime = new Date();
+    expirationTime.setMinutes(expirationTime.getMinutes() + 5);
+
+    const updateRecoveryPin = `UPDATE users SET recoveryPin = "${pin}", expirationTime = "${expirationTime.getTime()}" WHERE emailAddress = "${email}"`;
+    await db.query(updateRecoveryPin);
+    await socialArtDb.query(updateRecoveryPin);
+    await stakingDB.query(updateRecoveryPin);
+
+    const file = await ejs.renderFile(
+      path.join(__dirname, "../", "views/recovery.ejs"),
+      {
+        user_name: profile[0]?.profileName || "",
+        pin: pin,
+      }
+    );
+
+    sendEmail(
+      "NAPA Society <verify@napasociety.io>",
+      email,
+      "Account Recovery",
+      file
+    );
+
+    console.log("Generate Pin Api Fullfilled");
+
+    return ApiResponse.successResponse(
+      res,
+      "Pin Code sent successfully. Please Check your email"
+    );
+  } catch (error) {
+    console.log("Generate Pin Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
+const verifyPin = async (req, res) => {
+  try {
+    const current = new Date();
+    console.log("Verify Pin Api Pending");
+    const { recoveryPin, email } = req.body;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}" AND recoveryPin = "${recoveryPin}" AND CONVERT(expirationTime, SIGNED) > ${current.getTime()}`;
+    const [profile] = await db.query(profileQuery);
+
+    console.log("Verify Pin Api Fullfilled");
+
+    //@ts-ignore
+    if (!profile.length) {
+      return ApiResponse.validationErrorWithData(
+        res,
+        "Invalid PIN or PIN has expired."
+      );
+    }
+
+    const updateProfile = `UPDATE users SET recoveryPin = "", expirationTime = "" WHERE profileId = "${profile[0]?.profileId}"`;
+    await db.query(updateProfile);
+    await socialArtDb.query(updateProfile);
+    await stakingDB.query(updateProfile);
+
+    return ApiResponse.successResponse(res, "Pin Code verified successfully.");
+  } catch (error) {
+    console.log("Verify Pin Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
+const recoverAccount = async (req, res) => {
+  try {
+    console.log("Recover Account Api Pending");
+    const { pin, email, deviceToken } = req.body;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}"`;
+    const [profile] = await db.query(profileQuery);
+
+    //@ts-ignore
+    if (!profile.length) {
+      return ApiResponse.validationErrorWithData(res, "User Not Found");
+    }
+
+    const updateProfile = `UPDATE users SET registrationType = "${
+      pin && pin != "" && pin != "undefined" ? "Pin" : "Biometric"
+    }", pin = "${
+      pin && pin != "" && pin != "undefined" ? encryptString(pin) : ""
+    }" WHERE emailAddress = "${email}"`;
+    await db.query(updateProfile);
+    await socialArtDb.query(updateProfile);
+    await stakingDB.query(updateProfile);
+
+    if (deviceToken && deviceToken != "undefined" && deviceToken != "") {
+      const [userUpdated] = await User.updateDeviceToken(deviceToken, email);
+      console.log("Recover Account Api Fullfilled");
+      return ApiResponse.successResponseWithData(
+        res,
+        "Get User Profile Successfully",
+        userUpdated[0]
+      );
+    }
+
+    const [user] = await User.getUserProfileDetails(email);
+
+    console.log("Recover Account Api Fullfilled");
+
+    return ApiResponse.successResponseWithData(
+      res,
+      "Get User Profile Successfully",
+      user[0]
+    );
+  } catch (error) {
+    console.log("Recover Account Api Rejected");
+    console.error(error);
+    return ApiResponse.ErrorResponse(res, error.message);
+  }
+};
+
 module.exports = {
   createUserProfile,
   getUserProfileDetails,
@@ -660,4 +787,7 @@ module.exports = {
   serarchUsers,
   sendEmailToSupport,
   updateNotificationStatus,
+  generatePin,
+  verifyPin,
+  recoverAccount,
 };
