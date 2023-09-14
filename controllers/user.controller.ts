@@ -20,12 +20,11 @@ const createUserProfile = async (req, res) => {
   try {
     console.log("Create User Profile Api Pending");
     const avatarUuid = uuidv4();
-    console.log("req.file-update", req.file);
-    console.log("req.body", req.body);
 
     const user = req.body;
 
-    const [isExit] = await User.getUserProfileDetails(user.emailAddress);
+    const getProfileQuery = `SELECT * FROM users WHERE emailAddress = "${user.emailAddress}" AND accountStatus = "1"`;
+    const [isExit]: any = await db.execute(getProfileQuery);
 
     if (isExit.length) {
       return ApiResponse.validationErrorWithData(
@@ -156,7 +155,8 @@ const createUserProfile = async (req, res) => {
       userData[0]?.profileId
     );
 
-    const [isExit2] = await User.getUserProfileDetails(user.emailAddress);
+    const getUpdatedProfileQuery = `SELECT * FROM users WHERE emailAddress = "${user.emailAddress}" AND accountStatus = "1"`;
+    const [isExit2]: any = await db.execute(getUpdatedProfileQuery);
 
     await createNapaToken(
       process.env.ENVIRONMENT === "staging" ? "2" : "0",
@@ -220,7 +220,8 @@ const getUserProfileDetails = async (req, res) => {
     //   );
     // }
 
-    const [user] = await User.getUserProfileDetails(id);
+    const getProfileQuery = `SELECT * FROM users WHERE profileId = "${id}"`;
+    const [user]: any = await db.execute(getProfileQuery);
 
     if (!user.length) {
       return ApiResponse.notFoundResponse(res, "User Not Found");
@@ -228,12 +229,21 @@ const getUserProfileDetails = async (req, res) => {
 
     console.log("Get User Profile Api Fullfilled");
 
-    if (user[0].accountStatus == "2") {
-      return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
-    }
+    // if (user[0].accountStatus == "2") {
+    //   return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
+    // }
 
     if (deviceToken && deviceToken != "undefined" && deviceToken != "") {
-      const [userUpdated] = await User.updateDeviceToken(deviceToken, id);
+      const updateSql = `UPDATE users SET deviceToken = "${deviceToken}", updatedAt = CURRENT_TIMESTAMP WHERE profileId = "${id}"`;
+
+      await db.execute(updateSql);
+      await socialArtDb.execute(updateSql);
+      await stakingDB.execute(updateSql);
+
+      const updatedProfileQuery = `SELECT * FROM users WHERE profileId = "${id}"`;
+
+      const [userUpdated] = await db.execute(updatedProfileQuery);
+
       return ApiResponse.successResponseWithData(
         res,
         "Get User Profile Successfully",
@@ -286,15 +296,21 @@ const getUserProfileDetailsByPin = async (req, res) => {
 
     console.log("Get User Profile Api Fullfilled");
 
-    if (user[0].accountStatus == "2") {
-      return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
-    }
+    // if (user[0].accountStatus == "2") {
+    //   return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
+    // }
 
     if (deviceToken && deviceToken != "undefined" && deviceToken != "") {
-      const [userUpdated] = await User.updateDeviceToken(
-        deviceToken,
-        emailAddress
-      );
+      const updateSql = `UPDATE users SET deviceToken = "${deviceToken}", updatedAt = CURRENT_TIMESTAMP WHERE emailAddress = "${emailAddress}" AND accountStatus = "1"`;
+
+      await db.execute(updateSql);
+      await socialArtDb.execute(updateSql);
+      await stakingDB.execute(updateSql);
+
+      const sql = `SELECT * FROM users WHERE emailAddress = "${emailAddress}" AND accountStatus = "1"`;
+
+      const [userUpdated] = await db.execute(sql);
+
       return ApiResponse.successResponseWithData(
         res,
         "Get User Profile Successfully",
@@ -318,22 +334,21 @@ const updateUserProfile = async (req, res) => {
   try {
     console.log("Get Update User Profile Api Pending");
     const avatarUuid = uuidv4();
-    console.log("req.file-update", req.file);
-    console.log("req.body", req.body);
 
     const { id } = req.params;
 
     const user = req.body;
 
-    const [isExit] = await User.getUserProfileDetails(id);
+    const getProfileQuery = `SELECT * FROM users WHERE profileId = "${id}"`;
+    const [isExit]: any = await db.execute(getProfileQuery);
 
     if (!isExit.length) {
       return ApiResponse.notFoundResponse(res, "User Not Found");
     }
 
-    if (isExit[0].accountStatus == "2") {
-      return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
-    }
+    // if (isExit[0].accountStatus == "2") {
+    //   return ApiResponse.validationErrorWithData(res, "Account is Deactivated");
+    // }
 
     // if (req.body.metamaskAccountNumber) {
     //   const [metamaskAccountNumberCheck] =
@@ -590,8 +605,13 @@ const sendEmailToSupport = async (req, res) => {
       );
     }
 
-    const userNameQuery = `SELECT profileName FROM users WHERE emailAddress = "${email}"`;
+    const userNameQuery = `SELECT profileName FROM users WHERE emailAddress = "${email}" AND accountStatus = "1"`;
     const [user] = await db.query(userNameQuery);
+
+    // @ts-ignore
+    if (!user.length) {
+      return ApiResponse.validationErrorWithData(res, "User Not Found");
+    }
 
     const file = await ejs.renderFile(
       path.join(__dirname, "../", "views/support.ejs"),
@@ -654,7 +674,7 @@ const generatePin = async (req, res) => {
   try {
     console.log("Generate Pin Api Pending");
     const { email } = req.body;
-    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}"`;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}" AND accountStatus = "1"`;
     const [profile] = await db.query(profileQuery);
 
     //@ts-ignore
@@ -665,7 +685,7 @@ const generatePin = async (req, res) => {
     const expirationTime = new Date();
     expirationTime.setMinutes(expirationTime.getMinutes() + 5);
 
-    const updateRecoveryPin = `UPDATE users SET recoveryPin = "${pin}", expirationTime = "${expirationTime.getTime()}" WHERE emailAddress = "${email}"`;
+    const updateRecoveryPin = `UPDATE users SET recoveryPin = "${pin}", expirationTime = "${expirationTime.getTime()}" WHERE emailAddress = "${email}" AND accountStatus = "1"`;
     await db.query(updateRecoveryPin);
     await socialArtDb.query(updateRecoveryPin);
     await stakingDB.query(updateRecoveryPin);
@@ -703,7 +723,7 @@ const verifyPin = async (req, res) => {
     const current = new Date();
     console.log("Verify Pin Api Pending");
     const { recoveryPin, email } = req.body;
-    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}" AND recoveryPin = "${recoveryPin}" AND CONVERT(expirationTime, SIGNED) > ${current.getTime()}`;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}" AND accountStatus = "1" AND recoveryPin = "${recoveryPin}" AND CONVERT(expirationTime, SIGNED) > ${current.getTime()}`;
     const [profile] = await db.query(profileQuery);
 
     console.log("Verify Pin Api Fullfilled");
@@ -727,7 +747,7 @@ const recoverAccount = async (req, res) => {
   try {
     console.log("Recover Account Api Pending");
     const { pin, email, deviceToken } = req.body;
-    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}"`;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}" AND accountStatus = "1"`;
     const [profile] = await db.query(profileQuery);
 
     //@ts-ignore
@@ -739,22 +759,17 @@ const recoverAccount = async (req, res) => {
       pin && pin != "" && pin != "undefined" ? "Pin" : "Biometric"
     }", pin = "${
       pin && pin != "" && pin != "undefined" ? encryptString(pin) : ""
-    }", recoveryPin = "", expirationTime = "" WHERE emailAddress = "${email}"`;
+    }", recoveryPin = "", expirationTime = "", deviceToken = "${
+      deviceToken && deviceToken != "undefined" && deviceToken != ""
+        ? deviceToken
+        : ""
+    }" WHERE emailAddress = "${email}" AND accountStatus = "1"`;
     await db.query(updateProfile);
     await socialArtDb.query(updateProfile);
     await stakingDB.query(updateProfile);
 
-    if (deviceToken && deviceToken != "undefined" && deviceToken != "") {
-      const [userUpdated] = await User.updateDeviceToken(deviceToken, email);
-      console.log("Recover Account Api Fullfilled");
-      return ApiResponse.successResponseWithData(
-        res,
-        "Get User Profile Successfully",
-        userUpdated[0]
-      );
-    }
-
-    const [user] = await User.getUserProfileDetails(email);
+    const getProfileQuery = `SELECT * FROM users WHERE emailAddress = "${email}" AND accountStatus = "1"`;
+    const [user] = await db.execute(getProfileQuery);
 
     console.log("Recover Account Api Fullfilled");
 
@@ -774,7 +789,7 @@ const archieveAccount = async (req, res) => {
   try {
     console.log("Archive Account Api Pending");
     const { email } = req.body;
-    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}"`;
+    const profileQuery = `SELECT * FROM users WHERE emailAddress = "${email}" AND accountStatus = "1"`;
     const [profile] = await db.query(profileQuery);
 
     //@ts-ignore
@@ -787,84 +802,34 @@ const archieveAccount = async (req, res) => {
 
     await db.execute(tableQuery);
 
-    const archiveProfileQuery = `SELECT * FROM archived_users WHERE emailAddress = "${email}"`;
-    const [archiveProfile] = await db.query(archiveProfileQuery);
-
-    //@ts-ignore
-    if (!archiveProfile.length) {
-      const insertQuery = `INSERT INTO archived_users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, accountStatus, profileName, bio, timezone, primaryCurrency, language, accountType, registrationType, pin, avatar, dailyActive, monthlyActive, fans, fansOf, deviceToken, termsAndCondition, allowNotifications, recoveryPin, expirationTime, createdAt, updatedAt) VALUES ("${
-        profile[0]?.profileId
-      }", "${profile[0]?.biometricPublickey || ""}", "${
-        profile[0]?.metamaskAccountNumber || ""
-      }", "${profile[0]?.napaWalletAccount || ""}", "${
-        profile[0]?.binanceWalletAccount || ""
-      }", "${profile[0]?.emailAddress || ""}", "2", "${
-        profile[0]?.profileName
-      }", "${profile[0]?.bio || ""}", "${profile[0]?.timezone || ""}", "${
-        profile[0]?.primaryCurrency || "NAPA"
-      }", "${profile[0]?.language || "English"}", "${
-        profile[0]?.accountType || ""
-      }", 
+    const insertQuery = `INSERT INTO archived_users (profileId, biometricPublickey, metamaskAccountNumber, napaWalletAccount, binanceWalletAccount, emailAddress, accountStatus, profileName, bio, timezone, primaryCurrency, language, accountType, registrationType, pin, avatar, dailyActive, monthlyActive, fans, fansOf, deviceToken, termsAndCondition, allowNotifications, recoveryPin, expirationTime, createdAt, updatedAt) VALUES ("${
+      profile[0]?.profileId
+    }", "${profile[0]?.biometricPublickey || ""}", "${
+      profile[0]?.metamaskAccountNumber || ""
+    }", "${profile[0]?.napaWalletAccount || ""}", "${
+      profile[0]?.binanceWalletAccount || ""
+    }", "${profile[0]?.emailAddress || ""}", "2", "${
+      profile[0]?.profileName
+    }", "${profile[0]?.bio || ""}", "${profile[0]?.timezone || ""}", "${
+      profile[0]?.primaryCurrency || "NAPA"
+    }", "${profile[0]?.language || "English"}", "${
+      profile[0]?.accountType || ""
+    }", 
     "${profile[0]?.registrationType || "Biometric"}",
     "${profile[0]?.pin || ""}",
     "${profile[0]?.avatar || ""}", "${profile[0]?.dailyActive || "false"}", "${
-        profile[0]?.monthlyActive || "false"
-      }", "${profile[0].fans || 0}", "${profile[0]?.fansOf || 0}", "${
-        profile[0]?.deviceToken || ""
-      }", "${profile[0]?.termsAndCondition || "false"}", "${
-        profile[0]?.allowNotifications || "false"
-      }" , "", "", "${profile[0]?.createdAt}", "${profile[0]?.updatedAt}")`;
+      profile[0]?.monthlyActive || "false"
+    }", "${profile[0].fans || 0}", "${profile[0]?.fansOf || 0}", "${
+      profile[0]?.deviceToken || ""
+    }", "${profile[0]?.termsAndCondition || "false"}", "${
+      profile[0]?.allowNotifications || "false"
+    }" , "", "", "${profile[0]?.createdAt}", "${profile[0]?.updatedAt}")`;
 
-      await db.execute(insertQuery);
-      const deleteQuery = `DELETE FROM users WHERE emailAddress = "${email}"`;
-      await db.execute(deleteQuery);
-      await socialArtDb.execute(deleteQuery);
-      await stakingDB.execute(deleteQuery);
-    } else {
-      const updateQuery = `UPDATE archived_users SET profileId = "${
-        profile[0]?.profileId
-      }", biometricPublickey = "${
-        profile[0]?.biometricPublickey || ""
-      }", metamaskAccountNumber = "${
-        profile[0]?.metamaskAccountNumber || ""
-      }", napaWalletAccount = "${
-        profile[0]?.napaWalletAccount || ""
-      }", binanceWalletAccount = "${
-        profile[0]?.binanceWalletAccount || ""
-      }", accountStatus = "2", profileName = "${
-        profile[0]?.profileName
-      }", bio = "${profile[0]?.bio || ""}", timezone = "${
-        profile[0]?.timezone || ""
-      }", primaryCurrency = "${
-        profile[0]?.primaryCurrency || "NAPA"
-      }", language = "${profile[0]?.language || "English"}", accountType = "${
-        profile[0]?.accountType || ""
-      }", registrationType = "${
-        profile[0]?.registrationType || "Biometric"
-      }", pin = "${profile[0]?.pin || ""}", avatar = "${
-        profile[0]?.avatar || ""
-      }", dailyActive = "${
-        profile[0]?.dailyActive || "false"
-      }", monthlyActive = "${profile[0]?.monthlyActive || "false"}", fans = "${
-        profile[0].fans || 0
-      }", fansOf = "${profile[0]?.fansOf || 0}", deviceToken = "${
-        profile[0]?.deviceToken || ""
-      }", termsAndCondition = "${
-        profile[0]?.termsAndCondition || "false"
-      }", allowNotifications = "${
-        profile[0]?.allowNotifications || "false"
-      }", recoveryPin = "", expirationTime = "", createdAt = "${
-        profile[0]?.createdAt
-      }", updatedAt = "${
-        profile[0]?.updatedAt
-      }" WHERE emailAddress = "${email}"`;
-
-      await db.execute(updateQuery);
-      const deleteQuery = `DELETE FROM users WHERE emailAddress = "${email}"`;
-      await db.execute(deleteQuery);
-      await socialArtDb.execute(deleteQuery);
-      await stakingDB.execute(deleteQuery);
-    }
+    await db.execute(insertQuery);
+    const updateStatusQuery = `UPDATE users SET accountStatus = "2" WHERE emailAddress = "${email}" AND accountStatus = "1"`;
+    await db.execute(updateStatusQuery);
+    await socialArtDb.execute(updateStatusQuery);
+    await stakingDB.execute(updateStatusQuery);
 
     const file = await ejs.renderFile(
       path.join(__dirname, "../", "views/archieve.ejs"),
@@ -901,5 +866,5 @@ module.exports = {
   generatePin,
   verifyPin,
   recoverAccount,
-  archieveAccount
+  archieveAccount,
 };
