@@ -683,7 +683,7 @@ const generatePin = async (req, res) => {
     }
     const pin = generatePIN();
     const expirationTime = new Date();
-    expirationTime.setMinutes(expirationTime.getMinutes() + 5);
+    expirationTime.setMinutes(expirationTime.getMinutes() + 30);
 
     const updateRecoveryPin = `UPDATE users SET recoveryPin = "${pin}", expirationTime = "${expirationTime.getTime()}" WHERE emailAddress = "${email}" AND accountStatus = "1"`;
     await db.query(updateRecoveryPin);
@@ -709,7 +709,7 @@ const generatePin = async (req, res) => {
 
     return ApiResponse.successResponse(
       res,
-      "Pin Code sent successfully. Please Check your email"
+      "Pin code sent, please check your e-mail"
     );
   } catch (error) {
     console.log("Generate Pin Api Rejected");
