@@ -735,7 +735,7 @@ const verifyPin = async (req, res) => {
         "Invalid PIN or PIN has expired."
       );
     }
-    return ApiResponse.successResponse(res, "Pin Code verified successfully.");
+    return ApiResponse.successResponse(res, "Pin code verified successfully.");
   } catch (error) {
     console.log("Verify Pin Api Rejected");
     console.error(error);
