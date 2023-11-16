@@ -1,12 +1,12 @@
 const userValidationRule = {
-  accountNumber: "required|string",
-  profileName: "required|string",
-  bio: "string",
-  timezone: "string",
-  primaryCurrency: "required|string",
-  language: "required|string",
-  napaSocialMediaAccount: "string",
-  avatar: "string",
+  // accountNumber: "required|string",
+  // profileName: "required|string",
+  // bio: "string",
+  // timezone: "string",
+  // primaryCurrency: "required|string",
+  // language: "required|string",
+  // napaSocialMediaAccount: "string",
+  // avatar: "string",
 };
 
 const partnerValidationRule = {
@@ -52,7 +52,7 @@ const eventsValidationRule = {
   tags: "string",
   napaPerks: "string",
   eventRules: "string",
-  entryFees: "required|string",
+  entryFees: "string",
   sponsors: "string",
   paid: "string",
   amount: "numeric",

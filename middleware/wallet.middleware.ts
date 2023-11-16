@@ -5,11 +5,13 @@ const apiResponse = require("../utils/api-response");
 const walletValidator = (req, res, next) => {
   const id =
     req?.params?.id ||
-    req?.body?.user?.accountNumber ||
+    // JSON.parse(req?.body?.user).accountNumber ||
+    // JSON.parse(req?.body?.user).napaWalletAccount ||
     req?.body?.partner?.accountNumber ||
+    req?.body?.accountNumber ||
     req?.body?.whitelist?.address;
 
-  if (id.length != 42) {
+  if (id?.length != 42) {
     return next();
   }
   const validate = WAValidator.validate(id, "ZRX");

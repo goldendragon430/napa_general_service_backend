@@ -2,6 +2,10 @@
 import { Request, Response } from "express";
 import Events from "../models/events.model";
 const ApiResponse = require("../utils/api-response");
+import { socialArtDb } from "index";
+import FCM  from 'fcm-node'
+const serverKey = 'AAAAy9mJvkQ:APA91bGpBzqmhRQozvboKwqjyXx7m56C0jX_xqKwj4-ZPAsAbXUe31izFfQYlL-2UF6e-JB84UeM6gRqre53Ez2gpG_sGx7Hxuuo0MBLtwedJEUJWwD_qWMSlDaIRrBzT5iN_TSzzXWg';
+const fcm = new FCM(serverKey);
 
 const createEvents = async (req: Request, res: Response) => {
   try {
@@ -28,6 +32,16 @@ const createEvents = async (req: Request, res: Response) => {
     // }
 
     console.log("Create Events Api Fullfilled");
+
+    const [users] =  await socialArtDb.query('SELECT deviceToken FROM users')
+    for( var i = 0 ;i < users.length; i ++ ) {
+      const token =  users[i].deviceToken;
+      sendNotification(
+        token,
+        `New Event Alert - ${eventsData[0]['eventTitle']}`,
+        `${eventsData[0]['eventDetailsLongDescription']}`
+      );
+    }
 
     return ApiResponse.successResponseWithData(
       res,
@@ -167,5 +181,22 @@ const updateEvent = async (req, res) => {
     return ApiResponse.ErrorResponse(res, error.message);
   }
 };
+export const sendNotification = (deviceToken, title, body) => {
+  const message = {
+    to: deviceToken,
+    notification: {
+      title,
+      body,
+    },
+  };
+  fcm.send(message, (err, response) => {
+    if (err) {
+      console.error("Error sending notification:", err);
+    } else {
+      console.log("Notification sent successfully:", response);
+    }
+  });
+};
+
 
 module.exports = { createEvents, updateEvents, getAllEvents, updateEvent };

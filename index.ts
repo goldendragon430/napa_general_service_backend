@@ -20,20 +20,36 @@ require("./utils/trending-cron-job");
 global.SocketService = socketService;
 
 const pubnub = new PubNub({
-  publishKey: "pub-c-a0c50e24-85ba-488c-a760-fcc9cdc8d42f",
-  subscribeKey: "sub-c-d4377c6d-6c5f-4199-adbc-8885a5a5270a",
-  uuid: "NAPA",
+  publishKey: process.env.PUBLISH_KEY,
+  subscribeKey: process.env.SUBSCRIBE_KEY,
+  uuid: process.env.UUID,
 });
 require("./services/pubnub.services");
 
-const pool = mysql.createPool({
-  host: "napa-general-services.clfuekgzzk52.ap-southeast-1.rds.amazonaws.com",
-  user: "admin",
-  database: "napa-development",
-  password: "napa12345",
+const napaPool = mysql.createPool({
+  host: process.env.RDS_NAPA_HOSTNAME,
+  user: process.env.RDS_NAPA_USERNAME,
+  database: process.env.RDS_NAPA_NAME,
+  password: process.env.RDS_NAPA_PASSWORD,
 });
 
-const db = pool.promise();
+const socialArtPool = mysql.createPool({
+  host: process.env.RDS_NAPA_HOSTNAME,
+  user: process.env.RDS_NAPA_USERNAME,
+  database: process.env.RDS_SOCIAL_ART_DB_NAME,
+  password: process.env.RDS_NAPA_PASSWORD,
+});
+
+const stakingPool = mysql.createPool({
+  host: process.env.RDS_NAPA_HOSTNAME,
+  user: process.env.RDS_NAPA_USERNAME,
+  database: process.env.RDS_STAKING_DB_NAME,
+  password: process.env.RDS_NAPA_PASSWORD,
+});
+
+const db = napaPool.promise();
+const socialArtDb = socialArtPool.promise();
+const stakingDB = stakingPool.promise();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "..", "views"));
@@ -61,6 +77,6 @@ httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-export { pubnub, db };
+export { pubnub, db, socialArtDb, stakingDB };
 
 export default app;

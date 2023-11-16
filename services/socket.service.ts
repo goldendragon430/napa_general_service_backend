@@ -28,6 +28,13 @@ class SocketService {
         console.log("open from server ", event.data);
       });
     });
+    setInterval(() => {
+      this.wss.clients.forEach((socket) => {
+        socket.ping((err) => {
+          console.log(err);
+        });
+      });
+    }, 50000);
   }
 
   stringify(data) {
@@ -64,6 +71,103 @@ class SocketService {
         this.stringify({
           event: "events",
           events: payload.events,
+        })
+      );
+    });
+  }
+
+  handleGetNewImportedToken(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Imported token send with websocket");
+      socket.send(
+        this.stringify({
+          event: "new-imported-token",
+          token: payload.token,
+        })
+      );
+    });
+  }
+
+  handleGetTotalUsers(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Total users send with websocket");
+      socket.send(
+        this.stringify({
+          event: "total-users",
+          totalUsers: payload.totalUsers,
+        })
+      );
+    });
+  }
+
+  handleLoginUserToWeb(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("User send with websocket");
+      socket.send(
+        this.stringify({
+          event: `login-event-${payload.id}`,
+          profileId: payload.profileId,
+          emailAddress: payload.emailAddress,
+          napaWalletAccount: payload.napaWalletAccount,
+        })
+      );
+    });
+  }
+
+  handleUpdateUser(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Updated User send with websocket");
+      socket.send(
+        this.stringify({
+          event: `update-user-${payload.user.profileId}`,
+          user: payload.user,
+        })
+      );
+    });
+  }
+
+  handleNewNapaAccount(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("New napa account send with websocket");
+      socket.send(
+        this.stringify({
+          event: `new-napa-account-${payload.id}`,
+        })
+      );
+    });
+  }
+
+  handleSwitchNapaAccount(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Switch to new napa account send with websocket");
+      socket.send(
+        this.stringify({
+          event: `switch-to-new-napa-account-${payload.profileId}`,
+          account: payload.account,
+        })
+      );
+    });
+  }
+
+  handleDeleteNapaAccount(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Switch to new napa account send with websocket");
+      socket.send(
+        this.stringify({
+          event: `delete-napa-account-${payload.profileId}`,
+          account: payload.account,
+        })
+      );
+    });
+  }
+
+  handleTokenVisibility(payload) {
+    this.wss.clients.forEach((socket) => {
+      console.log("Token visibility send with websocket");
+      socket.send(
+        this.stringify({
+          event: `token-visibility-update-${payload.profileId}`,
+          token: payload.token,
         })
       );
     });

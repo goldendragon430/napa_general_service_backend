@@ -54,6 +54,16 @@ class Partners {
     }
   }
 
+  static findByAccountNumber(email: string, accountNumber: string) {
+    try {
+      const sql = `SELECT * FROM partners WHERE email = "${email}" AND accountNumber = "${accountNumber}"`;
+
+      return db.execute(sql);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   static findById(id: string) {
     try {
       const sql = `SELECT * FROM partners WHERE partnerUUID = "${id}"`;
@@ -82,7 +92,7 @@ class Partners {
         this.partners.email
       }", contactPerson = "${this.partners.contactPerson}", avatar = "${
         this.partners.avatar || ""
-      }", updatedAt = CURRENT_TIMESTAMP WHERE partnerUUID = "${partnerUUID}"`;
+      }", updatedAt = CURRENT_TIMESTAMP WHERE partnerUUID = "${partnerUUID}" OR accountNumber = "${partnerUUID}"`;
 
       await db.execute(updateSql);
 

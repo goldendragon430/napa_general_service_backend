@@ -5,7 +5,7 @@ const ApiResponse = require("../utils/api-response");
 
 const createAuditTrial = async (req: Request, res: Response) => {
   try {
-    console.log("Create Audit Trial Api Pending");
+    console.log(" Create Audit Trial Api Pending");
 
     const { audit } = req.body;
 

@@ -33,4 +33,10 @@ router.get("/account/verify", PartnerController.verifyUserEmail);
 
 router.get("/account/current", PartnerController.getCurrentPartnerUser);
 
+router.post(
+  "/account/token",
+  walletValidator,
+  PartnerController.getGenerateToken
+);
+
 module.exports = { router };
