@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import Events from "../models/events.model";
 const ApiResponse = require("../utils/api-response");
 import { socialArtDb } from "index";
-import FCM  from 'fcm-node'
-const serverKey = 'AAAAy9mJvkQ:APA91bGpBzqmhRQozvboKwqjyXx7m56C0jX_xqKwj4-ZPAsAbXUe31izFfQYlL-2UF6e-JB84UeM6gRqre53Ez2gpG_sGx7Hxuuo0MBLtwedJEUJWwD_qWMSlDaIRrBzT5iN_TSzzXWg';
+import FCM from 'fcm-node'
+const serverKey = process.env.SERVER_KEY
 const fcm = new FCM(serverKey);
 
 const createEvents = async (req: Request, res: Response) => {
@@ -33,9 +33,10 @@ const createEvents = async (req: Request, res: Response) => {
 
     console.log("Create Events Api Fullfilled");
 
-    const [users] =  await socialArtDb.query('SELECT deviceToken FROM users')
-    for( var i = 0 ;i < users.length; i ++ ) {
-      const token =  users[i].deviceToken;
+    const [users] = await socialArtDb.query('SELECT deviceToken FROM users')
+    // @ts-ignore
+    for (let i = 0; i < users.length; i++) {
+      const token = users[i].deviceToken;
       sendNotification(
         token,
         `New Event Alert - ${eventsData[0]['eventTitle']}`,
