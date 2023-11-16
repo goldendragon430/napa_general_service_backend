@@ -12,7 +12,7 @@ dotenv.config({ path: "./.env" });
 const { SocketService } = require("./services/socket.service");
 const socketService = new SocketService(wss);
 import mysql from "mysql2";
-import path from "path";
+import path from "path"; 
 require("./config");
 require("./utils/trending-cron-job");
 
