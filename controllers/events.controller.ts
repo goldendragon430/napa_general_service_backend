@@ -2,7 +2,8 @@
 import { Request, Response } from "express";
 import Events from "../models/events.model";
 const ApiResponse = require("../utils/api-response");
-import { socialArtDb } from "index";
+import { socialArtDb } from "../index";
+
 import FCM from 'fcm-node'
 const serverKey = process.env['SERVER_KEY']
 const fcm = new FCM(serverKey);
