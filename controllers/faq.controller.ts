@@ -8,7 +8,7 @@ const createFaqQuestion = async (req, res) => {
 
     const { faq } = req.body;
 
-    const newFaq = new Faq(faq);
+    const newFaq = new Faq(faq); 
 
     const [faqData] = await newFaq.create();
 
