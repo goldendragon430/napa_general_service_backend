@@ -7,7 +7,7 @@ const createFaqQuestion = async (req, res) => {
     console.log("Create Faq Question Pending");
 
     const { faq } = req.body;
-
+ 
     const newFaq = new Faq(faq);
 
     const [faqData] = await newFaq.create();
