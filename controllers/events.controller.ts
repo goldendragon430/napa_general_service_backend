@@ -190,6 +190,9 @@ export const sendNotification = (deviceToken, title, body) => {
       title,
       body,
     },
+    data: {
+      type: 'event'
+    }
   };
   fcm.send(message, (err, response) => {
     if (err) {
